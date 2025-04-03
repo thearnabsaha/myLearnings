@@ -1,0 +1,12 @@
+{
+  "name": "websockets_learnings",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --exec ts-node app/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
