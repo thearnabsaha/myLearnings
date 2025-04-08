@@ -64,7 +64,30 @@ const client = new PrismaClient();
 // }
 // readUser();
 const morganFormat = ':method :url :status :response-time ms';
-
+import { z } from 'zod';
+const SignupSchema = z.object({
+  email: z.string().email({ message: 'Invalid email address' }),
+  username: z.string().min(3, { message: 'Username must be at least 3 characters long' }),
+  age: z.number().min(18).max(100),
+  city:z.string(),
+  password: z
+    .string()
+    .min(8, { message: 'Password must be at least 8 characters long' })
+    .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
+    .regex(/[a-z]/, { message: 'Password must contain at least one lowercase letter' })
+    .regex(/[0-9]/, { message: 'Password must contain at least one number' })
+    .regex(/[@$!%*?&]/, { message: 'Password must contain at least one special character' }),
+});
+const SigninSchema = z.object({
+  username: z.string().min(3, { message: 'Username must be at least 3 characters long' }),
+  password: z
+    .string()
+    .min(8, { message: 'Password must be at least 8 characters long' })
+    .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
+    .regex(/[a-z]/, { message: 'Password must contain at least one lowercase letter' })
+    .regex(/[0-9]/, { message: 'Password must contain at least one number' })
+    .regex(/[@$!%*?&]/, { message: 'Password must contain at least one special character' }),
+});
 app.use(
     morgan(morganFormat)
 );
@@ -82,47 +105,99 @@ app.get('/', (req, res) => {
 });
 app.post('/signup', async (req, res) => {
     try {
-        const user = await client.user.findFirst({
-            where:{
-                username:req.body.username
-            }
-        })
-        if(user){
-            res.send("User Already Exists!")
-        }else{
-            await client.user.create({
-                data:{
-                    username: req.body.username,
-                    password: req.body.password,
-                    age: req.body.age,
-                    city: req.body.city
+        const result = SignupSchema.safeParse(req.body);
+        if (!result.success) {
+        res.send(result.error.format());
+        } else {
+            const user = await client.user.findFirst({
+                where:{
+                    username:req.body.username
                 }
-            });
-            res.send("Signed Up Successfully!")
+            })
+            if(user){
+                res.send("User Already Exists!")
+            }else{
+                await client.user.create({
+                    data:{
+                        username: req.body.username,
+                        password: req.body.password,
+                        age: req.body.age,
+                        city: req.body.city
+                    }
+                });
+                res.send("Signed Up Successfully!")
+            }
         }
+        
     } catch (error) {
         res.send(error)
     }
 });
 app.post('/signin', async (req, res) => {
     try {
-        const user=await client.user.findFirst({
-            where:{
-                username: req.body.username,
+        const result = SigninSchema.safeParse(req.body);
+        if (!result.success) {
+        res.send(result.error.format());
+        } else {
+            const user=await client.user.findFirst({
+                where:{
+                    username: req.body.username,
+                }
+            });
+            if(!user){
+                res.send("User Doesn't Exists")
+                return;
             }
-        });
-        if(!user){
-            res.send("User Doesn't Exists")
-            return;
-        }
-        if(user?.password!==req.body.password){
-            res.send("Invalid Credentials")
-        }else{
-            res.send("Signed In Successfully!")
+            if(user?.password!==req.body.password){
+                res.send("Invalid Credentials")
+            }else{
+                res.send("Signed In Successfully!")
+            }
         }
     } catch (error) {
         res.send(error)
     }
 });
+app.post('/todo', async (req, res) => {
+    try {
 
+    } catch (error) {
+        res.send(error)
+    }
+});
+app.get('/todo', async (req, res) => {
+    try {
+
+    } catch (error) {
+        res.send(error)
+    }
+});
+app.get('/todo/:id', async (req, res) => {
+    try {
+
+    } catch (error) {
+        res.send(error)
+    }
+});
+app.put('/todo/:id', async (req, res) => {
+    try {
+
+    } catch (error) {
+        res.send(error)
+    }
+});
+app.delete('/todo', async (req, res) => {
+    try {
+
+    } catch (error) {
+        res.send(error)
+    }
+});
+app.delete('/todo/:id', async (req, res) => {
+    try {
+
+    } catch (error) {
+        res.send(error)
+    }
+});
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));
