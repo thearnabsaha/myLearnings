@@ -15,7 +15,6 @@ const SignupSchema = z.object({
     email: z.string().email({ message: 'Invalid email address' }),
     username: z.string().min(3, { message: 'Username must be at least 3 characters long' }),
     age: z.number().min(18).max(100),
-    city: z.string(),
     password: z
         .string()
         .min(8, { message: 'Password must be at least 8 characters long' })
@@ -68,7 +67,6 @@ app.post('/signup', async (req, res) => {
                         username: req.body.username,
                         password: req.body.password,
                         age: req.body.age,
-                        city: req.body.city
                     }
                 });
                 res.send("Signed Up Successfully!")
