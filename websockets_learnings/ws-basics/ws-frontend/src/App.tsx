@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 
 const App = () => {
-  const [socket, setsocket] = useState<WebSocket|null>(null)
   const [inputValue, setInputValue] = useState('')
+  const [socket, setsocket] = useState<WebSocket|null>(null)
   useEffect(() => {
     const newsocket= new WebSocket("ws://localhost:8080")
     setsocket(newsocket)
