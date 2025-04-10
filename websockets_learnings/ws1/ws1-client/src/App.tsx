@@ -1,7 +1,9 @@
+import C1 from "./C1"
+
 const App = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh">
-
+    <div>
+      <C1/>
     </div>
   )
 }
