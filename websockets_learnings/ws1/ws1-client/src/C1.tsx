@@ -43,7 +43,7 @@ const C1 = () => {
     <div>
         <h1>Arnab</h1>
         <input type="text" ref={inputRef} onChange={(e)=>setInputValue(e.target.value)} value={inputValue} className="border bg-pink-50"/>
-        <button onClick={handleSend} className="border bg-blue-200 p-5 m-5">Send</button>
+        <button onClick={handleSend} className="border bg-blue-200 p-5 m-5" disabled={!inputValue}>Send</button>
         {
             msgs.map((e,index)=>{
                 return(
