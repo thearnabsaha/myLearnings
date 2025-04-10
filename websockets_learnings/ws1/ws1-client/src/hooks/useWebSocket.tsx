@@ -7,11 +7,13 @@ interface MessageType{
 const useWebSocket = (url:string) => {
   const wsRef = useRef<WebSocket|null>(null)
   const [messages, setMessages] = useState<MessageType[]>([])
-  useEffect(() => {
+  const [reconnectionAttempts, setReconnectionAttempts] = useState(0)
+  const connectWebsocket=()=>{
     const socket = new WebSocket(url)
     wsRef.current=socket
     socket.onopen=()=>{
       console.log("socket opened")
+      setReconnectionAttempts(0)
     }
     socket.onmessage=(msg)=>{
       const time=new Date().toLocaleString()
@@ -19,12 +21,28 @@ const useWebSocket = (url:string) => {
     }
     socket.onclose=()=>{
       console.log("socket closed")
+      attemptReconnect()
     }
     socket.onerror=(error)=>{
-      console.log(error)
+      console.log("Websocket errors : ",error)
+      attemptReconnect()
     }
+  }
+  const attemptReconnect=()=>{
+    if(wsRef.current?.readyState===WebSocket.OPEN){
+      return;
+    }
+    const delay =Math.min(1000*reconnectionAttempts*2,30000)
+    setTimeout(() => {
+      console.log("Attempting Reconnect...")
+      connectWebsocket()
+      setReconnectionAttempts(prev=>prev+1)
+    }, delay);
+  }
+  useEffect(() => {
+    connectWebsocket()
     return () => {
-      socket.close()
+      wsRef.current?.close()
       wsRef.current = null;
     }
   }, [url])
