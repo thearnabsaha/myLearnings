@@ -12,7 +12,13 @@ wss.on('connection', (socket) => {
       switch (data.type) {
         case "join":
           if(clients.get(socket)){
-            socket.send("You are already in the room")
+            socket.send(JSON.stringify({
+              type: "system",
+              payload: {
+                username: "System",
+                message: "You are already in the room"
+              }
+            }))
             return;
           }
           clients.set(socket,username)
@@ -26,7 +32,13 @@ wss.on('connection', (socket) => {
           break;
         case "chat":
           if(!clients.get(socket)){
-            socket.send("You need to join first")
+            socket.send(JSON.stringify({
+              type: "system",
+              payload: {
+                username: "System",
+                message: "You need to join first"
+              }
+            }))
             return;
           }
           clients.forEach((_user,keySocket)=>{
@@ -38,7 +50,13 @@ wss.on('connection', (socket) => {
         case "leave":
           const socketName=clients.get(socket);
           if(!socketName){
-            socket.send("You Need to Join Room First")
+            socket.send(JSON.stringify({
+              type: "system",
+              payload: {
+                username: "System",
+                message: "You Need to Join Room First"
+              }
+            }))
             return;
           }
           clients.delete(socket)
