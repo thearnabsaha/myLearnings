@@ -1,23 +1,45 @@
 import { WebSocketServer, WebSocket } from 'ws';
 
-let allSockets: WebSocket[] = [];
 const wss = new WebSocketServer({ port: 3001 });
-
+const clients=new Map<WebSocket,string>()
 wss.on('connection', (socket) => {
-  allSockets.push(socket);
   console.log('Connection established');
-  socket.send('Server is sending this message');
 
   socket.on('message', (message) => {
-    allSockets.forEach((e) => {
-      if(e.readyState===WebSocket.OPEN){
-        e.send('server : ' + message.toString());
-      }
-    });
+    const data=JSON.parse(message.toString())
+    if(data.type=="join"){
+      const username=data.payload.username;
+      if(!username) return;
+      clients.set(socket,username)
+      clients.forEach((username,keySocket)=>{
+        if(keySocket.readyState===WebSocket.OPEN){
+          keySocket.send( username+" Joined Successfully")
+        }
+      })
+    }
+    if(data.type=="chat"){
+      const username=data.payload.username;
+      if(!username) return;
+      clients.forEach((username,keySocket)=>{
+        if(keySocket.readyState===WebSocket.OPEN){
+          keySocket.send( username+" left the group. ")
+        }
+      })
+    }
+    if(data.type=="leave"){
+      const username=data.payload.username;
+      if(!username) return;
+      clients.delete(socket)
+      clients.forEach((username,keySocket)=>{
+        if(keySocket.readyState===WebSocket.OPEN){
+          keySocket.send( username+" : "+data.payload.message)
+        }
+      })
+    }
   });
 
   socket.on('close', () => {
-    allSockets = allSockets.filter((e) => e !== socket);
+    clients.delete(socket)
   });
 });
 
