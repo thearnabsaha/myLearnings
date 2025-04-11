@@ -19,6 +19,8 @@ wss.on('connection', (socket) => {
           clients.forEach((_user,KeySocket)=>{
             if(KeySocket!==socket){
               KeySocket.send(data.payload.username+" joined the room")
+            }else{
+              KeySocket.send("You Joined")
             }
           })
           break;
@@ -34,10 +36,19 @@ wss.on('connection', (socket) => {
           })
           break;
         case "leave":
+          const socketName=clients.get(socket);
+          if(!socketName){
+            socket.send("You Need to Join Room First")
+            return;
+          }
+          clients.delete(socket)
+          socket.send("You Left")
+          clients.forEach((_user,keySocket)=>{
+            if(keySocket!==socket){
+              keySocket.send(socketName+" Left")
+            }
+          })
           console.log("leave");
-          break;
-        case "ping":
-          console.log("ping");
           break;
         default:
           socket.send("wrong type of messages")
@@ -47,7 +58,11 @@ wss.on('connection', (socket) => {
     });
 
     socket.on('close', () => {
-
+      const socketName=clients.get(socket)
+      clients.delete(socket)
+      clients.forEach((_user,keySocket)=>{
+        keySocket.send(socketName+" Got Disconnected!")
+      })
     });
   } catch (error) {
     console.log(error)
