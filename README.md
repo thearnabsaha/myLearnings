@@ -79,7 +79,7 @@ This repository contains various projects and experiments to learn and explore d
 
 - Add more advanced WebSocket features.
 - Explore additional ORMs and databases.
-- Build full-stack applications with Next.js.
+- Build full-stack applications with Next.js..
 
 ---
 
