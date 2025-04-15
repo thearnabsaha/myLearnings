@@ -32,6 +32,7 @@ wss.on('connection', (socket) => {
           const {message}=data.payload
           if(message.trim()==""){
             socket.send("You can't left message empty")
+            return;
           }
           if(!client){
             socket.send("You haven't join the room yet")
@@ -45,7 +46,21 @@ wss.on('connection', (socket) => {
           break;
         }
         case "leave":{
-          
+          const client=clients.get(socket)
+          if(!client){
+            socket.send("You are not in the room!")
+            return
+          }
+          clients.delete(socket)
+          rooms.get(client.roomId)?.delete(socket)
+          rooms.get(client.roomId)?.forEach((e)=>{
+            if(e!==socket){
+              e.send(client.username+" left the room : "+client.roomId)
+            }
+          })
+          if(rooms.get(client.roomId)?.size===0){
+            rooms.delete(client.roomId)
+          }
           break;
         }
         default:
@@ -56,7 +71,18 @@ wss.on('connection', (socket) => {
     });
 
     socket.on('close', () => {
-
+      const client = clients.get(socket);
+      if(!client){
+        return;
+      }
+      clients.delete(socket);
+      rooms.get(client.roomId)?.delete(socket)
+      rooms.get(client.roomId)?.forEach((e)=>{
+        e.send(client.username+" : left the room : "+client.roomId)
+      })
+      if(rooms.get(client.roomId)?.size===0){
+        rooms.delete(client.roomId)
+      }
     });
   } catch (error) {
     console.log(error);
