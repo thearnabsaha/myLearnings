@@ -1,16 +1,16 @@
 import { WebSocketServer, WebSocket } from 'ws';
 
 const wss = new WebSocketServer({ port: 3001 });
-const clients = new Map<WebSocket, {username:string,roomId:string}>();
-const rooms = new Map<string,Set<WebSocket>>()
+const clients = new Map<WebSocket, string>();
+
 wss.on('connection', (socket) => {
   console.log('Connection established');
   socket.send('Server is sending this message');
+
   try {
     socket.on('message', (message) => {
       const data = JSON.parse(message.toString());
       const username = data.payload.username;
-      const roomId = data.payload.roomId;
 
       switch (data.type) {
         case "join":
@@ -21,13 +21,7 @@ wss.on('connection', (socket) => {
             }));
             return;
           }
-          clients.set(socket,{username,roomId})
-
-          if(!rooms.has(roomId)){
-            rooms.set(roomId,new Set())
-          }
-          roomId.get(roomId).add(socket)
-          
+          clients.set(socket, username);
           clients.forEach((_user, KeySocket) => {
             if (KeySocket !== socket) {
               KeySocket.send(data.payload.username + " joined the room");
