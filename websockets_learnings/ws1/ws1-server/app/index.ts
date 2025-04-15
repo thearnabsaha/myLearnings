@@ -1,89 +1,62 @@
 import { WebSocketServer, WebSocket } from 'ws';
 
 const wss = new WebSocketServer({ port: 3001 });
-const clients = new Map<WebSocket, {username:string,roomId:string}>();
-const rooms = new Map<string,Set<WebSocket>>()
+const clients= new Map<WebSocket,{username:string,roomId:string}>()
+const rooms= new Map<string,Set<WebSocket>>()
 wss.on('connection', (socket) => {
-  console.log('Connection established');
-  socket.send('Server is sending this message');
   try {
     socket.on('message', (message) => {
-      const data = JSON.parse(message.toString());
-      const username = data.payload.username;
-      const roomId = data.payload.roomId;
-
+      const data=JSON.parse(message.toString())
       switch (data.type) {
-        case "join":
-          if (clients.get(socket)) {
-            socket.send(JSON.stringify({
-              type: "system",
-              payload: { username: "System", message: "You are already in the room" }
-            }));
+        case "join":{
+          const client=clients.get(socket)
+          if(client){
+            socket.send("You Already joined that Room!")
             return;
           }
+          const {username,roomId}=data.payload
           clients.set(socket,{username,roomId})
-
           if(!rooms.has(roomId)){
-            rooms.set(roomId,new Set())
+            rooms.set(roomId, new Set())
           }
-          roomId.get(roomId).add(socket)
+          rooms.get(roomId)!.add(socket)
+          rooms.get(roomId)!.forEach((e)=>{
+            if(e!==socket){
+              e.send(username+" Joined The Room : "+roomId)
+            }
+          })
+          break;
+        }
+        case "chat":{
+          const client=clients.get(socket)
+          const {message}=data.payload
+          if(message.trim()==""){
+            socket.send("You can't left message empty")
+          }
+          if(!client){
+            socket.send("You haven't join the room yet")
+            return;
+          }
+          rooms.get(client.roomId)?.forEach((e)=>{
+            if(e!==socket){
+              e.send(client.username+" : "+message)
+            }
+          })
+          break;
+        }
+        case "leave":{
           
-          clients.forEach((_user, KeySocket) => {
-            if (KeySocket !== socket) {
-              KeySocket.send(data.payload.username + " joined the room");
-            } else {
-              KeySocket.send("You Joined");
-            }
-          });
           break;
-
-        case "chat":
-          if (!clients.get(socket)) {
-            socket.send(JSON.stringify({
-              type: "system",
-              payload: { username: "System", message: "You need to join first" }
-            }));
-            return;
-          }
-          clients.forEach((_user, keySocket) => {
-            if (keySocket !== socket) {
-              keySocket.send(clients.get(socket) + " : " + data.payload.message);
-            }
-          });
-          break;
-
-        case "leave":
-          const socketName = clients.get(socket);
-          if (!socketName) {
-            socket.send(JSON.stringify({
-              type: "system",
-              payload: { username: "System", message: "You Need to Join Room First" }
-            }));
-            return;
-          }
-          clients.delete(socket);
-          socket.send("You Left");
-          clients.forEach((_user, keySocket) => {
-            if (keySocket !== socket) {
-              keySocket.send(socketName + " Left");
-            }
-          });
-          console.log("leave");
-          break;
-
+        }
         default:
-          socket.send("wrong type of messages");
-          console.log("wrong type of messages");
+          socket.send("Wrong type of Message was sent!")
+          console.log("Wrong type of Message was sent!")
           break;
       }
     });
 
     socket.on('close', () => {
-      const socketName = clients.get(socket);
-      clients.delete(socket);
-      clients.forEach((_user, keySocket) => {
-        keySocket.send(socketName + " Got Disconnected!");
-      });
+
     });
   } catch (error) {
     console.log(error);
