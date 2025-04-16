@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-
+import { useRouter } from 'next/navigation'
 const schema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
   username: z.string().min(3, { message: 'Username must be at least 3 characters long' }),
@@ -28,6 +28,7 @@ const schema = z.object({
 });
 
 const Signup = () => {
+  const router = useRouter()
     const form = useForm<z.infer<typeof schema>>({
       resolver: zodResolver(schema),
       defaultValues: {
@@ -38,6 +39,7 @@ const Signup = () => {
     })
     function onSubmit(values: z.infer<typeof schema>) {
       console.log(values)
+      router.push('/signin')
     }
   return (
     <div className="w-96 border p-10 h-[400px] rounded-md">

@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import {
   Form,
   FormControl,
@@ -16,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input"
 
 const schema = z.object({
-  email: z.string().email({ message: 'Invalid email address' }),
   username: z.string().min(3, { message: 'Username must be at least 3 characters long' }),
   password: z
     .string()
@@ -27,16 +27,17 @@ const schema = z.object({
     .regex(/[@$!%*?&]/, { message: 'Password must contain at least one special character' }),
 });
 const Signin = () => {
+    const router = useRouter()
     const form = useForm<z.infer<typeof schema>>({
         resolver: zodResolver(schema),
         defaultValues: {
           username: "",
-          email:"",
           password:""
         },
       })
       function onSubmit(values: z.infer<typeof schema>) {
-        console.log(values)
+          console.log(values)
+          router.push('/dashboard')
       }
     return (
       <div className="w-96 border p-10 h-[400px] rounded-md">
