@@ -1,13 +1,9 @@
-"use client"
-
-import { ModeToggle } from "@/components/ModeToggle"
-import { Button } from "@/components/ui/button"
+import React from 'react'
 
 const Home = () => {
   return (
     <div>
-      <Button>Click me</Button>
-      <ModeToggle/>
+      <h1 className=' text-red-500'>Home</h1>
     </div>
   )
 }
