@@ -38,7 +38,7 @@ export default function RootLayout({
             <div className="flex justify-center h-[7vh] border items-center">
               <ModeToggle/>
             </div>
-            <div className="w-screen h-[93vh] flex justify-center borde mt-40">
+            <div className="w-screen h-[93vh] flex justify-center borde pt-40">
               {children}
             </div>
           </ThemeProvider>
