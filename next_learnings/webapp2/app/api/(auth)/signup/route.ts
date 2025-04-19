@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import bcrypt from 'bcrypt';
 // POST: api/signup
 import { z } from 'zod';
 const schema = z.object({
@@ -17,6 +18,7 @@ const schema = z.object({
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const result = schema.safeParse(body);
+  const hashedPassword = await bcrypt.hash(body.password, 10);
   try {
     if (!result.success) {
       return NextResponse.json({
@@ -25,7 +27,10 @@ export async function POST(request: NextRequest) {
     }
     const user=await prisma.user.findFirst({
       where: {
-        username: body.username,
+        OR: [
+          { username: body.username },
+          { email: body.email },
+        ],
       },
     })
     if(!user){
@@ -33,19 +38,20 @@ export async function POST(request: NextRequest) {
         data: {
           username: body.username,
           email: body.email,
-          password:body.password
+          password:hashedPassword
         },
       })
       return NextResponse.json({
         message: 'Sign Up Successfully!',
-        data: body
-      });
-    }else{
-      return NextResponse.json({
-        message: 'User Already Exists',
       });
     }
+    return NextResponse.json({
+      message: 'User Already Exists',
+    });
   } catch (error) {
     console.log(error)
+    return NextResponse.json({
+      message: error,
+    });
   }
 }
