@@ -1,8 +1,6 @@
 import NextAuth from "next-auth"
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import TwitterProvider from "next-auth/providers/twitter";
-import AppleProvider from "next-auth/providers/apple";
 const handler = NextAuth({
     providers: [
         GitHubProvider({
