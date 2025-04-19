@@ -12,15 +12,7 @@ const handler = NextAuth({
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
-        }),
-        TwitterProvider({
-            clientId: process.env.TWITTER_CLIENT_ID as string,
-            clientSecret: process.env.TWITTER_CLIENT_SECRET as string
-        }),
-        AppleProvider({
-            clientId: process.env.APPLE_ID as string,
-            clientSecret: process.env.APPLE_SECRET as string
-          })
+        })
     ],
     secret: process.env.NEXTAUTH_SECRET as string,
 })
