@@ -6,6 +6,7 @@ import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import axios from "axios"
 const SignInSchema = z.object({
   username: z.string().min(3, { message: 'Username must be at least 3 characters long' }),
   password: z
@@ -25,8 +26,9 @@ const Signin = () => {
     },
   })
  
-  function onSubmit(values: z.infer<typeof SignInSchema>) {
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof SignInSchema>) {
+    const res= await axios.post("/api/signin",{username:values.username,password:values.password})
+    console.log(res)
   }
   return (
 <div className="flex justify-center flex-col items-center w-screen mt-5">
