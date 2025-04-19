@@ -29,8 +29,9 @@ const Signup = () => {
       },
     })
     async function onSubmit(values: z.infer<typeof signUpSchema>) {
-      const res= await axios.post("/api/signin",{username:values.username,password:values.password})
-      console.log(res)
+      await axios.post("/api/signup",{username:values.username,password:values.password,email:values.email})
+      .then((e)=>console.log(e))
+      SignUpForm.reset();
     }
   return (
     <div className="flex justify-center flex-col items-center w-screen mt-5">
