@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { ModeToggle } from "@/components/ModeToggle";
+import Navbar from "@/components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,10 +35,8 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div>
-              <h1 className=" text-center m-5">
-                <ModeToggle/>
-              </h1>
+            <div className=" text-center m-5">
+              <Navbar/>
             </div>
             {children}
         </ThemeProvider>
