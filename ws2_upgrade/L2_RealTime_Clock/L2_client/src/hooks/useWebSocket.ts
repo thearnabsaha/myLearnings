@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 
 const useWebSocket = (url:string) => {
   const wsRef = useRef<WebSocket|null>(null)
-  const [messages, setMessages] = useState<string[]>([])
+  const [messages, setMessages] = useState<string>("")
   useEffect(() => {
     const socket = new WebSocket(url)
     wsRef.current=socket
