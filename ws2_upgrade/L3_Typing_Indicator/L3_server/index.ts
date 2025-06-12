@@ -1,30 +1,87 @@
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 
 const wss = new WebSocketServer({ port: 3001 });
+const clients = new Map<WebSocket, string>();
 
 wss.on('connection', (socket) => {
-  socket.send('Connection established');
+  console.log('Connection established');
+  socket.send('Server is sending this message');
+
   try {
-    socket.on("message",(msg)=>{
-        const data=JSON.parse(msg.toString())
-        if(data.type=="message"){
-            wss.clients.forEach((client)=>{
-                if(client.readyState==client.OPEN){
-                    client.send(JSON.stringify({type:data.type,content:data.content}))
-                }
-            })
-        }
-        if(data.type=="typing"){
-            wss.clients.forEach((client)=>{
-                if(client.readyState==client.OPEN){
-                    client.send(JSON.stringify({type:data.type,isTyping:data.isTyping}))
-                }
-            })
-        }
-    })
-} catch (error) {
-    console.log(error)
-}
+    socket.on('message', (message) => {
+      const data = JSON.parse(message.toString());
+      const username = data.payload.username;
+
+      switch (data.type) {
+        case "join":
+          if (clients.get(socket)) {
+            socket.send(JSON.stringify({
+              type: "system",
+              payload: { username: "System", message: "You are already in the room" }
+            }));
+            return;
+          }
+          clients.set(socket, username);
+          clients.forEach((_user, KeySocket) => {
+            if (KeySocket !== socket) {
+              KeySocket.send(data.payload.username + " joined the room");
+            } else {
+              KeySocket.send("You Joined");
+            }
+          });
+          break;
+
+        case "chat":
+          if (!clients.get(socket)) {
+            socket.send(JSON.stringify({
+              type: "system",
+              payload: { username: "System", message: "You need to join first" }
+            }));
+            return;
+          }
+          clients.forEach((_user, keySocket) => {
+            if (keySocket !== socket) {
+              keySocket.send(clients.get(socket) + " : " + data.payload.message);
+            }
+          });
+          break;
+
+        case "leave":
+          const socketName = clients.get(socket);
+          if (!socketName) {
+            socket.send(JSON.stringify({
+              type: "system",
+              payload: { username: "System", message: "You Need to Join Room First" }
+            }));
+            return;
+          }
+          clients.delete(socket);
+          socket.send("You Left");
+          clients.forEach((_user, keySocket) => {
+            if (keySocket !== socket) {
+              keySocket.send(socketName + " Left");
+            }
+          });
+          console.log("leave");
+          break;
+
+        default:
+          socket.send("wrong type of messages");
+          console.log("wrong type of messages");
+          break;
+      }
+    });
+
+    socket.on('close', () => {
+      const socketName = clients.get(socket);
+      clients.delete(socket);
+      clients.forEach((_user, keySocket) => {
+        keySocket.send(socketName + " Got Disconnected!");
+      });
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 console.log('WebSocket server is running on ws://localhost:3001');

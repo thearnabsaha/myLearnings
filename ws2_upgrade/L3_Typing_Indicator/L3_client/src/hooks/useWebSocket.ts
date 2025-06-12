@@ -1,47 +1,107 @@
-import { useEffect, useRef, useState } from "react"
-interface MessageType{
-  msg:string,
-  timestamps:string,
-  from:"Server"|"You"
-}
-const useWebSocket = (url:string) => {
-  const wsRef = useRef<WebSocket|null>(null)
-  const [messages, setMessages] = useState<MessageType[]>([])
-  useEffect(() => {
-    const socket = new WebSocket(url)
-    wsRef.current=socket
-    socket.onopen=()=>{
-      console.log("socket opened")
-    }
-    socket.onmessage=(msg)=>{
-    //   const time=new Date().toLocaleString()
-    //   setMessages(prev=>[...prev,{msg:msg.data,timestamps:time,from:"Server"}])
+import { useEffect, useRef, useState } from "react";
 
-    }
-    socket.onclose=()=>{
-      console.log("socket closed")
-    }
-    socket.onerror=(error)=>{
-      console.log(error)
-    }
-    return () => {
-      socket.close()
-      wsRef.current = null;
-    }
-  }, [url])
-  const sendMessage=(msg:string)=>{
-    if(msg.trim()===""){
-      return;
-    }
-    const socket=wsRef.current
-    if(socket?.readyState==WebSocket.OPEN){
-      socket?.send(msg)
-      const time=new Date().toLocaleString()
-      setMessages(prev=>[...prev,{msg:msg,timestamps:time,from:"You"}])
-    }else{
-      console.warn("socket is closed wait until its open")
-    }
-  }
-  return {sendMessage,messages}
+export interface MessageType {
+  from: string;
+  text: string;
+  timestamp: string;
+  system?: boolean;
 }
-export default useWebSocket
+
+export const useWebSocket = (url: string) => {
+  const socketRef = useRef<WebSocket | null>(null);
+  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [connected, setConnected] = useState(false);
+  const [inRoom, setInRoom] = useState(false);
+  const [username, setUsername] = useState("");
+  const [room, setRoom] = useState("");
+
+  useEffect(() => {
+    const socket = new WebSocket(url);
+    socketRef.current = socket;
+
+    socket.onopen = () => {
+      setConnected(true);
+    };
+
+    socket.onmessage = (event) => {
+      const raw = event.data;
+
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed.type === "system") {
+          const { message, username } = parsed.payload;
+          const msgObj: MessageType = {
+            from: username,
+            text: message,
+            timestamp: new Date().toLocaleTimeString(),
+            system: true,
+          };
+          setMessages((prev) => [...prev, msgObj]);
+        } else {
+          const msgObj: MessageType = {
+            from: "Server",
+            text: raw,
+            timestamp: new Date().toLocaleTimeString(),
+            system: true,
+          };
+          setMessages((prev) => [...prev, msgObj]);
+        }
+      } catch {
+        const msgObj: MessageType = {
+          from: "Broadcast",
+          text: raw,
+          timestamp: new Date().toLocaleTimeString(),
+        };
+        setMessages((prev) => [...prev, msgObj]);
+      }
+    };
+
+    socket.onclose = () => {
+      setConnected(false);
+      setInRoom(false);
+    };
+
+    return () => socket.close();
+  }, [url]);
+
+  const sendMessage = (text: string) => {
+    if (socketRef.current && inRoom && username) {
+      socketRef.current.send(
+        JSON.stringify({
+          type: "chat",
+          payload: { username, message: text },
+        })
+      );
+    }
+  };
+
+  const joinRoom = (uname: string, r: string) => {
+    if (socketRef.current) {
+      setUsername(uname);
+      setRoom(r);
+      socketRef.current.send(
+        JSON.stringify({
+          type: "join",
+          payload: { username: uname, room: r },
+        })
+      );
+      setInRoom(true);
+    }
+  };
+
+  const leaveRoom = () => {
+    if (socketRef.current) {
+      socketRef.current.send(JSON.stringify({ type: "leave", payload: {} }));
+      setInRoom(false);
+    }
+  };
+
+  return {
+    connected,
+    inRoom,
+    messages,
+    sendMessage,
+    joinRoom,
+    leaveRoom,
+  };
+};
