@@ -8,10 +8,9 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import { interpretEmotion } from './models/interpretEmotion';
-import {  generateQuestions, interpretDream } from './models/interactiveFreud';
-
-
+import { prisma } from './db/client';
 const morganFormat = ':method :url :status :response-time ms';
+import interpretRoutes from './routes/interpret.route';
 
 app.use(morgan(morganFormat));
 app.use(helmet());
@@ -25,10 +24,8 @@ app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
-app.post('/freud', async (req, res) => {
-    const result = await interpretEmotion(req.body.dream);
-    res.send(result);
-});
+
+app.use('/interpret', interpretRoutes);
 
 app.get('/', (req, res) => {
     res.send('hello from simple server :)');
@@ -43,36 +40,22 @@ app.get('/health', async (req, res) => {
   };
   res.status(200).json(healthcheck);
 });
-
-let questions: string[] = [];
-
-app.post('/start', async (req, res) => {
-  const { dream } = req.body;
-  if (!dream){
-    res.status(400).json({ error: 'Dream is required' });
-    return
-  }  
-  try {
-    questions = await generateQuestions(dream);
-    res.json({ questions });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to generate questions' });
-  }
-});
-
-app.post('/interpret', async (req, res) => {
-  const { dream, answers } = req.body;
-  if (!dream || !answers){
-    res.status(400).json({ error: 'Dream and answers required' });
-    return
-  } 
-  try {
-    const interpretation = await interpretDream(dream, answers, questions);
-    res.json({ interpretation });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to generate interpretation' });
-  }
-});
+// app.get('/analytics/tag-counts', async (req, res) => {
+//   try {
+//     const tagCounts = await prisma.tag.findMany({
+//       select: {
+//         name: true,
+//         _count: { select: { dreams: true } }
+//       },
+//       orderBy: { dreams: { _count: 'desc' } },
+//       take: 20
+//     });
+//     res.json(tagCounts);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Failed to fetch analytics" });
+//   }
+// });
 
 
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));

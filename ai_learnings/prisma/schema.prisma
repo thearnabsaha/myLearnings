@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model Dream {
+  id                   String   @id @default(uuid())
+  dream                String
+  interpretationByFreud String
+  interpretationByJung  String
+  createdAt            DateTime @default(now())
+  tags                 Tag[]    @relation("DreamTags")
+}
+
+model Tag {
+  id    String   @id @default(uuid())
+  name  String   @unique
+  dreams Dream[] @relation("DreamTags")
+}
