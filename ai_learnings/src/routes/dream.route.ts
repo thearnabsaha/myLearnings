@@ -8,6 +8,6 @@ router.get("/:id", InterpetationByPsychologists);
 router.put("/:id", InterpetationByPsychologists);
 router.delete("/:id", InterpetationByPsychologists);
 router.delete("/", InterpetationByPsychologists);
-router.get("/?tag", InterpetationByPsychologists);
+router.get("/?tag=arnab", InterpetationByPsychologists);
 
 export default router;
