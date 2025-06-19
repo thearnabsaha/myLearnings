@@ -15,6 +15,8 @@
     "@auth/prisma-adapter": "^2.9.1",
     "@hookform/resolvers": "^5.0.1",
     "@prisma/client": "^6.10.0",
+    "@tanstack/react-query": "^5.80.7",
+    "@tanstack/react-query-devtools": "^5.80.7",
     "@workspace/db": "workspace:*",
     "@workspace/ui": "workspace:*",
     "axios": "^1.10.0",
@@ -28,6 +30,7 @@
     "zod": "^3.25.32"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.78.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

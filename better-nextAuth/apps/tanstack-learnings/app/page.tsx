@@ -1,11 +1,12 @@
 import WithoutTanstack from '@/components/WithoutTanstack'
+import WithTanstack from '@/components/WithTanstack'
 import React from 'react'
 
 const Landing = () => {
   return (
-    <div>
-      <h1>Landing</h1>
+    <div className='flex justify-around w-screen'>
       <WithoutTanstack/>
+      <WithTanstack/>
     </div>
   )
 }

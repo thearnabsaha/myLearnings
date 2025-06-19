@@ -19,7 +19,6 @@ const WithoutTanstack = () => {
     try {
       axios.get("https://jsonplaceholder.typicode.com/posts")
         .then((e) => {
-          console.log(e.data)
           setdata(e.data)
           setloading(false)
         })
@@ -32,7 +31,6 @@ const WithoutTanstack = () => {
     try {
       axios.get(`https://jsonplaceholder.typicode.com/posts/${id}`)
         .then((e) => {
-          console.log(e.data)
           setpost(e.data)
           setloading(false)
         })
