@@ -43,8 +43,6 @@ app.get('/health', async (req, res) => {
 pullGemmaModel();
 pullEmbeddingModel()
 
-
-
 app.get('/chat', async (req, res) => {
   await ensureCollection()
   const pdfAfterLoading = await Loader("./a.pdf")
