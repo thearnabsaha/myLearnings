@@ -16,12 +16,16 @@
     "@types/morgan": "^1.9.10"
   },
   "dependencies": {
+    "@langchain/community": "^0.3.48",
+    "@langchain/core": "^0.3.62",
+    "axios": "^1.10.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "morgan": "^1.10.0",
-    "openai": "^5.8.2"
+    "openai": "^5.8.2",
+    "pdf-parse": "^1.1.1"
   }
 }
