@@ -47,7 +47,7 @@ pullEmbeddingModel()
 
 app.get('/chat', async (req, res) => {
   await ensureCollection()
-  const pdfAfterLoading = await Loader()
+  const pdfAfterLoading = await Loader("./a.pdf")
   const pdfAfterSpliting = await Splitter(pdfAfterLoading)
   const pdfAfterEmbedding = await Promise.all(
     pdfAfterSpliting.map(async (doc) => ({

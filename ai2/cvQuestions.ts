@@ -44,12 +44,44 @@ pullGemmaModel();
 pullEmbeddingModel()
 
 app.get('/chat', async (req, res) => {
-
+  await ensureCollection()
+  const pdfAfterLoading = await Loader("./a.pdf")
+  const pdfAfterSpliting = await Splitter(pdfAfterLoading)
+  const pdfAfterEmbedding = await Promise.all(
+    pdfAfterSpliting.map(async (doc) => ({
+      id: crypto.randomUUID(),
+      vector: await Embedder(doc.pageContent),
+      payload: {
+        text: doc.pageContent,
+      }
+    })))
+  await qdrant.upsert(COLLECTION_NAME, {
+    wait: true,
+    points: pdfAfterEmbedding,
+  })
+  console.log("Saved to DB")
+  res.json({ count: pdfAfterEmbedding.length, preview: pdfAfterEmbedding.slice(0, 3) });
 });
 app.get("/ask", async (req, res) => {
   try {
     const query = req.query.q as string
-
+    const queryVector = await Embedder(query)
+    const search = await qdrant.search(COLLECTION_NAME, {
+      vector: queryVector,
+      limit: 5,
+      with_payload: true
+    })
+    const results = search.map((e) => e.payload?.text)
+    const chatRes = await axios.post(`${OLLAMA_HOST}/api/chat`, {
+      model: "gemma3:1b",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: `resume context:\n${results.join("\n---\n")}` },
+      ],
+      stream:false
+    });
+    console.log(JSON.parse(chatRes.data.message.content))
+    res.json(JSON.parse(chatRes.data.message.content))
   } catch (error) {
     console.log(error)
     res.send(error)
