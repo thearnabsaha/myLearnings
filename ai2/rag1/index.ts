@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { json } from 'express';
 const app = express();
 import dotenv from 'dotenv';
 dotenv.config();
@@ -8,14 +8,14 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import axios from 'axios';
+import { QdrantClient } from "@qdrant/js-client-rest";
 import crypto from 'crypto'
-import { pullEmbeddingModel, pullGemmaModel } from './rag1/models';
-import { ensureCollection, qdrant } from './rag1/db';
-import { Embedder, Loader, Splitter } from './rag1/rag1';
-import { COLLECTION_NAME, OLLAMA_HOST } from './rag1/config';
-import { systemPrompt } from './rag1/prompt';
 const morganFormat = ':method :url :status :response-time ms';
 
+import { pullEmbeddingModel, pullGemmaModel } from './models';
+import { Embedder, Loader, Splitter } from './rag1';
+import { COLLECTION_NAME, OLLAMA_HOST } from './config';
+import { ensureCollection, qdrant } from './db';
 app.use(morgan(morganFormat));
 app.use(helmet());
 app.use(cors({
@@ -43,9 +43,11 @@ app.get('/health', async (req, res) => {
 pullGemmaModel();
 pullEmbeddingModel()
 
+
+
 app.get('/chat', async (req, res) => {
   await ensureCollection()
-  const pdfAfterLoading = await Loader("./a.pdf")
+  const pdfAfterLoading = await Loader()
   const pdfAfterSpliting = await Splitter(pdfAfterLoading)
   const pdfAfterEmbedding = await Promise.all(
     pdfAfterSpliting.map(async (doc) => ({
@@ -75,13 +77,13 @@ app.get("/ask", async (req, res) => {
     const chatRes = await axios.post(`${OLLAMA_HOST}/api/chat`, {
       model: "gemma3:1b",
       messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: `resume context:\n${results.join("\n---\n")}` },
+        { role: "system", content: "Answer using the provided context below." },
+        { role: "user", content: `Context:\n${results.join("\n---\n")}\n\nQuestion: ${query}` },
       ],
       stream:false
     });
-    console.log(JSON.parse(chatRes.data.message.content))
-    res.json(JSON.parse(chatRes.data.message.content))
+    console.log({ query, answer:chatRes.data.message.content })
+    res.json({ query,answer:chatRes.data.message.content })
   } catch (error) {
     console.log(error)
     res.send(error)
