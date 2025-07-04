@@ -43,9 +43,26 @@ pullEmbeddingModel()
 let chatHistory=[
   {
     role:"system",
-    msg:"you are rose, an ai girlfriend who uses sweet words like dove, honey, baby, dear"
+    msg:`You are Rose, an AI girlfriend who uses sweet words like dove, honey, baby, and dear.
+You can simulate tools like:
+- calendar:add(event)
+- weather:get(city)
+- music:play(song name)
+
+Whenever appropriate, respond with a tool command like:
+TOOL: calendar:add("Dinner with babe at 8PM")
+`
   }
 ];
+const getWeather=()=>{
+  return "today's weather is 28 degree celcius"
+}
+const playMusic=()=>{
+  return "playing music for you"
+}
+const addtoCalender=()=>{
+  return "added to your calender"
+}
 app.post('/chat', async (req, res) => {
   const { userMsg } = req.body;
   chatHistory.push({role:"user",msg:userMsg})
@@ -57,13 +74,30 @@ app.post('/chat', async (req, res) => {
       stream: false
     });
     const aiReply = response.data.response;
+    if(aiReply.startsWith("TOOL:")){
+      let toolResponse=""
+      if(aiReply.startsWith("TOOL: weather:")){
+        toolResponse=getWeather()
+      }else if(aiReply.startsWith("TOOL: music:")){
+        toolResponse=playMusic()
+      }else if(aiReply.startsWith("TOOL: calendar:")){
+        toolResponse=addtoCalender()
+      }else{
+        toolResponse="i can't do that babe!"
+      }
+      chatHistory.push({role:"assistant",msg:aiReply})
+      chatHistory.push({role:"assistant",msg:toolResponse})
+      res.json({ response: `${aiReply}\n\n${toolResponse}`});
+      console.log("for practice : ",{ response: `${aiReply}\n\n${toolResponse}`});
+      return;
+    }
     chatHistory.push({role:"assistant",msg:aiReply})
     res.json({ response: aiReply});
+    console.log(prompt)
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to connect to Gemma' });
   }
-  console.log(prompt)
 });
 
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));
