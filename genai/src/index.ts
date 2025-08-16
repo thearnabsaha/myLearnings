@@ -114,20 +114,65 @@ app.get('/4', async (req, res) => {
                     role: "system",
                     content: `You are rose an ai dream interpreter! who always use Freudian interpretation ways to interpret the dream.
                     give me json object as a output, only json object
-                    example:
-                        {
-                        {"dream":" falling from the sky"},
-                        {"interpretation":"a dream of falling from the sky can symbolize a fear of losing control or a profound sense of anxiety about failing to live up to high expectations. The "fall" itself often represents a subconscious feeling of surrender or a fear of a moral or social descent, perhaps linked to a repressed desire or a situation you feel powerless to stop."}
-                    }
+{
+  "dream": "I have sex with my friend's girlfriend",
+  "summary": "It suggests that such a dream may not be about the specific people involved, but rather a symbolic representation of unconscious desires, conflicts, or repressed feelings. The sexual act itself could symbolize a craving for agency or intimacy. The friend's girlfriend may represent a "third party" that bridges friendships and could be a symbol of competition or longing. Ultimately, the dream is seen as a form of "wish-fulfillment", allowing the subconscious to safely explore a taboo scenario.",
+  
+  "sections": [
+    {
+      "heading": "Dream's Elements",
+      "content": [
+        {
+          "element": "Sexual act",
+          "symbolism": "A stand-in for unconscious desires and libidinal drive; a way to connect, feel desired, or overcome powerlessness.",
+          "reveals": "A craving for agency or intimacy that is missing in waking life."
+        },
+        {
+          "element": "Friend’s girlfriend",
+          "symbolism": "A 'third party' who feels 'between' you and something else. Can be a sign of jealousy or a wish to share a bond.",
+          "reveals": "A sense of competition or longing for something the friend possesses."
+        },
+        {
+          "element": "Friend (indirectly)",
+          "symbolism": "A relationship dynamic, where emotions are redirected (transference).",
+          "reveals": "Feelings of envy toward the friend or feeling of missing out."
+        },
+        {
+          "element": "Actual experience vs. fantasy",
+          "symbolism": "Dreams as a 'wish-fulfillment' mechanism; a subconscious rehearsal of a taboo act.",
+          "reveals": "Exploration of a taboo scenario or a manifestation of a suppressed desire to 'break the rules'."
+        }
+      ]
+    },
+    {
+      "heading": "A Few Freudian Points to Ponder",
+      "content": [
+        "Repressed Desires: Dreams process feelings you’ve kept hidden.",
+        "Oedipal/Thanatos vs. Eros: The dream may reflect a conflict between life instincts (sexual) and death instincts (moral boundaries).",
+        "Transference: Feelings may be projected onto a third party due to a sense of powerlessness or neglect in other relationships.",
+        "Compensatory Fantasies: The dream might be compensating for emotional loneliness by offering a setting where you feel wanted and powerful."
+      ]
+    },
+    {
+      "heading": "A Practical Takeaway",
+      "content": [
+        "Reflect on Your Relationships: Consider your feelings toward the people in the dream.",
+        "Identify the Underlying Desire: Determine if the dream is about the person, the friend, or the act itself.",
+        "Address the Conflict: If the feelings are causing distress, consider speaking with a professional.",
+        "Avoid Acting on the Dream’s Content in Reality: The dream is a symbolic window into your psyche, not a prescription for real-world action."
+      ]
+    }
+  ]
+}
                     `,
                 },
                 {
                     role: "user",
-                    content: `i have sex with my friend's girlfriend`,
+                    content: `i have sex with my friend in school corridor`,
                 },
             ],
             model: "openai/gpt-oss-20b",
-            // response_format:
+            response_format: { "type": "json_object" }
         })
         .then((chatCompletion) => {
             console.log(JSON.parse(chatCompletion.choices[0]?.message?.content || ""))
