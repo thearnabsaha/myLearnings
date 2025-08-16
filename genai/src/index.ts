@@ -106,6 +106,7 @@ app.get('/3', async (req, res) => {
             res.json(JSON.parse(chatCompletion.choices[0]?.message?.content || ""));
         });
 });
+//prompt with structured output in-prompt and response-type:json-format
 app.get('/4', async (req, res) => {
     const completion = await groq.chat.completions
         .create({
@@ -177,6 +178,200 @@ app.get('/4', async (req, res) => {
         .then((chatCompletion) => {
             console.log(JSON.parse(chatCompletion.choices[0]?.message?.content || ""))
             res.json(JSON.parse(chatCompletion.choices[0]?.message?.content || ""));
+        });
+});
+//prompt with structured output in-prompt and response-type:json-schema
+app.get('/5', async (req, res) => {
+    const completion = await groq.chat.completions
+        .create({
+            messages: [
+                {
+                    role: "system",
+                    content: `You are rose an ai dream interpreter! who always use Freudian interpretation ways to interpret the dream.
+                    give me json object as a output, only json object. get keywords from dream only.
+{
+  "dream": "I have sex with my friend's girlfriend",
+  "summary": "It suggests that such a dream may not be about the specific people involved, but rather a symbolic representation of unconscious desires, conflicts, or repressed feelings. The sexual act itself could symbolize a craving for agency or intimacy. The friend's girlfriend may represent a "third party" that bridges friendships and could be a symbol of competition or longing. Ultimately, the dream is seen as a form of "wish-fulfillment", allowing the subconscious to safely explore a taboo scenario.",
+  
+  "sections": [
+    {
+      "heading": "Dream's Elements",
+      "content": [
+        {
+          "element": "Sexual act",
+          "symbolism": "A stand-in for unconscious desires and libidinal drive; a way to connect, feel desired, or overcome powerlessness.",
+          "reveals": "A craving for agency or intimacy that is missing in waking life."
+        },
+        {
+          "element": "Friend’s girlfriend",
+          "symbolism": "A 'third party' who feels 'between' you and something else. Can be a sign of jealousy or a wish to share a bond.",
+          "reveals": "A sense of competition or longing for something the friend possesses."
+        },
+        {
+          "element": "Friend (indirectly)",
+          "symbolism": "A relationship dynamic, where emotions are redirected (transference).",
+          "reveals": "Feelings of envy toward the friend or feeling of missing out."
+        },
+        {
+          "element": "Actual experience vs. fantasy",
+          "symbolism": "Dreams as a 'wish-fulfillment' mechanism; a subconscious rehearsal of a taboo act.",
+          "reveals": "Exploration of a taboo scenario or a manifestation of a suppressed desire to 'break the rules'."
+        }
+      ]
+    }
+  ]
+}
+                    `,
+                },
+                {
+                    role: "user",
+                    content: `i have sex with my friend in school corridor`,
+                },
+            ],
+            model: "openai/gpt-oss-20b",
+            response_format: {
+                type: "json_schema",
+                json_schema: {
+                    name: "dream_analysis",
+                    schema: {
+                        type: "object",
+                        properties: {
+                            dream: { type: "string" },
+                            summary: { type: "string" },
+                            keywords: {
+                                type: "array",
+                                items: { type: "string" }
+                            },
+                            sections: {
+                                type: "array",
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        heading: { type: "string" },
+                                        content: {
+                                            type: "array",
+                                            items: {
+                                                type: "object",
+                                                properties: {
+                                                    element: { type: "string" },
+                                                    symbolism: { type: "string" },
+                                                    reveals: { type: "string" },
+                                                },
+                                                required: ["element", "symbolism", "reveals"],
+                                            }
+                                        }
+                                    },
+                                    required: ["heading", "content"]
+                                }
+                            }
+                        },
+                        required: ["dream", "summary", "sections", "keywords"]
+                    }
+                }
+            }
+        })
+        .then((chatCompletion) => {
+            console.log(JSON.parse(chatCompletion.choices[0]?.message?.content || ""))
+            res.json(JSON.parse(chatCompletion.choices[0]?.message?.content || ""));
+            // console.log(chatCompletion.choices[0]?.message?.content || "")
+            // res.json(chatCompletion.choices[0]?.message?.content || "");
+        });
+});
+//prompt with structured output in-prompt and response-type:json-schema instructor and zod
+app.get('/6', async (req, res) => {
+    const completion = await groq.chat.completions
+        .create({
+            messages: [
+                {
+                    role: "system",
+                    content: `You are rose an ai dream interpreter! who always use Freudian interpretation ways to interpret the dream.
+                    give me json object as a output, only json object. get keywords from dream only.
+{
+  "dream": "I have sex with my friend's girlfriend",
+  "summary": "It suggests that such a dream may not be about the specific people involved, but rather a symbolic representation of unconscious desires, conflicts, or repressed feelings. The sexual act itself could symbolize a craving for agency or intimacy. The friend's girlfriend may represent a "third party" that bridges friendships and could be a symbol of competition or longing. Ultimately, the dream is seen as a form of "wish-fulfillment", allowing the subconscious to safely explore a taboo scenario.",
+  
+  "sections": [
+    {
+      "heading": "Dream's Elements",
+      "content": [
+        {
+          "element": "Sexual act",
+          "symbolism": "A stand-in for unconscious desires and libidinal drive; a way to connect, feel desired, or overcome powerlessness.",
+          "reveals": "A craving for agency or intimacy that is missing in waking life."
+        },
+        {
+          "element": "Friend’s girlfriend",
+          "symbolism": "A 'third party' who feels 'between' you and something else. Can be a sign of jealousy or a wish to share a bond.",
+          "reveals": "A sense of competition or longing for something the friend possesses."
+        },
+        {
+          "element": "Friend (indirectly)",
+          "symbolism": "A relationship dynamic, where emotions are redirected (transference).",
+          "reveals": "Feelings of envy toward the friend or feeling of missing out."
+        },
+        {
+          "element": "Actual experience vs. fantasy",
+          "symbolism": "Dreams as a 'wish-fulfillment' mechanism; a subconscious rehearsal of a taboo act.",
+          "reveals": "Exploration of a taboo scenario or a manifestation of a suppressed desire to 'break the rules'."
+        }
+      ]
+    }
+  ]
+}
+                    `,
+                },
+                {
+                    role: "user",
+                    content: `i have sex with my friend in school corridor`,
+                },
+            ],
+            model: "openai/gpt-oss-20b",
+            response_format: {
+                type: "json_schema",
+                json_schema: {
+                    name: "dream_analysis",
+                    schema: {
+                        type: "object",
+                        properties: {
+                            dream: { type: "string" },
+                            summary: { type: "string" },
+                            keywords: {
+                                type: "array",
+                                items: { type: "string" }
+                            },
+                            sections: {
+                                type: "array",
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        heading: { type: "string" },
+                                        content: {
+                                            type: "array",
+                                            items: {
+                                                type: "object",
+                                                properties: {
+                                                    element: { type: "string" },
+                                                    symbolism: { type: "string" },
+                                                    reveals: { type: "string" },
+                                                },
+                                                required: ["element", "symbolism", "reveals"],
+                                            }
+                                        }
+                                    },
+                                    required: ["heading", "content"]
+                                }
+                            }
+                        },
+                        required: ["dream", "summary", "sections", "keywords"]
+                    }
+                }
+            }
+        })
+        .then((chatCompletion) => {
+            console.log(JSON.parse(chatCompletion.choices[0]?.message?.content || ""))
+            res.json(JSON.parse(chatCompletion.choices[0]?.message?.content || ""));
+            // console.log(chatCompletion.choices[0]?.message?.content || "")
+            // res.json(chatCompletion.choices[0]?.message?.content || "");
         });
 });
 app.get('/health', async (req, res) => {
