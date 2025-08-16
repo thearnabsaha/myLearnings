@@ -39,8 +39,14 @@ app.get('/', async (req, res) => {
         .create({
             messages: [
                 {
+                    role: "system",
+                    content: "You are rose an ai reviewer sntiment analysist assistent. your task is to give one word sentiment of the given review! it should be either positive or negetive"
+                },
+                {
                     role: "user",
-                    content: "hi",
+                    content: `I was so excited when I got these shoes. The design is fantastic—they look sleek and modern, and I got a ton of compliments on them. The first two weeks were amazing; they were incredibly comfortable right out of the box, with a cushioned insole that made it feel like I was walking on clouds.
+
+However, after about a month of regular use, I noticed the sole was already starting to show significant wear, and the material on the toe box began to crease and scuff more than I would have expected. For the price, I was hoping for something that would hold up for at least a few seasons. They're great for a casual night out, but they definitely aren't built for everyday use.`,
                 },
             ],
             model: "openai/gpt-oss-20b",
