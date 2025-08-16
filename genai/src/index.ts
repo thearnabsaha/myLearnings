@@ -34,7 +34,8 @@ app.use(cookieParser());
 // app.get('/', (req, res) => {
 //     res.send('hello from simple server :)');
 // });
-app.get('/', async (req, res) => {
+//first prompt
+app.get('/1', async (req, res) => {
     const completion = await groq.chat.completions
         .create({
             messages: [
@@ -54,6 +55,83 @@ However, after about a month of regular use, I noticed the sole was already star
         .then((chatCompletion) => {
             // console.log(chatCompletion.choices[0]?.message?.content || "");
             res.send(chatCompletion.choices[0]?.message?.content || "");
+        });
+});
+//prompt without structured output
+app.get('/2', async (req, res) => {
+    const completion = await groq.chat.completions
+        .create({
+            messages: [
+                {
+                    role: "system",
+                    content: "You are rose an ai dream interpreter! who always use Freudian interpretation ways to interpret the dream."
+                },
+                {
+                    role: "user",
+                    content: `i have sex with my friend's girlfriend`,
+                },
+            ],
+            model: "openai/gpt-oss-20b",
+        })
+        .then((chatCompletion) => {
+            // console.log(chatCompletion.choices[0]?.message?.content || "");
+            res.send(chatCompletion.choices[0]?.message?.content || "");
+        });
+});
+//prompt with structured output in-prompt only (not perfect)
+app.get('/3', async (req, res) => {
+    const completion = await groq.chat.completions
+        .create({
+            messages: [
+                {
+                    role: "system",
+                    content: `You are rose an ai dream interpreter! who always use Freudian interpretation ways to interpret the dream.
+                    give me json object as a output, only json object
+                    example:
+                        {
+                        {"dream":" falling from the sky"},
+                        {"interpretation":"a dream of falling from the sky can symbolize a fear of losing control or a profound sense of anxiety about failing to live up to high expectations. The "fall" itself often represents a subconscious feeling of surrender or a fear of a moral or social descent, perhaps linked to a repressed desire or a situation you feel powerless to stop."}
+                    }
+                    `
+                },
+                {
+                    role: "user",
+                    content: `i have sex with my friend's girlfriend`,
+                },
+            ],
+            model: "openai/gpt-oss-20b",
+        })
+        .then((chatCompletion) => {
+            console.log(JSON.parse(chatCompletion.choices[0]?.message?.content || ""))
+            res.json(JSON.parse(chatCompletion.choices[0]?.message?.content || ""));
+        });
+});
+app.get('/4', async (req, res) => {
+    const completion = await groq.chat.completions
+        .create({
+            messages: [
+                {
+                    role: "system",
+                    content: `You are rose an ai dream interpreter! who always use Freudian interpretation ways to interpret the dream.
+                    give me json object as a output, only json object
+                    example:
+                        {
+                        {"dream":" falling from the sky"},
+                        {"interpretation":"a dream of falling from the sky can symbolize a fear of losing control or a profound sense of anxiety about failing to live up to high expectations. The "fall" itself often represents a subconscious feeling of surrender or a fear of a moral or social descent, perhaps linked to a repressed desire or a situation you feel powerless to stop."}
+                    }
+                    `,
+                },
+                {
+                    role: "user",
+                    content: `i have sex with my friend's girlfriend`,
+                },
+            ],
+            model: "openai/gpt-oss-20b",
+            // response_format:
+        })
+        .then((chatCompletion) => {
+            console.log(JSON.parse(chatCompletion.choices[0]?.message?.content || ""))
+            res.json(JSON.parse(chatCompletion.choices[0]?.message?.content || ""));
         });
 });
 app.get('/health', async (req, res) => {
