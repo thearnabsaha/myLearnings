@@ -8,7 +8,6 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import { OpenAI } from 'openai';
-
 const morganFormat = ':method :url :status :response-time ms';
 
 app.use(morgan(morganFormat));
