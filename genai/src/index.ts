@@ -277,7 +277,7 @@ app.get('/5', async (req, res) => {
             // res.json(chatCompletion.choices[0]?.message?.content || "");
         });
 });
-//prompt with structured output in-prompt and response-type:json-schema instructor and zod
+//!prompt with structured output in-prompt and response-type:json-schema instructor and zod (we will do it later)
 app.get('/6', async (req, res) => {
     const completion = await groq.chat.completions
         .create({
