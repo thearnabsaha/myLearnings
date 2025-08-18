@@ -8,8 +8,9 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import { Groq } from 'groq-sdk';
+import { tavily } from "@tavily/core";
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
+const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
 
 const morganFormat = ':method :url :status :response-time ms';
 
@@ -27,26 +28,32 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
 //TOOL_CALLING 1
+let messages = [
+    {
+        role: "system",
+        content: `You are a personal assistent, who answers the asked questions.
+                    You have access to following tools:
+                    1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
+                    `
+    },
+    {
+        role: "user",
+        content: `what is the current weather in the mumbai`,
+    },
+]
 const webSearch = async ({ query }: { query: string }) => {
     console.log("webSearch tool is getting called...")
-    return `Iphone 20 was launched on 2025 31st may`
+    const response = await tvly.search(query);
+    const responseContents = response.results.map((e) => e.content).join("\n\n")
+    return responseContents
+
 }
 app.get('/1', async (req, res) => {
     const completion = await groq.chat.completions
         .create({
-            messages: [
-                {
-                    role: "system",
-                    content: `You are a personal assistent, who answers the asked questions.
-                    You have access to following tools:
-                    1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
-                    `
-                },
-                {
-                    role: "user",
-                    content: `what is the current weather in the mumbai`,
-                },
-            ],
+            temperature: 0,
+            //@ts-ignore
+            messages: messages,
             model: "openai/gpt-oss-20b",
             tools: [
                 {
@@ -69,25 +76,62 @@ app.get('/1', async (req, res) => {
             ],
             tool_choice: "auto"
         })
-        .then(async (chatCompletion) => {
-            // console.log(chatCompletion.choices[0]?.message?.content || "");
-            let toolResult;
-            const toolcalls = chatCompletion.choices[0]?.message.tool_calls
-            if (!toolcalls) {
-                console.log(`Assistant: ${chatCompletion.choices[0]?.message?.content}`)
-                return
-            }
-            for (const toolcall of toolcalls) {
-                console.log("tool", toolcall)
-                const functionName = toolcall.function.name
-                const functionArguments = toolcall.function.arguments
-                if (functionName === "webSearch") {
-                    toolResult = await webSearch(JSON.parse(functionArguments))
-                    console.log("Tool Result : ", toolResult)
+    //@ts-ignore
+    messages.push(completion.choices[0]?.message)
+    let toolResult;
+    const toolcalls = await completion.choices[0]?.message.tool_calls
+    if (!toolcalls) {
+        console.log(`Assistant: ${completion.choices[0]?.message?.content}`)
+        return
+    }
+    for (const e of toolcalls) {
+        console.log("tool", e)
+        const functionName = e.function.name
+        const functionArguments = e.function.arguments
+        if (functionName === "webSearch") {
+            toolResult = await webSearch(JSON.parse(functionArguments))
+            console.log("Tool Result : ", toolResult)
+            messages.push({
+                //@ts-ignore
+                tool_call_id: e.id,
+                role: "tool",
+                name: functionName,
+                content: toolResult
+            })
+        }
+    }
+    const completion2 = await groq.chat.completions
+        .create({
+            temperature: 0,
+            //@ts-ignore
+            messages: messages,
+            model: "openai/gpt-oss-20b",
+            tools: [
+                {
+                    type: "function",
+                    function: {
+                        name: "webSearch",
+                        description: "Search the latest information and the realtime data on the internet",
+                        parameters: {
+                            type: "object",
+                            properties: {
+                                query: {
+                                    type: "string",
+                                    description: "The search query to perform search on"
+                                },
+                            },
+                            required: ["query"]
+                        }
+                    }
                 }
-            }
-            res.send(toolResult);
-        });
+            ],
+            tool_choice: "auto"
+        })
+    console.log(messages)
+    // console.log(completion.choices[0]?.message)
+    console.log(completion2.choices[0]?.message?.content)
+    res.send(completion2.choices[0]?.message?.content);
+
 });
 
 app.get('/health', async (req, res) => {
