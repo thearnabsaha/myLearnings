@@ -39,8 +39,7 @@ app.get('/1', async (req, res) => {
                     role: "system",
                     content: `You are a personal assistent, who answers the asked questions.
                     You have access to following tools:
-                    1. webSearch({query}:{query:string})
-                    
+                    1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
                     `
                 },
                 {
@@ -70,9 +69,24 @@ app.get('/1', async (req, res) => {
             ],
             tool_choice: "auto"
         })
-        .then((chatCompletion) => {
+        .then(async (chatCompletion) => {
             // console.log(chatCompletion.choices[0]?.message?.content || "");
-            res.send(chatCompletion.choices[0]?.message?.content || "");
+            let toolResult;
+            const toolcalls = chatCompletion.choices[0]?.message.tool_calls
+            if (!toolcalls) {
+                console.log(`Assistant: ${chatCompletion.choices[0]?.message?.content}`)
+                return
+            }
+            for (const toolcall of toolcalls) {
+                console.log("tool", toolcall)
+                const functionName = toolcall.function.name
+                const functionArguments = toolcall.function.arguments
+                if (functionName === "webSearch") {
+                    toolResult = await webSearch(JSON.parse(functionArguments))
+                    console.log("Tool Result : ", toolResult)
+                }
+            }
+            res.send(toolResult);
         });
 });
 
