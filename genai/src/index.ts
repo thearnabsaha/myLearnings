@@ -37,10 +37,10 @@ let messages = [
                     1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
                     `
     },
-    {
-        role: "user",
-        content: `what is today's date?`,
-    },
+    // {
+    //     role: "user",
+    //     content: `what is today's date?`,
+    // },
 ]
 const webSearch = async ({ query }: { query: string }) => {
     console.log("webSearch tool is getting called...")
@@ -50,6 +50,12 @@ const webSearch = async ({ query }: { query: string }) => {
 }
 
 app.get('/1', async (req, res) => {
+    const query = req.query.q
+
+    messages.push({
+        role: "user",
+        content: query as string
+    })
     let answer;
     while (true) {
         const completion = await groq.chat.completions
