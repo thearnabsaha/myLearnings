@@ -38,7 +38,7 @@ let messages = [
     },
     {
         role: "user",
-        content: `what is the weather in kolkata`,
+        content: `when iphone 16 got lunched`,
     },
 ]
 const webSearch = async ({ query }: { query: string }) => {
