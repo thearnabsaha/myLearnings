@@ -31,14 +31,14 @@ app.use(cookieParser());
 let messages = [
     {
         role: "system",
-        content: `You are a personal assistent, who answers the asked questions.
+        content: `You are a personal assistent, who answers the asked questions, who gives answers in one word or sentence.
                     You have access to following tools:
                     1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
                     `
     },
     {
         role: "user",
-        content: `what is the current weather in the mumbai`,
+        content: `what is the weather in kolkata`,
     },
 ]
 const webSearch = async ({ query }: { query: string }) => {
@@ -46,92 +46,62 @@ const webSearch = async ({ query }: { query: string }) => {
     const response = await tvly.search(query);
     const responseContents = response.results.map((e) => e.content).join("\n\n")
     return responseContents
-
 }
+
 app.get('/1', async (req, res) => {
-    const completion = await groq.chat.completions
-        .create({
-            temperature: 0,
-            //@ts-ignore
-            messages: messages,
-            model: "openai/gpt-oss-20b",
-            tools: [
-                {
-                    type: "function",
-                    function: {
-                        name: "webSearch",
-                        description: "Search the latest information and the realtime data on the internet",
-                        parameters: {
-                            type: "object",
-                            properties: {
-                                query: {
-                                    type: "string",
-                                    description: "The search query to perform search on"
+    let answer;
+    while (true) {
+        const completion = await groq.chat.completions
+            .create({
+                temperature: 0,
+                //@ts-ignore
+                messages: messages,
+                model: "openai/gpt-oss-20b",
+                tools: [
+                    {
+                        type: "function",
+                        function: {
+                            name: "webSearch",
+                            description: "Search the latest information and the realtime data on the internet",
+                            parameters: {
+                                type: "object",
+                                properties: {
+                                    query: {
+                                        type: "string",
+                                        description: "The search query to perform search on"
+                                    },
                                 },
-                            },
-                            required: ["query"]
+                                required: ["query"]
+                            }
                         }
                     }
-                }
-            ],
-            tool_choice: "auto"
-        })
-    //@ts-ignore
-    messages.push(completion.choices[0]?.message)
-    let toolResult;
-    const toolcalls = await completion.choices[0]?.message.tool_calls
-    if (!toolcalls) {
-        console.log(`Assistant: ${completion.choices[0]?.message?.content}`)
-        return
-    }
-    for (const e of toolcalls) {
-        console.log("tool", e)
-        const functionName = e.function.name
-        const functionArguments = e.function.arguments
-        if (functionName === "webSearch") {
-            toolResult = await webSearch(JSON.parse(functionArguments))
-            console.log("Tool Result : ", toolResult)
-            messages.push({
-                //@ts-ignore
-                tool_call_id: e.id,
-                role: "tool",
-                name: functionName,
-                content: toolResult
+                ],
+                tool_choice: "auto"
             })
+        //@ts-ignore
+        messages.push(completion.choices[0]?.message)
+        let toolResult;
+        const toolcalls = await completion.choices[0]?.message.tool_calls
+        if (!toolcalls) {
+            answer = completion.choices[0]?.message?.content
+            break;
+        }
+        for (const e of toolcalls) {
+            const functionName = e.function.name
+            const functionArguments = e.function.arguments
+            if (functionName === "webSearch") {
+                toolResult = await webSearch(JSON.parse(functionArguments))
+                messages.push({
+                    // @ts-ignore
+                    tool_call_id: e.id,
+                    role: "tool",
+                    name: functionName,
+                    content: toolResult
+                })
+            }
         }
     }
-    const completion2 = await groq.chat.completions
-        .create({
-            temperature: 0,
-            //@ts-ignore
-            messages: messages,
-            model: "openai/gpt-oss-20b",
-            tools: [
-                {
-                    type: "function",
-                    function: {
-                        name: "webSearch",
-                        description: "Search the latest information and the realtime data on the internet",
-                        parameters: {
-                            type: "object",
-                            properties: {
-                                query: {
-                                    type: "string",
-                                    description: "The search query to perform search on"
-                                },
-                            },
-                            required: ["query"]
-                        }
-                    }
-                }
-            ],
-            tool_choice: "auto"
-        })
-    console.log(messages)
-    // console.log(completion.choices[0]?.message)
-    console.log(completion2.choices[0]?.message?.content)
-    res.send(completion2.choices[0]?.message?.content);
-
+    res.send(answer);
 });
 
 app.get('/health', async (req, res) => {
