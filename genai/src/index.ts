@@ -32,13 +32,14 @@ let messages = [
     {
         role: "system",
         content: `You are a personal assistent, who answers the asked questions, who gives answers in one word or sentence.
+                    Current date and time is: ${new Date().toUTCString()}
                     You have access to following tools:
                     1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
                     `
     },
     {
         role: "user",
-        content: `when iphone 16 got lunched`,
+        content: `what is today's date?`,
     },
 ]
 const webSearch = async ({ query }: { query: string }) => {
