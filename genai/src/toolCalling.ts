@@ -1,9 +1,33 @@
+import express from 'express';
+const app = express();
 import dotenv from 'dotenv';
 dotenv.config();
+const port = process.env.PORT || 3000;
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import morgan from 'morgan';
+import helmet from 'helmet';
 import { Groq } from 'groq-sdk';
 import { tavily } from "@tavily/core";
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
+
+const morganFormat = ':method :url :status :response-time ms';
+
+app.use(morgan(morganFormat));
+app.use(helmet());
+
+app.use(cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
+}));
+
+
+app.use(express.json({ limit: '16kb' }));
+app.use(express.urlencoded({ extended: true, limit: '16kb' }));
+app.use(express.static('public'));
+app.use(cookieParser());
+//TOOL_CALLING 1
 let messages = [
     {
         role: "system",
@@ -13,10 +37,10 @@ let messages = [
                     1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
                     `
     },
-    {
-        role: "user",
-        content: `what is current date`
-    },
+    // {
+    //     role: "user",
+    //     content: `what is today's date?`,
+    // },
 ]
 const webSearch = async ({ query }: { query: string }) => {
     console.log("webSearch tool is getting called...")
@@ -24,7 +48,14 @@ const webSearch = async ({ query }: { query: string }) => {
     const responseContents = response.results.map((e) => e.content).join("\n\n")
     return responseContents
 }
-async function main() {
+
+app.get('/1', async (req, res) => {
+    const query = req.query.q
+
+    messages.push({
+        role: "user",
+        content: query as string
+    })
     let answer;
     while (true) {
         const completion = await groq.chat.completions
@@ -77,6 +108,20 @@ async function main() {
             }
         }
     }
-    console.log(answer)
-}
-main()
+    res.send(answer);
+});
+
+app.get('/health', async (req, res) => {
+    const start = Date.now();
+    const healthcheck = {
+        uptime: process.uptime(),
+        message: 'OK',
+        timestamp: new Date(),
+        responseTime: `${Date.now() - start}ms`,
+    };
+    res.status(200).json(healthcheck);
+});
+
+app.listen(port, () => console.log('> Server is up and running on port: ' + port));
+
+
