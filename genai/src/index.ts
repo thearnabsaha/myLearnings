@@ -1,3 +1,4 @@
+import readline from 'node:readline/promises'
 import dotenv from 'dotenv';
 dotenv.config();
 import { Groq } from 'groq-sdk';
@@ -13,10 +14,7 @@ let messages = [
                     1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
                     `
     },
-    {
-        role: "user",
-        content: `what is current date`
-    },
+
 ]
 const webSearch = async ({ query }: { query: string }) => {
     console.log("webSearch tool is getting called...")
@@ -25,58 +23,68 @@ const webSearch = async ({ query }: { query: string }) => {
     return responseContents
 }
 async function main() {
-    let answer;
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
     while (true) {
-        const completion = await groq.chat.completions
-            .create({
-                temperature: 0,
-                //@ts-ignore
-                messages: messages,
-                model: "openai/gpt-oss-20b",
-                tools: [
-                    {
-                        type: "function",
-                        function: {
-                            name: "webSearch",
-                            description: "Search the latest information and the realtime data on the internet",
-                            parameters: {
-                                type: "object",
-                                properties: {
-                                    query: {
-                                        type: "string",
-                                        description: "The search query to perform search on"
-                                    },
-                                },
-                                required: ["query"]
-                            }
-                        }
-                    }
-                ],
-                tool_choice: "auto"
-            })
-        //@ts-ignore
-        messages.push(completion.choices[0]?.message)
-        let toolResult;
-        const toolcalls = await completion.choices[0]?.message.tool_calls
-        if (!toolcalls) {
-            answer = completion.choices[0]?.message?.content
+        let question = await rl.question("You : ")
+        messages.push({
+            role: "user",
+            content: String(question)
+        })
+        if (question === "bye") {
             break;
         }
-        for (const e of toolcalls) {
-            const functionName = e.function.name
-            const functionArguments = e.function.arguments
-            if (functionName === "webSearch") {
-                toolResult = await webSearch(JSON.parse(functionArguments))
-                messages.push({
-                    // @ts-ignore
-                    tool_call_id: e.id,
-                    role: "tool",
-                    name: functionName,
-                    content: toolResult
+        while (true) {
+            const completion = await groq.chat.completions
+                .create({
+                    temperature: 0,
+                    //@ts-ignore
+                    messages: messages,
+                    model: "openai/gpt-oss-20b",
+                    tools: [
+                        {
+                            type: "function",
+                            function: {
+                                name: "webSearch",
+                                description: "Search the latest information and the realtime data on the internet",
+                                parameters: {
+                                    type: "object",
+                                    properties: {
+                                        query: {
+                                            type: "string",
+                                            description: "The search query to perform search on"
+                                        },
+                                    },
+                                    required: ["query"]
+                                }
+                            }
+                        }
+                    ],
+                    tool_choice: "auto"
                 })
+            //@ts-ignore
+            messages.push(completion.choices[0]?.message)
+            let toolResult;
+            const toolcalls = await completion.choices[0]?.message.tool_calls
+            if (!toolcalls) {
+                console.log("Rose :", completion.choices[0]?.message?.content)
+                break;
+            }
+            for (const e of toolcalls) {
+                const functionName = e.function.name
+                const functionArguments = e.function.arguments
+                if (functionName === "webSearch") {
+                    toolResult = await webSearch(JSON.parse(functionArguments))
+                    messages.push({
+                        // @ts-ignore
+                        tool_call_id: e.id,
+                        role: "tool",
+                        name: functionName,
+                        content: toolResult
+                    })
+                }
             }
         }
     }
-    console.log(answer)
+    rl.close()
 }
 main()
