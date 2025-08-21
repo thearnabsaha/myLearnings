@@ -11,11 +11,15 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormMessage,
 } from "@/components/ui/form"
 import { z } from "zod"
 const formSchema = z.object({
-  message: z.string().min(1)
+  message: z.string().trim()
+    .min(1, { message: "Message cannot be empty" })
+    .refine((val) => val.replace(/\s/g, "").length > 0, {
+      message: "Message cannot be only spaces or newlines",
+    })
+
 })
 type Message = {
   id: string
@@ -45,29 +49,13 @@ const page = () => {
         </div>
         <ModeToggle />
       </div >
-      {/* <div className='flex flex-col flex-wrap mb-100 pt-10'>
-        <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end'>Arnab is the best person in the world</p>
-        <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start'>Arnab is the best person in the world</p>
-        <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end'>Lorem ipsum dolor sit amet.</p>
-        <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start'>Lorem ipsum dolor sit amet.</p>
-        <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Libero minus distinctio commodi dignissimos perferendis ab necessitatibus nesciunt praesentium accusantium. Consequatur cum nam nulla error recusandae?</p>
-        <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Libero minus distinctio commodi dignissimos perferendis ab necessitatibus nesciunt praesentium accusantium. Consequatur cum nam nulla error recusandae?</p>
-        <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat corrupti assumenda nihil tenetur provident laudantium, dignissimos dolorem quae culpa accusamus impedit omnis nulla animi recusandae enim mollitia dolor nam expedita.</p>
-        <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat corrupti assumenda nihil tenetur provident laudantium, dignissimos dolorem quae culpa accusamus impedit omnis nulla animi recusandae enim mollitia dolor nam expedita.</p>
-        <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, perferendis?</p>
-        <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, perferendis?</p>
-        <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Illo vitae provident aliquid sint consequatur, eos sit eaque repudiandae itaque nihil numquam accusantium, porro, alias assumenda.</p>
-        <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Illo vitae provident aliquid sint consequatur, eos sit eaque repudiandae itaque nihil numquam accusantium, porro, alias assumenda.</p>
-        <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempore dolore, nobis in ullam dicta numquam.</p>
-        <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempore dolore, nobis in ullam dicta numquam.</p>
-      </div> */}
       <div className='flex flex-col flex-wrap mb-100 pt-10'>
         {
           messages.map((e) => {
             return (
               <div key={e.id} className="flex flex-col flex-wrap ">
-                <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end whitespace-pre-wrap'>{e.content}</p>
-                <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap'>{e.content}</p>
+                <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-96 self-end whitespace-pre-wrap break-all'>{e.content}</p>
+                <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-all'>{e.content}</p>
               </div>
             )
           })
@@ -84,7 +72,6 @@ const page = () => {
                   <FormControl>
                     <Textarea className='max-h-60 resize-none border-none mr-2' placeholder="Ask anything" {...field} />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
