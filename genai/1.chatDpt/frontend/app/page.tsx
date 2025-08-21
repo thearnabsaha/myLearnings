@@ -9,14 +9,10 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-
 import { z } from "zod"
 const formSchema = z.object({
   username: z.string().min(1)
@@ -34,15 +30,15 @@ const page = () => {
     form.reset()
   }
   return (
-    <div className='mx-auto w-[50vw]'>
-      <div className='flex items-center justify-between mt-2 fixed w-screen left-0 px-10'>
+    <div className='mx-auto w-[90vw] lg:w-[50vw]'>
+      <div className='flex items-center justify-between pt-2 fixed w-screen left-0 px-10 bg-background'>
         <div className='flex items-center'>
           <MessageCircleDashed />
           <h1 className='text-2xl'>TempChat</h1>
         </div>
         <ModeToggle />
       </div >
-      <div className='flex flex-col flex-wrap mb-100'>
+      <div className='flex flex-col flex-wrap mb-100 pt-10'>
         <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end'>Arnab is the best person in the world</p>
         <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start'>Arnab is the best person in the world</p>
         <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end'>Lorem ipsum dolor sit amet.</p>
@@ -60,7 +56,7 @@ const page = () => {
       </div>
       <div className='fixed bottom-0 py-10 left-0 w-screen flex justify-center bg-background'>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='w-[40vw] flex rounded-2xl bg-accent items-center p-3'>
+          <form onSubmit={form.handleSubmit(onSubmit)} className='w-[90vw] lg:w-[40vw] flex rounded-2xl bg-accent items-center p-3'>
             <FormField
               control={form.control}
               name="username"
