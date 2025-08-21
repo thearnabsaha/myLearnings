@@ -31,8 +31,6 @@ const page = () => {
       </div>
       <div className='fixed bottom-0 py-10 left-0 w-screen flex justify-center bg-background'>
         <div className='w-[40vw] flex rounded-2xl bg-accent items-center p-3'>
-          {/* <Textarea className='rounded-l-2xl rounded-r-none h-10 resize-none' placeholder="Ask anything" /> */}
-          {/* <Button className='cursor-pointer rounded-l-none h-10 rounded-r-2xl'><ArrowRight /></Button> */}
           <Textarea className='max-h-60 resize-none border-none mr-2' placeholder="Ask anything" />
           <Button className='cursor-pointer rounded-4xl h-8 w-8 mr-2'><ArrowUp /></Button>
         </div>
