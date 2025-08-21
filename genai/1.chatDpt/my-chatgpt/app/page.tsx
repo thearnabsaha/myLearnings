@@ -1,5 +1,5 @@
 import { ModeToggle } from '@/components/ModeToggle'
-import { ArrowRight, ArrowUp, MessageCircleDashed } from 'lucide-react'
+import { ArrowUp, MessageCircleDashed } from 'lucide-react'
 import React from 'react'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
@@ -30,11 +30,11 @@ const page = () => {
         <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempore dolore, nobis in ullam dicta numquam.</p>
       </div>
       <div className='fixed bottom-0 py-10 left-0 w-screen flex justify-center bg-background'>
-        <div className='w-[40vw] flex rounded-2xl'>
+        <div className='w-[40vw] flex rounded-2xl bg-accent items-center'>
           {/* <Textarea className='rounded-l-2xl rounded-r-none h-10 resize-none' placeholder="Ask anything" /> */}
           {/* <Button className='cursor-pointer rounded-l-none h-10 rounded-r-2xl'><ArrowRight /></Button> */}
-          <Textarea className='rounded-l-2xl rounded-r-none h-10 resize-none' placeholder="Ask anything" />
-          <Button className='cursor-pointer rounded-l-none h-10 rounded-r-2xl'><ArrowRight /></Button>
+          <Textarea className='h-10 resize-none' placeholder="Ask anything" />
+          <Button className='cursor-pointer rounded-4xl h-8 w-8 mr-2'><ArrowUp /></Button>
         </div>
       </div >
     </div >
