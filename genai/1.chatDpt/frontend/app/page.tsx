@@ -13,7 +13,7 @@ const page = () => {
         </div>
         <ModeToggle />
       </div >
-      <div className='flex flex-col flex-wrap mb-30'>
+      <div className='flex flex-col flex-wrap mb-100'>
         <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end'>Arnab is the best person in the world</p>
         <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start'>Arnab is the best person in the world</p>
         <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end'>Lorem ipsum dolor sit amet.</p>
