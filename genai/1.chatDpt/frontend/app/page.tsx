@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { ModeToggle } from '@/components/ModeToggle'
 import { ArrowUp, MessageCircleDashed } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,18 +15,25 @@ import {
 } from "@/components/ui/form"
 import { z } from "zod"
 const formSchema = z.object({
-  username: z.string().min(1)
+  message: z.string().min(1)
 })
+type Message = {
+  id: string
+  content: string
+}
+
 const page = () => {
+  const [messages, setMessages] = useState<Message[]>([])
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      message: "",
     },
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)
+    setMessages([...messages, { id: crypto.randomUUID(), content: String(values.message) }])
     form.reset()
   }
   return (
@@ -38,7 +45,7 @@ const page = () => {
         </div>
         <ModeToggle />
       </div >
-      <div className='flex flex-col flex-wrap mb-100 pt-10'>
+      {/* <div className='flex flex-col flex-wrap mb-100 pt-10'>
         <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end'>Arnab is the best person in the world</p>
         <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start'>Arnab is the best person in the world</p>
         <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end'>Lorem ipsum dolor sit amet.</p>
@@ -53,13 +60,25 @@ const page = () => {
         <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Illo vitae provident aliquid sint consequatur, eos sit eaque repudiandae itaque nihil numquam accusantium, porro, alias assumenda.</p>
         <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempore dolore, nobis in ullam dicta numquam.</p>
         <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempore dolore, nobis in ullam dicta numquam.</p>
+      </div> */}
+      <div className='flex flex-col flex-wrap mb-100 pt-10'>
+        {
+          messages.map((e) => {
+            return (
+              <div key={e.id} className="flex flex-col flex-wrap ">
+                <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-72 self-end whitespace-pre-wrap'>{e.content}</p>
+                <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap'>{e.content}</p>
+              </div>
+            )
+          })
+        }
       </div>
       <div className='fixed bottom-0 py-10 left-0 w-screen flex justify-center bg-background'>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='w-[90vw] lg:w-[40vw] flex rounded-2xl bg-accent items-center p-3'>
             <FormField
               control={form.control}
-              name="username"
+              name="message"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
