@@ -27,7 +27,9 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
 
-const messages = [
+import type { ChatCompletionMessageParam } from "groq-sdk/resources/chat/completions";
+
+const messages: ChatCompletionMessageParam[] = [
     {
         role: "system",
         content: "You are a helpful assistant.",
@@ -36,10 +38,9 @@ const messages = [
         role: "user",
         content: "hello",
     },
-]
+];
 export const getGroqChatCompletion = async () => {
     return groq.chat.completions.create({
-        //@ts-ignore
         messages: messages,
         model: "openai/gpt-oss-20b",
     });
