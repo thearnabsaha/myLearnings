@@ -17,39 +17,105 @@ const morganFormat = ':method :url :status :response-time ms';
 app.use(morgan(morganFormat));
 app.use(helmet());
 
-app.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    credentials: true,
-}));
+app.use(cors());
+
 
 app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
-
-import type { ChatCompletionMessageParam } from "groq-sdk/resources/chat/completions";
-
-const messages: ChatCompletionMessageParam[] = [
+//TOOL_CALLING 1
+let messages = [
     {
         role: "system",
-        content: "You are a helpful assistant.",
+        content: `You are a personal assistent, who answers the asked questions, who gives answers in one word or sentence.
+                    Current date and time is: ${new Date().toUTCString()}
+                    You have access to following tools:
+                    1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
+                    `
     },
-    {
-        role: "user",
-        content: "hello",
-    },
-];
-export const getGroqChatCompletion = async () => {
-    return groq.chat.completions.create({
-        messages: messages,
-        model: "openai/gpt-oss-20b",
-    });
-};
 
-app.get('/', async (req, res) => {
-    const completion = await getGroqChatCompletion();
-    console.log(completion.choices[0]?.message?.content || "");
-    res.send('hello from simple server :)');
+]
+const webSearch = async ({ query }: { query: string }) => {
+    console.log("webSearch tool is getting called...")
+    const response = await tvly.search(query);
+    const responseContents = response.results.map((e) => e.content).join("\n\n")
+    return responseContents
+}
+
+app.post('/chat', async (req, res) => {
+    const inputMessage = req.body.inputMessage
+    console.log(inputMessage)
+    messages.push({
+        role: "user",
+        content: inputMessage as string
+    })
+    let answer;
+    while (true) {
+        const completion = await groq.chat.completions
+            .create({
+                temperature: 0,
+                //@ts-ignore
+                messages: messages,
+                model: "openai/gpt-oss-20b",
+                tools: [
+                    {
+                        type: "function",
+                        function: {
+                            name: "webSearch",
+                            description: "Search the latest information and the realtime data on the internet",
+                            parameters: {
+                                type: "object",
+                                properties: {
+                                    query: {
+                                        type: "string",
+                                        description: "The search query to perform search on"
+                                    },
+                                },
+                                required: ["query"]
+                            }
+                        }
+                    }
+                ],
+                tool_choice: "auto"
+            })
+        //@ts-ignore
+        messages.push(completion.choices[0]?.message)
+        let toolResult;
+        const toolcalls = await completion.choices[0]?.message.tool_calls
+        if (!toolcalls) {
+            answer = completion.choices[0]?.message?.content
+            break;
+        }
+        for (const e of toolcalls) {
+            const functionName = e.function.name
+            const functionArguments = e.function.arguments
+            if (functionName === "webSearch") {
+                toolResult = await webSearch(JSON.parse(functionArguments))
+                messages.push({
+                    // @ts-ignore
+                    tool_call_id: e.id,
+                    role: "tool",
+                    name: functionName,
+                    content: toolResult
+                })
+            }
+        }
+    }
+    res.send(answer);
+});
+
+app.get('/health', async (req, res) => {
+    const start = Date.now();
+    const healthcheck = {
+        uptime: process.uptime(),
+        message: 'OK',
+        timestamp: new Date(),
+        responseTime: `${Date.now() - start}ms`,
+    };
+    res.status(200).json(healthcheck);
 });
 
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));
+
+

@@ -13,6 +13,7 @@ import {
   FormItem,
 } from "@/components/ui/form"
 import { z } from "zod"
+import axios from "axios"
 const formSchema = z.object({
   message: z.string().trim()
     .min(1, { message: "Message cannot be empty" })
@@ -23,9 +24,9 @@ const formSchema = z.object({
 })
 type Message = {
   id: string
-  content: string
+  input: string
+  answer: string
 }
-
 const page = () => {
   const [messages, setMessages] = useState<Message[]>([])
   const form = useForm<z.infer<typeof formSchema>>({
@@ -36,8 +37,18 @@ const page = () => {
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
-    setMessages([...messages, { id: crypto.randomUUID(), content: String(values.message) }])
+    console.log(values.message)
+    setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: "Loading..." }])
+    axios.post('http://localhost:3001/chat', {
+      inputMessage: values.message as string,
+    })
+      .then(function (response) {
+        // console.log(response);
+        setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: String(response.data) }])
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     form.reset()
   }
   return (
@@ -54,8 +65,12 @@ const page = () => {
           messages.map((e) => {
             return (
               <div key={e.id} className="flex flex-col flex-wrap ">
-                <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-96 self-end whitespace-pre-wrap break-all'>{e.content}</p>
-                <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-all'>{e.content}</p>
+                <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-96 self-end whitespace-pre-wrap break-all'>{e.input}</p>
+                {
+                  e.answer == "Loading..." ?
+                    <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-all animate-pulse'>{e.answer}</p>
+                    : <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-all'>{e.answer}</p>
+                }
               </div>
             )
           })
