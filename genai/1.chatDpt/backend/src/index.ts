@@ -116,6 +116,19 @@ app.get('/health', async (req, res) => {
     };
     res.status(200).json(healthcheck);
 });
+app.get('/reset', async (req, res) => {
+    messages = [
+        {
+            role: "system",
+            content: `You are a personal assistent, who answers the asked questions.
+                    Current date and time is: ${new Date().toUTCString()}
+                    You have access to following tools:
+                    1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
+                    `
+        },
+    ]
+    res.status(200).json("reset");
+});
 
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));
 

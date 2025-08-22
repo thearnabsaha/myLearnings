@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { ModeToggle } from '@/components/ModeToggle'
 import { ArrowUp, MessageCircleDashed } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import {
@@ -30,6 +30,17 @@ type Message = {
 }
 const page = () => {
   const [messages, setMessages] = useState<Message[]>([])
+  useEffect(() => {
+    axios.get(`${BACKEND_URL}/reset`, {
+    })
+      .then(function (response) {
+        console.log("reset done")
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, [])
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
