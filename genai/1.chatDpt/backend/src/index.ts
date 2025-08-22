@@ -44,6 +44,7 @@ const webSearch = async ({ query }: { query: string }) => {
 }
 
 app.post('/chat', async (req, res) => {
+    console.log(messages)
     const inputMessage = req.body.inputMessage
     console.log(inputMessage)
     messages.push({
