@@ -30,7 +30,9 @@ type Message = {
 }
 const page = () => {
   const [messages, setMessages] = useState<Message[]>([])
+  let threadId;
   useEffect(() => {
+    threadId = Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
     axios.get(`${BACKEND_URL}/reset`, {
     })
       .then(function (response) {
@@ -52,6 +54,7 @@ const page = () => {
     setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: "Loading..." }])
     axios.post(`${BACKEND_URL}/chat`, {
       inputMessage: values.message as string,
+      // threadId: threadId
     })
       .then(function (response) {
         setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: String(response.data) }])

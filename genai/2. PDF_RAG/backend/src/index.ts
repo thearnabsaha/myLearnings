@@ -114,7 +114,6 @@ app.post('/chat', async (req, res) => {
     }
     res.send(answer);
 });
-
 app.get('/health', async (req, res) => {
     const start = Date.now();
     const healthcheck = {
