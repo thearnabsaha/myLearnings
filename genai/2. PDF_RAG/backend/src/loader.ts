@@ -4,6 +4,5 @@ export const pdfLoader = async (pathOfPDF: any) => {
     const pdfPath = path.resolve(__dirname, pathOfPDF);
     const loader = new PDFLoader(pdfPath);
     const docs = await loader.load();
-    console.log(docs[0])
-    return docs
+    return docs[0].pageContent
 }

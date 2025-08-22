@@ -10,6 +10,7 @@ import helmet from 'helmet';
 import { Groq } from 'groq-sdk';
 import { tavily } from "@tavily/core";
 import { pdfLoader } from './loader';
+import { PdfSpiltter } from './splitters';
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
 
@@ -45,8 +46,14 @@ const webSearch = async ({ query }: { query: string }) => {
 }
 
 app.get('/1', async (req, res) => {
-    pdfLoader("../Arnab_CV_1.pdf")
-    res.send("hi")
+    try {
+        const doc = await pdfLoader("../Arnab_CV_1.pdf")
+        const spilitDoc = await PdfSpiltter(doc)
+        res.send(spilitDoc)
+    } catch (error) {
+        console.log(error)
+        res.send(error)
+    }
 });
 app.post('/chat', async (req, res) => {
     console.log(messages)
