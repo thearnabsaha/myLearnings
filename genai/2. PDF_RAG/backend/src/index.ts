@@ -18,10 +18,7 @@ const morganFormat = ':method :url :status :response-time ms';
 
 app.use(morgan(morganFormat));
 app.use(helmet());
-
 app.use(cors());
-
-
 app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));

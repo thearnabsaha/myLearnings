@@ -5,6 +5,5 @@ export const PdfSpiltter = async (document: any) => {
         chunkOverlap: 100,
     });
     const texts = await textSplitter.splitText(document);
-    console.log(texts)
     return texts
 }
