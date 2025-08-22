@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form"
 import { z } from "zod"
 import axios from "axios"
+import { BACKEND_URL } from "@/lib/config"
 const formSchema = z.object({
   message: z.string().trim()
     .min(1, { message: "Message cannot be empty" })
@@ -38,7 +39,7 @@ const page = () => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: "Loading..." }])
-    axios.post('http://localhost:3001/chat', {
+    axios.post(`${BACKEND_URL}/chat`, {
       inputMessage: values.message as string,
     })
       .then(function (response) {
