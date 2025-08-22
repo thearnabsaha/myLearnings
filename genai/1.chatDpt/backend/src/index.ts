@@ -28,7 +28,7 @@ app.use(cookieParser());
 let messages = [
     {
         role: "system",
-        content: `You are a personal assistent, who answers the asked questions, who gives answers in one word or sentence.
+        content: `You are a personal assistent, who answers the asked questions.
                     Current date and time is: ${new Date().toUTCString()}
                     You have access to following tools:
                     1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet

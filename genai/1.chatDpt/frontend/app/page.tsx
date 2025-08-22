@@ -37,13 +37,11 @@ const page = () => {
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values.message)
     setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: "Loading..." }])
     axios.post('http://localhost:3001/chat', {
       inputMessage: values.message as string,
     })
       .then(function (response) {
-        // console.log(response);
         setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: String(response.data) }])
       })
       .catch(function (error) {
@@ -85,7 +83,12 @@ const page = () => {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
-                    <Textarea className='max-h-60 resize-none border-none mr-2' placeholder="Ask anything" {...field} />
+                    <Textarea className='max-h-60 resize-none border-none mr-2' placeholder="Ask anything" {...field} onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        form.handleSubmit(onSubmit)();
+                      }
+                    }} />
                   </FormControl>
                 </FormItem>
               )}
