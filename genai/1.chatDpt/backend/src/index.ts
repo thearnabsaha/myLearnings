@@ -123,8 +123,9 @@ app.get('/health', async (req, res) => {
     res.status(200).json(healthcheck);
 });
 app.get('/reset', async (req, res) => {
+    myCache.flushAll();
     // @ts-ignore
-    messages = [
+    baseMessages = [
         {
             role: "system",
             content: `You are a personal assistent, who answers the asked questions.
