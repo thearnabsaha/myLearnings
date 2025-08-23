@@ -24,126 +24,39 @@ app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
-//TOOL_CALLING 1
-let messages = [
-    {
-        role: "system",
-        content: `You are a personal assistent, who answers the asked questions.
-                    Current date and time is: ${new Date().toUTCString()}
-                    You have access to following tools:
-                    1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
-                    `
-    },
-
-]
-const webSearch = async ({ query }: { query: string }) => {
-    console.log("webSearch tool is getting called...")
-    const response = await tvly.search(query);
-    const responseContents = response.results.map((e) => e.content).join("\n\n")
-    return responseContents
-}
+const SYSTEM_PROMPT = `You are an assistant for question-answering tasks. Use the following relevant pieces of retrieved context to answer the question with text only in 2 lines. If you don't know the answer, say I don't know.`;
 
 app.get('/1', async (req, res) => {
     try {
+        const question = req.query.q
         const doc = await pdfLoader("../Arnab_CV_1.pdf")
         const spilitDoc = await PdfSpiltter(doc)
         const dbData = await embedder(spilitDoc)
-        // console.log(dbData)
-        const relevantChunks = await dbData.similaritySearch("grevelops", 3);
+        const relevantChunks = await dbData.similaritySearch(question as string, 3);
         const context = relevantChunks.map((chunk) => chunk.pageContent).join('\n\n');
-        console.log(context)
-        res.send(spilitDoc)
+        const userQuery = `Question: ${question}
+        Relevant context: ${context}
+        Answer:`;
+        const completion = await groq.chat.completions.create({
+            temperature: 0,
+            messages: [
+                {
+                    role: "system",
+                    content: SYSTEM_PROMPT,
+                },
+                {
+                    role: 'user',
+                    content: userQuery,
+                },
+            ],
+            model: "openai/gpt-oss-20b",
+        });
+        res.send(completion.choices[0].message.content)
     } catch (error) {
         console.log(error)
         res.send(error)
     }
 });
-app.post('/chat', async (req, res) => {
-    console.log(messages)
-    const inputMessage = req.body.inputMessage
-    console.log(inputMessage)
-    messages.push({
-        role: "user",
-        content: inputMessage as string
-    })
-    let answer;
-    while (true) {
-        const completion = await groq.chat.completions
-            .create({
-                temperature: 0,
-                //@ts-ignore
-                messages: messages,
-                model: "openai/gpt-oss-20b",
-                tools: [
-                    {
-                        type: "function",
-                        function: {
-                            name: "webSearch",
-                            description: "Search the latest information and the realtime data on the internet",
-                            parameters: {
-                                type: "object",
-                                properties: {
-                                    query: {
-                                        type: "string",
-                                        description: "The search query to perform search on"
-                                    },
-                                },
-                                required: ["query"]
-                            }
-                        }
-                    }
-                ],
-                tool_choice: "auto"
-            })
-        //@ts-ignore
-        messages.push(completion.choices[0]?.message)
-        let toolResult;
-        const toolcalls = await completion.choices[0]?.message.tool_calls
-        if (!toolcalls) {
-            answer = completion.choices[0]?.message?.content
-            break;
-        }
-        for (const e of toolcalls) {
-            const functionName = e.function.name
-            const functionArguments = e.function.arguments
-            if (functionName === "webSearch") {
-                toolResult = await webSearch(JSON.parse(functionArguments))
-                messages.push({
-                    // @ts-ignore
-                    tool_call_id: e.id,
-                    role: "tool",
-                    name: functionName,
-                    content: toolResult
-                })
-            }
-        }
-    }
-    res.send(answer);
-});
-app.get('/health', async (req, res) => {
-    const start = Date.now();
-    const healthcheck = {
-        uptime: process.uptime(),
-        message: 'OK',
-        timestamp: new Date(),
-        responseTime: `${Date.now() - start}ms`,
-    };
-    res.status(200).json(healthcheck);
-});
-app.get('/reset', async (req, res) => {
-    messages = [
-        {
-            role: "system",
-            content: `You are a personal assistent, who answers the asked questions.
-                    Current date and time is: ${new Date().toUTCString()}
-                    You have access to following tools:
-                    1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
-                    `
-        },
-    ]
-    res.status(200).json("reset");
-});
-
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));
 
 
