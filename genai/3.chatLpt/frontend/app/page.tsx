@@ -23,7 +23,6 @@ const formSchema = z.object({
     .refine((val) => val.replace(/\s/g, "").length > 0, {
       message: "Message cannot be only spaces or newlines",
     })
-
 })
 type Message = {
   id: string

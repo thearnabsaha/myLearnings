@@ -7,11 +7,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
-import { Groq } from 'groq-sdk';
-import { tavily } from "@tavily/core";
 import { generator } from './generator';
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
 
 const morganFormat = ':method :url :status :response-time ms';
 
