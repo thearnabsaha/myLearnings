@@ -3,8 +3,9 @@ import { ChatGroq } from "@langchain/groq";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { z } from "zod";
 import { TavilySearch } from "@langchain/tavily";
-
-export const generator = async (question: string) => {
+import { MemorySaver } from "@langchain/langgraph";
+const checkpointer = new MemorySaver();
+export const generator = async (question: string, threadId: string) => {
     const model = new ChatGroq({
         model: "openai/gpt-oss-20b",
         temperature: 0,
@@ -16,7 +17,9 @@ export const generator = async (question: string) => {
     const agent = createReactAgent({
         llm: model,
         tools: [search],
+        checkpointer
     });
+
     const system_prompt = `You are a personal assistent, who answers the asked questions. give answers in text only
                     Current date and time is: ${new Date().toUTCString()}
                     You have access to following tools:
@@ -33,6 +36,6 @@ export const generator = async (question: string) => {
                 content: question,
             },
         ],
-    });
+    }, { configurable: { thread_id: threadId } });
     return result.messages[result.messages.length - 1].lc_kwargs.content
 }

@@ -48,7 +48,7 @@ const page = () => {
     setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: "Loading..." }])
     axios.post(`${BACKEND_URL}/chat`, {
       inputMessage: values.message as string,
-      // threadId
+      threadId
     })
       .then(function (response) {
         setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: String(response.data) }])

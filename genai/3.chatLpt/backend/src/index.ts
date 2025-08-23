@@ -27,7 +27,8 @@ app.use(cookieParser());
 
 app.post('/chat', async (req, res) => {
     const inputMessage = req.body.inputMessage as string
-    const answer = await generator(inputMessage)
+    const threadId = req.body.threadId as string
+    const answer = await generator(inputMessage, threadId)
     res.send(answer);
 });
 
