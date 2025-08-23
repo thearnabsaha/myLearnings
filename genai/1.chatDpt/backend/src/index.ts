@@ -20,12 +20,10 @@ app.use(helmet());
 
 app.use(cors());
 
-
 app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
-//TOOL_CALLING 1
 let baseMessages = [
     {
         role: "system",
@@ -42,13 +40,15 @@ const webSearch = async ({ query }: { query: string }) => {
     const responseContents = response.results.map((e) => e.content).join("\n\n")
     return responseContents
 }
-
 const myCache = new NodeCache({ stdTTL: 60 * 60 * 24 });
 app.post('/chat', async (req, res) => {
-    // console.log(myCache)
     const inputMessage = req.body.inputMessage
     const threadId = req.body.threadId
-    const messages = myCache.get(threadId) ?? baseMessages;
+    let messages = myCache.get(threadId)
+    if (!messages) {
+        messages = structuredClone(baseMessages);
+        myCache.set(threadId, messages);
+    }
     // @ts-ignore
     messages.push({
         role: "user",
@@ -85,22 +85,19 @@ app.post('/chat', async (req, res) => {
             })
         //@ts-ignore
         messages.push(completion.choices[0]?.message)
-        let toolResult;
         const toolcalls = await completion.choices[0]?.message.tool_calls
         if (!toolcalls) {
             myCache.set(threadId, messages)
             answer = completion.choices[0]?.message?.content
-            // console.log(messages)
             break;
         }
         for (const e of toolcalls) {
             const functionName = e.function.name
             const functionArguments = e.function.arguments
             if (functionName === "webSearch") {
-                toolResult = await webSearch(JSON.parse(functionArguments))
+                const toolResult = await webSearch(JSON.parse(functionArguments))
                 // @ts-ignore
                 messages.push({
-                    // @ts-ignore
                     tool_call_id: e.id,
                     role: "tool",
                     name: functionName,
@@ -122,22 +119,6 @@ app.get('/health', async (req, res) => {
     };
     res.status(200).json(healthcheck);
 });
-app.get('/reset', async (req, res) => {
-    myCache.flushAll();
-    // @ts-ignore
-    baseMessages = [
-        {
-            role: "system",
-            content: `You are a personal assistent, who answers the asked questions.
-                    Current date and time is: ${new Date().toUTCString()}
-                    You have access to following tools:
-                    1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
-                    `
-        },
-    ]
-    res.status(200).json("reset");
-});
-
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));
 
 
