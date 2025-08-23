@@ -1,21 +1,22 @@
-import { PineconeStore } from "@langchain/pinecone";
-import { OpenAIEmbeddings } from "@langchain/openai";
-
-import { Pinecone as PineconeClient } from "@pinecone-database/pinecone";
-
-const embeddings = new OpenAIEmbeddings({
-    model: "text-embedding-3-small",
+import { QdrantVectorStore } from "@langchain/qdrant";
+import { OllamaEmbeddings } from "./OllamaEmbeddings";
+// import { OpenAIEmbeddings } from "@langchain/openai";
+// const embeddings = new OpenAIEmbeddings({
+//     model: "text-embedding-3-small",
+// });
+const embeddings = new OllamaEmbeddings({
+    model: "nomic-embed-text",
+    host: process.env.OLLAMA_HOST || "http://localhost:11434",
 });
-
-const pinecone = new PineconeClient();
-// Will automatically read the PINECONE_API_KEY and PINECONE_ENVIRONMENT env vars
-const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX!);
-export const embedder = async () => {
-    const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
-        pineconeIndex,
-        // Maximum number of batch requests to allow at once. Each batch is 1000 vectors.
-        maxConcurrency: 5,
-        // You can pass a namespace here too
-        // namespace: "foo",
+export const embedder = async (chunks: any) => {
+    const vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
+        url: process.env.QDRANT_URL,
+        apiKey: process.env.QDRANT_API_KEY,
+        collectionName: process.env.collectionName,
     });
+    const documents = chunks.map((e: any) => ({
+        pageContent: e,
+    }));
+    await vectorStore.addDocuments(documents);
+    return vectorStore
 }

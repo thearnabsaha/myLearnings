@@ -11,6 +11,7 @@ import { Groq } from 'groq-sdk';
 import { tavily } from "@tavily/core";
 import { pdfLoader } from './loader';
 import { PdfSpiltter } from './splitters';
+import { embedder } from './embedder';
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
 
@@ -46,6 +47,11 @@ app.get('/1', async (req, res) => {
     try {
         const doc = await pdfLoader("../Arnab_CV_1.pdf")
         const spilitDoc = await PdfSpiltter(doc)
+        const dbData = await embedder(spilitDoc)
+        // console.log(dbData)
+        const relevantChunks = await dbData.similaritySearch("grevelops", 3);
+        const context = relevantChunks.map((chunk) => chunk.pageContent).join('\n\n');
+        console.log(context)
         res.send(spilitDoc)
     } catch (error) {
         console.log(error)
