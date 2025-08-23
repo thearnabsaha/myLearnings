@@ -30,17 +30,9 @@ type Message = {
 }
 const page = () => {
   const [messages, setMessages] = useState<Message[]>([])
-  let threadId;
+  const [threadId, setthreadId] = useState("")
   useEffect(() => {
-    threadId = Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
-    axios.get(`${BACKEND_URL}/reset`, {
-    })
-      .then(function (response) {
-        console.log("reset done")
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    setthreadId(Date.now().toString(36) + Math.random().toString(36).substring(2, 8) as string);
   }, [])
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,7 +46,7 @@ const page = () => {
     setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: "Loading..." }])
     axios.post(`${BACKEND_URL}/chat`, {
       inputMessage: values.message as string,
-      // threadId: threadId
+      threadId
     })
       .then(function (response) {
         setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: String(response.data) }])

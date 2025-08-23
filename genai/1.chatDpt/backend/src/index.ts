@@ -9,6 +9,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import { Groq } from 'groq-sdk';
 import { tavily } from "@tavily/core";
+import NodeCache from 'node-cache';
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
 
@@ -25,7 +26,7 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
 //TOOL_CALLING 1
-let messages = [
+let baseMessages = [
     {
         role: "system",
         content: `You are a personal assistent, who answers the asked questions.
@@ -34,7 +35,6 @@ let messages = [
                     1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
                     `
     },
-
 ]
 const webSearch = async ({ query }: { query: string }) => {
     console.log("webSearch tool is getting called...")
@@ -43,11 +43,13 @@ const webSearch = async ({ query }: { query: string }) => {
     return responseContents
 }
 
+const myCache = new NodeCache({ stdTTL: 60 * 60 * 24 });
 app.post('/chat', async (req, res) => {
-    console.log(messages)
+    // console.log(myCache)
     const inputMessage = req.body.inputMessage
     const threadId = req.body.threadId
-    // console.log(inputMessage)
+    const messages = myCache.get(threadId) ?? baseMessages;
+    // @ts-ignore
     messages.push({
         role: "user",
         content: inputMessage as string
@@ -86,7 +88,9 @@ app.post('/chat', async (req, res) => {
         let toolResult;
         const toolcalls = await completion.choices[0]?.message.tool_calls
         if (!toolcalls) {
+            myCache.set(threadId, messages)
             answer = completion.choices[0]?.message?.content
+            // console.log(messages)
             break;
         }
         for (const e of toolcalls) {
@@ -94,6 +98,7 @@ app.post('/chat', async (req, res) => {
             const functionArguments = e.function.arguments
             if (functionName === "webSearch") {
                 toolResult = await webSearch(JSON.parse(functionArguments))
+                // @ts-ignore
                 messages.push({
                     // @ts-ignore
                     tool_call_id: e.id,
@@ -118,6 +123,7 @@ app.get('/health', async (req, res) => {
     res.status(200).json(healthcheck);
 });
 app.get('/reset', async (req, res) => {
+    // @ts-ignore
     messages = [
         {
             role: "system",
