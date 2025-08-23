@@ -10,6 +10,7 @@ import helmet from 'helmet';
 import { Groq } from 'groq-sdk';
 import { tavily } from "@tavily/core";
 import NodeCache from 'node-cache';
+import { generator } from './generator';
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
 
@@ -24,101 +25,13 @@ app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
-let baseMessages = [
-    {
-        role: "system",
-        content: `You are a personal assistent, who answers the asked questions.
-                    Current date and time is: ${new Date().toUTCString()}
-                    You have access to following tools:
-                    1. webSearch({query}:{query:string}) //Search the latest information and the realtime data on the internet
-                    `
-    },
-]
-const webSearch = async ({ query }: { query: string }) => {
-    console.log("webSearch tool is getting called...")
-    const response = await tvly.search(query);
-    const responseContents = response.results.map((e) => e.content).join("\n\n")
-    return responseContents
-}
-const myCache = new NodeCache({ stdTTL: 60 * 60 * 24 });
-app.post('/chat', async (req, res) => {
-    const inputMessage = req.body.inputMessage
-    const threadId = req.body.threadId
-    let messages = myCache.get(threadId)
-    if (!messages) {
-        messages = structuredClone(baseMessages);
-        myCache.set(threadId, messages);
-    }
-    // @ts-ignore
-    messages.push({
-        role: "user",
-        content: inputMessage as string
-    })
-    let answer;
-    while (true) {
-        const completion = await groq.chat.completions
-            .create({
-                temperature: 0,
-                //@ts-ignore
-                messages: messages,
-                model: "openai/gpt-oss-20b",
-                tools: [
-                    {
-                        type: "function",
-                        function: {
-                            name: "webSearch",
-                            description: "Search the latest information and the realtime data on the internet",
-                            parameters: {
-                                type: "object",
-                                properties: {
-                                    query: {
-                                        type: "string",
-                                        description: "The search query to perform search on"
-                                    },
-                                },
-                                required: ["query"]
-                            }
-                        }
-                    }
-                ],
-                tool_choice: "auto"
-            })
-        //@ts-ignore
-        messages.push(completion.choices[0]?.message)
-        const toolcalls = await completion.choices[0]?.message.tool_calls
-        if (!toolcalls) {
-            myCache.set(threadId, messages)
-            answer = completion.choices[0]?.message?.content
-            break;
-        }
-        for (const e of toolcalls) {
-            const functionName = e.function.name
-            const functionArguments = e.function.arguments
-            if (functionName === "webSearch") {
-                const toolResult = await webSearch(JSON.parse(functionArguments))
-                // @ts-ignore
-                messages.push({
-                    tool_call_id: e.id,
-                    role: "tool",
-                    name: functionName,
-                    content: toolResult
-                })
-            }
-        }
-    }
-    res.send(answer);
+
+app.get('/chat', async (req, res) => {
+    const q = req.query.q as string
+    const a = await generator(q)
+    res.send(a);
 });
 
-app.get('/health', async (req, res) => {
-    const start = Date.now();
-    const healthcheck = {
-        uptime: process.uptime(),
-        message: 'OK',
-        timestamp: new Date(),
-        responseTime: `${Date.now() - start}ms`,
-    };
-    res.status(200).json(healthcheck);
-});
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));
 
 
