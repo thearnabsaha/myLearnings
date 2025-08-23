@@ -15,6 +15,8 @@ import {
 import { z } from "zod"
 import axios from "axios"
 import { BACKEND_URL } from "@/lib/config"
+import ReactMarkdown from "react-markdown";
+
 const formSchema = z.object({
   message: z.string().trim()
     .min(1, { message: "Message cannot be empty" })
@@ -46,7 +48,7 @@ const page = () => {
     setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: "Loading..." }])
     axios.post(`${BACKEND_URL}/chat`, {
       inputMessage: values.message as string,
-      threadId
+      // threadId
     })
       .then(function (response) {
         setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: String(response.data) }])
@@ -74,7 +76,8 @@ const page = () => {
                 {
                   e.answer == "Loading..." ?
                     <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-all animate-pulse'>{e.answer}</p>
-                    : <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-all'>{e.answer}</p>
+                    // : <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-all'>{e.answer}</p>
+                    : <ReactMarkdown>{e.answer}</ReactMarkdown>
                 }
               </div>
             )
