@@ -6,7 +6,7 @@ import { ChatGroq } from "@langchain/groq";
 import { HumanMessage, AIMessage, } from "@langchain/core/messages";
 import dotenv from 'dotenv';
 dotenv.config();
-export const agent = async () => {
+export const agent = async (message: string, threadId: string) => {
     const system_prompt = `You are a personal assistent, who answers the asked questions. give answers in text only
                     Current date and time is: ${new Date().toUTCString()}
                     `
@@ -47,11 +47,9 @@ export const agent = async () => {
 
     const app = workflow.compile();
     const finalState = await app.invoke({
-        // messages: [new HumanMessage("what is the weather in sf")],
-        messages: [new AIMessage(system_prompt), new HumanMessage("what current time here, and what is my name")],
+        messages: [new AIMessage(system_prompt), new HumanMessage(message)],
     });
-    console.log(finalState.messages[finalState.messages.length - 1].content);
+    // console.log(finalState.messages[finalState.messages.length - 1].content);
     return finalState.messages[finalState.messages.length - 1].content
 }
-// agent()
 
