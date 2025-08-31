@@ -10,8 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@langchain/community": "^0.3.53",
     "@langchain/core": "^0.3.72",
-    "@langchain/langgraph": "^0.4.6",
+    "@langchain/langgraph": "^0.4.8",
+    "@langchain/openai": "^0.6.9",
     "@langchain/tavily": "^0.1.5",
     "@tavily/core": "^0.5.10",
     "cookie-parser": "^1.4.7",
