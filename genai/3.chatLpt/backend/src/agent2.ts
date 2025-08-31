@@ -7,7 +7,6 @@ import { HumanMessage, AIMessage } from "@langchain/core/messages";
 import dotenv from 'dotenv';
 dotenv.config();
 export const agent = async () => {
-
     const search = new TavilySearch({
         maxResults: 5,
         topic: "general",
@@ -15,13 +14,17 @@ export const agent = async () => {
     const tools = [search];
     const toolNode = new ToolNode(tools);
     const model = new ChatGroq({
-        model: "openai/gpt-oss-120b",
+        model: "openai/gpt-oss-20b",
         temperature: 0,
     }).bindTools(tools);
-    const reactAgent = createReactAgent({
+    const reactAgent = await createReactAgent({
         llm: model,
         tools: [search],
     });
+    const shouldContinue = () => {
+        return "__end__"
+    }
+
     const workflow = new StateGraph(MessagesAnnotation)
         .addNode("agent", reactAgent)
         .addNode("tools", toolNode)
@@ -34,7 +37,6 @@ export const agent = async () => {
     });
     console.log(finalState.messages[finalState.messages.length - 1].content);
 
-    // console.log(reactAgent)
 }
-// agent()
+agent()
 
