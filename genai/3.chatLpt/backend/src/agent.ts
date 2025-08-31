@@ -1,13 +1,14 @@
-import { END, StateGraph, MessagesAnnotation } from "@langchain/langgraph";
-import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { END, StateGraph, MessagesAnnotation, MemorySaver } from "@langchain/langgraph";
+import { createReactAgent, ToolNode } from "@langchain/langgraph/prebuilt";
 import { TavilySearch } from "@langchain/tavily";
-import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { ChatGroq } from "@langchain/groq";
-import { HumanMessage, AIMessage, } from "@langchain/core/messages";
+import { HumanMessage, AIMessage, SystemMessage } from "@langchain/core/messages";
 import dotenv from 'dotenv';
 dotenv.config();
 export const agent = async (message: string, threadId: string) => {
-    const system_prompt = `You are a personal assistent, who answers the asked questions. give answers in text only
+    const checkpointer = new MemorySaver();
+    // const agentCheckpointer = new MemorySaver();
+    const system_prompt = `You are a personal assistent, who answers the asked questions.
                     Current date and time is: ${new Date().toUTCString()}
                     `
     const search = new TavilySearch({
@@ -25,7 +26,9 @@ export const agent = async (message: string, threadId: string) => {
 
     const reactAgent = createReactAgent({
         llm: model,
-        tools: [search],
+        tools: tools,
+        checkpointer,
+        // checkpointSaver: agentCheckpointer,
     });
     const shouldContinue = (state: any) => {
         const lastMessage = state.messages[state.messages.length - 1];
@@ -45,11 +48,28 @@ export const agent = async (message: string, threadId: string) => {
             tools: "tools"
         })
 
+    // const app = workflow.compile({ checkpointer });
+
     const app = workflow.compile();
-    const finalState = await app.invoke({
-        messages: [new AIMessage(system_prompt), new HumanMessage(message)],
-    });
-    // console.log(finalState.messages[finalState.messages.length - 1].content);
-    return finalState.messages[finalState.messages.length - 1].content
+    // const finalState = await app.invoke(
+    //     { messages: [new AIMessage(system_prompt), new HumanMessage(message)] },
+    //     { configurable: { thread_id: threadId } },
+    // );
+    // console.log(finalState);
+    // return finalState.messages[finalState.messages.length - 1].content
+    const result = await app.invoke({
+        messages: [
+            {
+                role: "system",
+                content: system_prompt,
+            },
+            {
+                role: "user",
+                content: message,
+            },
+        ],
+    }, { configurable: { thread_id: threadId } });
+    console.log(result)
+    return result.messages[result.messages.length - 1].content
 }
 
