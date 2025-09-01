@@ -15,6 +15,7 @@
     "@langchain/langgraph": "^0.4.8",
     "@langchain/openai": "^0.6.9",
     "@langchain/tavily": "^0.1.5",
+    "@prisma/client": "^6.15.0",
     "@tavily/core": "^0.5.10",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -30,6 +31,7 @@
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
-    "@types/morgan": "^1.9.10"
+    "@types/morgan": "^1.9.10",
+    "prisma": "^6.15.0"
   }
 }
