@@ -28,6 +28,7 @@ export const agent = async (message: string, threadId: string) => {
         tools,
         checkpointer,
     });
+
     const shouldContinue = (state: any) => {
         const lastMessage = state.messages[state.messages.length - 1];
         if (lastMessage.tool_calls?.length) {
@@ -36,6 +37,7 @@ export const agent = async (message: string, threadId: string) => {
             return "__end__"
         }
     }
+
     const workflow = new StateGraph(MessagesAnnotation)
         .addNode("agent", reactAgent)
         .addNode("tools", toolNode)
@@ -52,7 +54,7 @@ export const agent = async (message: string, threadId: string) => {
         { messages: [new SystemMessage(system_prompt), new HumanMessage(message)] },
         { configurable: { thread_id: threadId } },
     );
-    console.log(finalState);
+
     return finalState.messages[finalState.messages.length - 1].content
 }
 

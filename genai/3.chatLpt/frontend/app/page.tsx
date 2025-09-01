@@ -27,9 +27,23 @@ type Message = {
 const page = () => {
   const [messages, setMessages] = useState<Message[]>([])
   const [threadId, setthreadId] = useState("")
+  const [timeLeft, setTimeLeft] = useState(30 * 60);
   useEffect(() => {
     setthreadId(Date.now().toString(36) + Math.random().toString(36).substring(2, 8) as string);
   }, [])
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      window.location.reload();
+      return
+    }
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 10);
+
+    return () => clearInterval(interval);
+  }, [timeLeft]);
+  const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+  const seconds = String(timeLeft % 60).padStart(2, "0");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,7 +73,10 @@ const page = () => {
           <MessageCircleDashed />
           <h1 className='text-2xl'>TempChat</h1>
         </div>
-        <ModeToggle />
+        <div className=" flex justify-center items-center">
+          <ModeToggle />
+          <h1 className="border-ring rounded-md ml-2 py-1 px-3 border"> {minutes}:{seconds}</h1>
+        </div>
       </div >
       <div className='flex flex-col flex-wrap mb-100 pt-10'>
         {
