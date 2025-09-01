@@ -7,7 +7,6 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
-// import { generator } from './generator';
 import { agent } from './agent';
 
 const morganFormat = ':method :url :status :response-time ms';
@@ -28,12 +27,6 @@ app.post('/chat', async (req, res) => {
     const answer = await agent(inputMessage, threadId)
     res.send(answer);
 });
-// app.post('/chat', async (req, res) => {
-//     const inputMessage = req.body.inputMessage as string
-//     const threadId = req.body.threadId as string
-//     const answer = await generator(inputMessage, threadId)
-//     res.send(answer);
-// });
 
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));
 

@@ -38,7 +38,7 @@ const page = () => {
     }
     const interval = setInterval(() => {
       setTimeLeft((prev) => prev - 1);
-    }, 10);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [timeLeft]);
