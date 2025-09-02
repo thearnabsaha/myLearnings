@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "prisma:generate": "prisma generate --schema ../prisma/schema.prisma",
+    "prisma:migrate": "prisma migrate dev --schema ../prisma/schema.prisma"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",

@@ -1,6 +1,10 @@
 {
   "dependencies": {
     "@langchain/core": "^0.3.72",
-    "@langchain/groq": "^0.2.3"
+    "@langchain/groq": "^0.2.3",
+    "@prisma/client": "^6.15.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.15.0"
   }
 }
