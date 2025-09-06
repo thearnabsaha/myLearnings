@@ -9,7 +9,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import { agent } from './agent';
 import { prisma } from './lib/prisma';
-
+import authRoutes from './routes/auth';
 const morganFormat = ':method :url :status :response-time ms';
 
 app.use(morgan(morganFormat));
@@ -21,7 +21,7 @@ app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
-
+app.use('/api/auth', authRoutes);
 app.post('/chat', async (req, res) => {
     const inputMessage = req.body.inputMessage as string
     const threadId = req.body.threadId as string

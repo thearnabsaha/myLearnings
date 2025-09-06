@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec ts-node src/index.ts",
-    "prisma:generate": "prisma generate --schema ../prisma/schema.prisma",
-    "prisma:migrate": "prisma migrate dev --schema ../prisma/schema.prisma"
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
   },
   "keywords": [],
   "author": "",
