@@ -30,10 +30,10 @@ const handler = NextAuth({
             return token
         }
     },
-    pages: {
-        signIn: '/auth/signin', // Optional: custom sign-in page
-        error: '/auth/error',   // Optional: custom error page
-    },
+    // pages: {
+    //     signIn: '/auth/signin', // Optional: custom sign-in page
+    //     error: '/auth/error',   // Optional: custom error page
+    // },
     session: {
         strategy: "database", // Use database sessions
         maxAge: 30 * 24 * 60 * 60, // 30 days

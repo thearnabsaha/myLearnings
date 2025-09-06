@@ -1,19 +1,28 @@
-// app/dashboard/page.tsx
-import { getServerSession } from "next-auth"
-import { redirect } from "next/navigation"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
-
-export default async function DashboardPage() {
-    const session = await getServerSession(authOptions)
-
-    if (!session) {
-        redirect("/auth/signin")
+"use client"
+import { useSession, signIn, signOut } from "next-auth/react"
+// import { useEffect } from "react"
+import { useRouter } from 'next/navigation'
+export default function Component() {
+    const { data: session } = useSession()
+    // const router = useRouter()
+    // useEffect(() => {
+    //     if (!session?.user) {
+    //         // router.push('/cred')
+    //     }
+    // }, [session])
+    // console.log(session)
+    if (session) {
+        return (
+            <>
+                Signed in as {session.user.email} <br />
+                <button onClick={() => signOut({ callbackUrl: "/cred" })}>Sign out</button>
+            </>
+        )
     }
-
     return (
-        <div>
-            <h1>Welcome, {session.user?.name}!</h1>
-            <p>Email: {session.user?.email}</p>
-        </div>
+        <>
+            Not signed in <br />
+            <button onClick={() => signIn()}>Sign in</button>
+        </>
     )
 }
