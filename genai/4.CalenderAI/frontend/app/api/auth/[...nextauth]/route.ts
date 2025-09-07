@@ -9,10 +9,21 @@ const prisma = new PrismaClient()
 const handler = NextAuth({
     adapter: PrismaAdapter(prisma),
     providers: [
+        // GoogleProvider({
+        //     clientId: process.env.GOOGLE_CLIENT_ID!,
+        //     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        // })
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-        })
+            authorization: {
+                params: {
+                    scope: "openid email profile https://www.googleapis.com/auth/calendar.readonly",
+                    access_type: "offline", // ensures you get refresh_token
+                    prompt: "consent",      // force re-consent so you actually get new scopes
+                },
+            },
+        }),
     ],
     callbacks: {
         async session({ session, token, user }) {
