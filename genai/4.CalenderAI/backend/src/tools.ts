@@ -73,10 +73,16 @@ export const createCalenderEvents = async (email: string, start: any, end: any, 
     // };
     const event = {
         summary,
-        description,
-        start,
-        end,
-        attendees,
+        description: description || "",
+        start: {
+            dateTime: start, // Today at 7 PM IST
+            timeZone: 'Asia/Kolkata',
+        },
+        end: {
+            dateTime: end, // 1 hour duration
+            timeZone: 'Asia/Kolkata',
+        },
+        attendees: [{ email: 'hparnab0@gmail.com' },],
         reminders: { useDefault: true },
         conferenceData: {
             createRequest: {

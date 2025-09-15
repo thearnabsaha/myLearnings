@@ -6,7 +6,7 @@ import { HumanMessage, AIMessage, SystemMessage } from "@langchain/core/messages
 import dotenv from 'dotenv';
 import { tool } from "@langchain/core/tools";
 import z from "zod";
-import { getCalenderEvents } from "./tools";
+import { createCalenderEvents, getCalenderEvents } from "./tools";
 dotenv.config();
 const checkpointer = new MemorySaver();
 export const agent = async (message: string, threadId: string, email: string) => {
@@ -33,20 +33,26 @@ export const agent = async (message: string, threadId: string, email: string) =>
     );
     const createCalenderEventTool = tool(
         //@ts-ignore
-        async ({ query }) => {
-            const meet = await getCalenderEvents(email)
+        async ({ start, end, summary, description, attendees }) => {
+            const meet = await createCalenderEvents(email, start, end, attendees, summary, description)
             return meet;
+            // return "new calender event added!"
         },
         {
             name: "createCalenderEventTool",
             description: "Create new meetings in calender",
             schema: z.object({
-                query: z.string().describe("The query to use to create meetings"),
+                start: z.string().describe("Starting of the meeting"),
+                end: z.string().describe("Ending of the meeting"),
+                summary: z.string().describe("Summary of the meeting"),
+                description: z.string().describe("Description of the meeting"),
+                attendees: z.string().describe("attendees of the meeting"),
+
             }),
         }
     );
 
-    const tools = [search, getCalenderEventsTool,createCalenderEventTool];
+    const tools = [search, getCalenderEventsTool, createCalenderEventTool];
     const toolNode = new ToolNode(tools);
 
     const model = new ChatGroq({

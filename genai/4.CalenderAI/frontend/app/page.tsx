@@ -29,8 +29,6 @@ const page = () => {
   const [messages, setMessages] = useState<Message[]>([])
   const [threadId, setthreadId] = useState("")
   const { data: session } = useSession()
-  console.log(session)
-
   useEffect(() => {
     setthreadId(Date.now().toString(36) + Math.random().toString(36).substring(2, 8) as string);
   }, [])
