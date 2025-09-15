@@ -11,7 +11,9 @@ dotenv.config();
 const checkpointer = new MemorySaver();
 export const agent = async (message: string, threadId: string, email: string) => {
     const system_prompt = `You are a personal assistent, who answers the asked questions.
-                    Current date and time is: ${new Date().toUTCString()} 
+                    Current date and time is: ${new Date().toUTCString()} ,
+                    Current Timezone is: ${Intl.DateTimeFormat().resolvedOptions().timeZone} You will use this time zone while using tools.
+                    Before calling createCalenderEventTool make sure you have start, end, summary, description, attendees, timezone. otherwise ask for the missing value.
                     `
     const search = new TavilySearch({
         maxResults: 5,
@@ -33,8 +35,8 @@ export const agent = async (message: string, threadId: string, email: string) =>
     );
     const createCalenderEventTool = tool(
         //@ts-ignore
-        async ({ start, end, summary, description, attendees }) => {
-            const meet = await createCalenderEvents(email, start, end, attendees, summary, description)
+        async ({ start, end, summary, description, attendees, timezone }) => {
+            const meet = await createCalenderEvents(email, start, end, attendees, summary, description, timezone)
             return meet;
             // return "new calender event added!"
         },
@@ -46,8 +48,8 @@ export const agent = async (message: string, threadId: string, email: string) =>
                 end: z.string().describe("Ending of the meeting"),
                 summary: z.string().describe("Summary of the meeting"),
                 description: z.string().describe("Description of the meeting"),
-                attendees: z.string().describe("attendees of the meeting"),
-
+                attendees: z.string().describe("Attendees of the meeting"),
+                timezone: z.string().describe("Local Timezone of the meeting,"),
             }),
         }
     );

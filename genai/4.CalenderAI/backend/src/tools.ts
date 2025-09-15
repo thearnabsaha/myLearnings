@@ -47,7 +47,7 @@ export const getCalenderEvents = async (email: string) => {
     }));
     return JSON.stringify(data)
 }
-export const createCalenderEvents = async (email: string, start: any, end: any, attendees: any, summary: string, description: string) => {
+export const createCalenderEvents = async (email: string, start: any, end: any, attendees: any, summary: string, description: string, timezone: string) => {
     //   const event = {
     //     summary: 'Google I/O 2015',
     //     description: 'A chance to hear more about Googles developer products.',
@@ -76,11 +76,11 @@ export const createCalenderEvents = async (email: string, start: any, end: any, 
         description: description || "",
         start: {
             dateTime: start, // Today at 7 PM IST
-            timeZone: 'Asia/Kolkata',
+            timeZone: timezone,
         },
         end: {
             dateTime: end, // 1 hour duration
-            timeZone: 'Asia/Kolkata',
+            timeZone: timezone,
         },
         attendees: [{ email: 'hparnab0@gmail.com' },],
         reminders: { useDefault: true },
