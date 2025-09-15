@@ -35,19 +35,19 @@ const page = () => {
   useEffect(() => {
     setthreadId(Date.now().toString(36) + Math.random().toString(36).substring(2, 8) as string);
   }, [])
-  useEffect(() => {
-    if (timeLeft <= 0) {
-      window.location.reload();
-      return
-    }
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
+  // useEffect(() => {
+  //   if (timeLeft <= 0) {
+  //     window.location.reload();
+  //     return
+  //   }
+  //   const interval = setInterval(() => {
+  //     setTimeLeft((prev) => prev - 1);
+  //   }, 1000);
 
-    return () => clearInterval(interval);
-  }, [timeLeft]);
-  const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
-  const seconds = String(timeLeft % 60).padStart(2, "0");
+  //   return () => clearInterval(interval);
+  // }, [timeLeft]);
+  // const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+  // const seconds = String(timeLeft % 60).padStart(2, "0");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
