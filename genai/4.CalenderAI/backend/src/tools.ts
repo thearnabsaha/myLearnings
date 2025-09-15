@@ -71,6 +71,8 @@ export const createCalenderEvents = async (email: string, start: any, end: any, 
     //         }
     //     }
     // };
+    console.log(attendees)
+
     const event = {
         summary,
         description: description || "",
@@ -82,7 +84,7 @@ export const createCalenderEvents = async (email: string, start: any, end: any, 
             dateTime: end, // 1 hour duration
             timeZone: timezone,
         },
-        attendees: [{ email: 'hparnab0@gmail.com' },],
+        attendees: JSON.parse(attendees),
         reminders: { useDefault: true },
         conferenceData: {
             createRequest: {
@@ -91,7 +93,6 @@ export const createCalenderEvents = async (email: string, start: any, end: any, 
             }
         }
     };
-
     const auth = await getAuth(email)
     const calendar = google.calendar({ version: 'v3', auth });
     const response = await calendar.events.insert({

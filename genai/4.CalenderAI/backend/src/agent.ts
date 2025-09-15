@@ -13,12 +13,16 @@ export const agent = async (message: string, threadId: string, email: string) =>
     const system_prompt = `You are a personal assistent, who answers the asked questions.
                     Current date and time is: ${new Date().toUTCString()} ,
                     Current Timezone is: ${Intl.DateTimeFormat().resolvedOptions().timeZone} You will use this time zone while using tools.
-                    Before calling createCalenderEventTool make sure you have start, end, summary, description, attendees, timezone. otherwise ask for the missing value.
+                    Before calling createCalenderEventTool make sure you have start, end, summary, description, attendees (emails only not name)(stored like [{"email":"example1@example.com"},{"email":"example2@example.com"}] in object format not json), timezone,it am or pm if just given numbers (like 5-6). otherwise ask for the missing value.
                     `
     const search = new TavilySearch({
         maxResults: 5,
         topic: "general",
     });
+    //     add a meeting in named fuck arnab
+
+
+    // today from 8-9, we all will fuck arnab together, hparnab0@gmail.com,thearnabsaha1@gmail.com
     const getCalenderEventsTool = tool(
         //@ts-ignore
         async ({ query }) => {
@@ -49,7 +53,7 @@ export const agent = async (message: string, threadId: string, email: string) =>
                 summary: z.string().describe("Summary of the meeting"),
                 description: z.string().describe("Description of the meeting"),
                 attendees: z.string().describe("Attendees of the meeting"),
-                timezone: z.string().describe("Local Timezone of the meeting,"),
+                timezone: z.object().describe("Local Timezone of the meeting"),
             }),
         }
     );
