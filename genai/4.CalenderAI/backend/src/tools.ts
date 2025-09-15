@@ -47,22 +47,36 @@ export const getCalenderEvents = async (email: string) => {
     }));
     return JSON.stringify(data)
 }
-export const createCalenderEvents = async (email: string, start: string, end: string, attendees: string[], summary: string, description: string) => {
-    const event = {
-        summary: 'Google I/O 2015',
-        description: 'A chance to hear more about Googles developer products.',
-        start: {
-            dateTime: '2025-09-15T19:00:00+05:30', // Today at 7 PM IST
-            timeZone: 'Asia/Kolkata',
-        },
-        end: {
-            dateTime: '2025-09-15T20:00:00+05:30', // 1 hour duration
-            timeZone: 'Asia/Kolkata',
-        },
+export const createCalenderEvents = async (email: string, start: any, end: any, attendees: any, summary: string, description: string) => {
+    //   const event = {
+    //     summary: 'Google I/O 2015',
+    //     description: 'A chance to hear more about Googles developer products.',
+    //     start: {
+    //         dateTime: '2025-09-15T19:00:00+05:30', // Today at 7 PM IST
+    //         timeZone: 'Asia/Kolkata',
+    //     },
+    //     end: {
+    //         dateTime: '2025-09-15T20:00:00+05:30', // 1 hour duration
+    //         timeZone: 'Asia/Kolkata',
+    //     },
 
-        attendees: [
-            { email: 'hparnab0@gmail.com' },
-        ],
+    //     attendees: [
+    //         { email: 'hparnab0@gmail.com' },
+    //     ],
+    //     reminders: { useDefault: true },
+    //     conferenceData: {
+    //         createRequest: {
+    //             requestId: crypto.randomUUID(),
+    //             conferenceSolutionKey: { type: 'hangoutsMeet' },
+    //         }
+    //     }
+    // };
+    const event = {
+        summary,
+        description,
+        start,
+        end,
+        attendees,
         reminders: { useDefault: true },
         conferenceData: {
             createRequest: {
