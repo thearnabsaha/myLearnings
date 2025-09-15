@@ -10,7 +10,7 @@ import helmet from 'helmet';
 import { agent } from './agent';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { email } from 'zod';
-import { getCalenderEvents } from './tools';
+import { createCalenderEvents, getCalenderEvents } from './tools';
 import { google } from 'googleapis';
 const prisma = new PrismaClient();
 const morganFormat = ':method :url :status :response-time ms';
@@ -34,10 +34,11 @@ app.post('/chat', async (req, res) => {
 });
 app.get('/token', async (req, res) => {
 
+    // const meet = await createCalenderEvents("thearnabsaha201@gmail.com")
     const meet = await getCalenderEvents("thearnabsaha201@gmail.com")
-    // const meet = await getCalenderEvents("hparnab0@gmail.com")
 
     res.send(meet);
+    // res.send("hi");
 });
 
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));

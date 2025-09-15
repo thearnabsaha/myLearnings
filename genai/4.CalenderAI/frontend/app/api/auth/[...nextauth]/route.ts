@@ -14,7 +14,7 @@ const handler = NextAuth({
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
             authorization: {
                 params: {
-                    scope: "openid email profile https://www.googleapis.com/auth/calendar.readonly",
+                    scope: "openid email profile https://www.googleapis.com/auth/calendar",
                     access_type: "offline", // ensures you get refresh_token
                     prompt: "consent",      // force re-consent so you actually get new scopes
                 },
