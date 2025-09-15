@@ -7,11 +7,12 @@ import React, { useEffect, useState } from 'react'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { z } from "zod"
 import axios from "axios"
 import { BACKEND_URL } from "@/lib/config"
 import ReactMarkdown from "react-markdown";
-import { useSession } from "next-auth/react"
+import { signIn, signOut, useSession } from "next-auth/react"
 
 const formSchema = z.object({
   message: z.string().trim()
@@ -77,11 +78,33 @@ const page = () => {
       <div className='flex items-center justify-between pt-2 fixed w-screen left-0 px-10 bg-background'>
         <div className='flex items-center'>
           <MessageCircleDashed />
-          <h1 className='text-2xl'>TempChat</h1>
+          <h1 className='text-2xl'>Calender AI</h1>
         </div>
         <div className=" flex justify-center items-center">
           <ModeToggle />
-          <h1 className="border-ring rounded-md ml-2 py-1 px-3 border"> {minutes}:{seconds}</h1>
+          {/* <h1 className="border-ring rounded-md ml-2 py-1 px-3 border"> {minutes}:{seconds}</h1> */}
+          {
+            session ?
+              <div className="flex">
+                <Avatar>
+                  <AvatarImage src={session.user.image as string} />
+                  <AvatarFallback>{session.user.name?.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <Button
+                  className="ml-2"
+                  onClick={() => signOut()}
+                >
+                  Sign out
+                </Button>
+              </div>
+              :
+              <Button
+                className="ml-2"
+                onClick={() => signIn("google", { callbackUrl: "/" })}
+              >
+                Sign in
+              </Button>
+          }
         </div>
       </div >
       <div className='flex flex-col flex-wrap mb-100 pt-10'>
