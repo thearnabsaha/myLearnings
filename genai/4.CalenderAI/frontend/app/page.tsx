@@ -13,7 +13,6 @@ import axios from "axios"
 import { BACKEND_URL } from "@/lib/config"
 import ReactMarkdown from "react-markdown";
 import { signIn, signOut, useSession } from "next-auth/react"
-import Image from "next/image"
 const formSchema = z.object({
   message: z.string().trim()
     .min(1, { message: "Message cannot be empty" })
@@ -29,26 +28,12 @@ type Message = {
 const page = () => {
   const [messages, setMessages] = useState<Message[]>([])
   const [threadId, setthreadId] = useState("")
-  const [timeLeft, setTimeLeft] = useState(30 * 60);
   const { data: session } = useSession()
   console.log(session)
 
   useEffect(() => {
     setthreadId(Date.now().toString(36) + Math.random().toString(36).substring(2, 8) as string);
   }, [])
-  // useEffect(() => {
-  //   if (timeLeft <= 0) {
-  //     window.location.reload();
-  //     return
-  //   }
-  //   const interval = setInterval(() => {
-  //     setTimeLeft((prev) => prev - 1);
-  //   }, 1000);
-
-  //   return () => clearInterval(interval);
-  // }, [timeLeft]);
-  // const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
-  // const seconds = String(timeLeft % 60).padStart(2, "0");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -82,8 +67,6 @@ const page = () => {
           <h1 className='text-2xl'>Calender AI</h1>
         </div>
         <div className=" flex justify-center items-center">
-          <ModeToggle />
-          {/* <h1 className="border-ring rounded-md ml-2 py-1 px-3 border"> {minutes}:{seconds}</h1> */}
           {
             session ?
               <div className="flex">
@@ -92,7 +75,7 @@ const page = () => {
                   <AvatarFallback>{session.user.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <Button
-                  className="cursor-pointer"
+                  className="cursor-pointer mr-2"
                   onClick={() => signOut()}
                 >
                   Sign out
@@ -106,6 +89,7 @@ const page = () => {
                 Sign in
               </Button>
           }
+          <ModeToggle />
         </div>
       </div >
       <div className='flex flex-col flex-wrap mb-100 pt-10'>
