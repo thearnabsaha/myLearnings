@@ -10,19 +10,15 @@ import { createCalenderEvents, getCalenderEvents } from "./tools";
 dotenv.config();
 const checkpointer = new MemorySaver();
 export const agent = async (message: string, threadId: string, email: string) => {
-    const system_prompt = `You are a personal assistent, who answers the asked questions.
+    const system_prompt = `You are a personal assistent, who answers the asked questions in bullet points format.
                     Current date and time is: ${new Date().toUTCString()} ,
                     Current Timezone is: ${Intl.DateTimeFormat().resolvedOptions().timeZone} You will use this time zone while using tools.
-                    Before calling createCalenderEventTool make sure you have start, end, summary, description, attendees (emails only not name)(stored like [{"email":"example1@example.com"},{"email":"example2@example.com"}] in object format not json), timezone,it am or pm if just given numbers (like 5-6). otherwise ask for the missing value.
+                    Before calling createCalenderEventTool make sure you have start, end, summary, description, attendees (emails only not name)(stored like [{"email":"example1@example.com"},{"email":"example2@example.com"}] in object format not json), timezone,it am or pm if just given numbers (like 5-6). otherwise ask for the missing value.Before creating any meeting check is there already a meet, if not then create otherwise reconfirm.
                     `
     const search = new TavilySearch({
         maxResults: 5,
         topic: "general",
     });
-    //     add a meeting in named fuck arnab
-
-
-    // today from 8-9, we all will fuck arnab together, hparnab0@gmail.com,thearnabsaha1@gmail.com
     const getCalenderEventsTool = tool(
         //@ts-ignore
         async ({ query }) => {
@@ -42,7 +38,6 @@ export const agent = async (message: string, threadId: string, email: string) =>
         async ({ start, end, summary, description, attendees, timezone }) => {
             const meet = await createCalenderEvents(email, start, end, attendees, summary, description, timezone)
             return meet;
-            // return "new calender event added!"
         },
         {
             name: "createCalenderEventTool",
@@ -62,7 +57,7 @@ export const agent = async (message: string, threadId: string, email: string) =>
     const toolNode = new ToolNode(tools);
 
     const model = new ChatGroq({
-        model: "openai/gpt-oss-120b",
+        model: "openai/gpt-oss-20b",
         temperature: 0,
     }).bindTools(tools);
 
