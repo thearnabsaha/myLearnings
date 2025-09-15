@@ -4,18 +4,35 @@ import { TavilySearch } from "@langchain/tavily";
 import { ChatGroq } from "@langchain/groq";
 import { HumanMessage, AIMessage, SystemMessage } from "@langchain/core/messages";
 import dotenv from 'dotenv';
+import { tool } from "@langchain/core/tools";
+import z from "zod";
+import { getCalenderEvents } from "./tools";
 dotenv.config();
 const checkpointer = new MemorySaver();
-export const agent = async (message: string, threadId: string) => {
+export const agent = async (message: string, threadId: string, email: string) => {
     const system_prompt = `You are a personal assistent, who answers the asked questions.
-                    Current date and time is: ${new Date().toUTCString()}
+                    Current date and time is: ${new Date().toUTCString()} 
                     `
     const search = new TavilySearch({
         maxResults: 5,
         topic: "general",
     });
+    const getCalenderEventsTool = tool(
+        //@ts-ignore
+        async ({ query }) => {
+            const meet = await getCalenderEvents(email)
+            return meet;
+        },
+        {
+            name: "getCalenderEvents",
+            description: "Check calender for meetings! and answers if there is any.",
+            schema: z.object({
+                query: z.string().describe("The query to use in your search for meetings"),
+            }),
+        }
+    );
 
-    const tools = [search];
+    const tools = [search, getCalenderEventsTool];
     const toolNode = new ToolNode(tools);
 
     const model = new ChatGroq({

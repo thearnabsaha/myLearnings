@@ -33,9 +33,17 @@ export const getCalenderEvents = async (email: string) => {
     const res = await calendar.events.list({
         calendarId: 'primary',
         timeMin: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
-        // maxResults: 10,
-        // singleEvents: true,
-        // orderBy: 'startTime',
     });
+    const data = res.data.items?.map((e) => ({
+        id: e.id,
+        summary: e.summary,
+        status: e.status,
+        organiser: e.organizer,
+        start: e.start,
+        end: e.end,
+        attendees: e.attendees,
+        meetingLink: e.hangoutLink,
+        eventType: e.eventType,
+    }));
     return res
 }

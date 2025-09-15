@@ -11,6 +11,7 @@ import { z } from "zod"
 import axios from "axios"
 import { BACKEND_URL } from "@/lib/config"
 import ReactMarkdown from "react-markdown";
+import { useSession } from "next-auth/react"
 
 const formSchema = z.object({
   message: z.string().trim()
@@ -28,6 +29,8 @@ const page = () => {
   const [messages, setMessages] = useState<Message[]>([])
   const [threadId, setthreadId] = useState("")
   const [timeLeft, setTimeLeft] = useState(30 * 60);
+  const { data: session } = useSession()
+
   useEffect(() => {
     setthreadId(Date.now().toString(36) + Math.random().toString(36).substring(2, 8) as string);
   }, [])
@@ -54,16 +57,19 @@ const page = () => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: "Loading..." }])
-    axios.post(`${BACKEND_URL}/chat`, {
-      inputMessage: values.message as string,
-      threadId
-    })
-      .then(function (response) {
-        setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: String(response.data) }])
+    if (session) {
+      axios.post(`${BACKEND_URL}/chat`, {
+        inputMessage: values.message as string,
+        threadId,
+        email: session.user.email as string
       })
-      .catch(function (error) {
-        console.log(error);
-      });
+        .then(function (response) {
+          setMessages([...messages, { id: crypto.randomUUID(), input: String(values.message), answer: String(response.data) }])
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
     form.reset()
   }
   return (
@@ -83,7 +89,7 @@ const page = () => {
           messages.map((e) => {
             return (
               <div key={e.id} className="flex flex-col flex-wrap ">
-                <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-96 self-end whitespace-pre-wrap break-all'>{e.input}</p>
+                <p className='font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-96 self-end whitespace-pre-wrap'>{e.input}</p>
                 {
                   e.answer == "Loading..." ?
                     <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-all animate-pulse'>{e.answer}</p>

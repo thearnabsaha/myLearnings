@@ -28,7 +28,8 @@ app.use(cookieParser());
 app.post('/chat', async (req, res) => {
     const inputMessage = req.body.inputMessage as string
     const threadId = req.body.threadId as string
-    const answer = await agent(inputMessage, threadId)
+    const email = req.body.email as string
+    const answer = await agent(inputMessage, threadId, email)
     res.send(answer);
 });
 app.get('/token', async (req, res) => {
