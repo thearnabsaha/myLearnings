@@ -31,8 +31,22 @@ export const agent = async (message: string, threadId: string, email: string) =>
             }),
         }
     );
+    const createCalenderEventTool = tool(
+        //@ts-ignore
+        async ({ query }) => {
+            const meet = await getCalenderEvents(email)
+            return meet;
+        },
+        {
+            name: "createCalenderEventTool",
+            description: "Create new meetings in calender",
+            schema: z.object({
+                query: z.string().describe("The query to use to create meetings"),
+            }),
+        }
+    );
 
-    const tools = [search, getCalenderEventsTool];
+    const tools = [search, getCalenderEventsTool,createCalenderEventTool];
     const toolNode = new ToolNode(tools);
 
     const model = new ChatGroq({

@@ -45,5 +45,5 @@ export const getCalenderEvents = async (email: string) => {
         meetingLink: e.hangoutLink,
         eventType: e.eventType,
     }));
-    return res
+    return JSON.stringify(data)
 }

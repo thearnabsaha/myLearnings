@@ -101,7 +101,6 @@ const page = () => {
                 {
                   e.answer == "Loading..." ?
                     <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-all animate-pulse'>{e.answer}</p>
-                    // : <p className='font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-all'>{e.answer}</p>
                     : <ReactMarkdown>{e.answer}</ReactMarkdown>
                 }
               </div>
