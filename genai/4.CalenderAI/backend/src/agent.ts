@@ -7,16 +7,9 @@ import dotenv from 'dotenv';
 import { tool } from "@langchain/core/tools";
 import z from "zod";
 import { createCalenderEvents, getCalenderEvents } from "./tools";
-import { CallbackHandler } from "@langfuse/langchain";
 dotenv.config();
 const checkpointer = new MemorySaver();
 
-const langfuseHandler = new CallbackHandler();
-
-// Your Langchain code
-
-// Add Langfuse handler as callback to `run` or `invoke`
-// await chain.invoke({ input: "<user_input>" });
 export const agent = async (message: string, threadId: string, email: string) => {
     const system_prompt = `You are a personal assistent, who answers the asked questions in bullet points format.
                     Current date and time is: ${new Date().toUTCString()} ,
@@ -56,7 +49,7 @@ export const agent = async (message: string, threadId: string, email: string) =>
                 summary: z.string().describe("Summary of the meeting"),
                 description: z.string().describe("Description of the meeting"),
                 attendees: z.string().describe("Attendees of the meeting"),
-                timezone: z.object().describe("Local Timezone of the meeting"),
+                timezone: z.string().describe("Local Timezone of the meeting"),
             }),
         }
     );
@@ -65,7 +58,7 @@ export const agent = async (message: string, threadId: string, email: string) =>
     const toolNode = new ToolNode(tools);
 
     const model = new ChatGroq({
-        model: "openai/gpt-oss-20b",
+        model: "openai/gpt-oss-120b",
         temperature: 0,
     }).bindTools(tools);
 
@@ -99,7 +92,7 @@ export const agent = async (message: string, threadId: string, email: string) =>
 
     const finalState = await app.invoke(
         { messages: [new SystemMessage(system_prompt), new HumanMessage(message)] },
-        { configurable: { thread_id: threadId }, callbacks: [langfuseHandler] },
+        { configurable: { thread_id: threadId } },
 
 
     );

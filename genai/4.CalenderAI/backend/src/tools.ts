@@ -71,7 +71,7 @@ export const createCalenderEvents = async (email: string, start: any, end: any, 
     //         }
     //     }
     // };
-    console.log(attendees)
+    console.log(attendees, timezone)
 
     const event = {
         summary,
