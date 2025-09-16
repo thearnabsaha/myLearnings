@@ -62,6 +62,7 @@ export const agent = async (message: string, threadId: string, email: string) =>
     }).bindTools(tools);
 
     const reactAgent = createReactAgent({
+        //@ts-ignore
         llm: model,
         tools,
         checkpointer,
