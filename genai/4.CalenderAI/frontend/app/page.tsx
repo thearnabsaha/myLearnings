@@ -120,7 +120,7 @@ const page = () => {
                         e.preventDefault();
                         form.handleSubmit(onSubmit)();
                       }
-                    }} />
+                    }} disabled={!session} />
                   </FormControl>
                 </FormItem>
               )}
