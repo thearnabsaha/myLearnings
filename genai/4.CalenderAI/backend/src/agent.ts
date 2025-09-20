@@ -93,8 +93,6 @@ export const agent = async (message: string, threadId: string, email: string) =>
     const finalState = await app.invoke(
         { messages: [new SystemMessage(system_prompt), new HumanMessage(message)] },
         { configurable: { thread_id: threadId } },
-
-
     );
 
     return finalState.messages[finalState.messages.length - 1].content
