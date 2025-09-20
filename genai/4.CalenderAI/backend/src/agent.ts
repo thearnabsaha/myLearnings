@@ -6,7 +6,7 @@ import { HumanMessage, AIMessage, SystemMessage } from "@langchain/core/messages
 import dotenv from 'dotenv';
 import { tool } from "@langchain/core/tools";
 import z from "zod";
-import { createCalenderEvents, getCalenderEvents } from "./tools";
+import { createCalenderEvents, deleteCalenderEvents, getCalenderEvents } from "./tools";
 dotenv.config();
 const checkpointer = new MemorySaver();
 
@@ -14,7 +14,7 @@ export const agent = async (message: string, threadId: string, email: string) =>
     const system_prompt = `You are a personal assistent, who answers the asked questions in bullet points format.
                     Current date and time is: ${new Date().toUTCString()} ,
                     Current Timezone is: ${Intl.DateTimeFormat().resolvedOptions().timeZone} You will use this time zone while using tools.
-                    Before calling createCalenderEventTool make sure you have start, end, summary, description, attendees (emails only not name)(stored like [{"email":"example1@example.com"},{"email":"example2@example.com"}] in object format not json), timezone,always ask "is it am or pm"? if just given numbers (like 5-6). otherwise ask for the missing value. Before creating any meeting check is there already a meet, if not then create otherwise reconfirm.
+                    Before calling createCalenderEventTool make sure you have start, end, summary, description, attendees (emails only not name)(stored like [{"email":"example1@example.com"},{"email":"example2@example.com"}] in object format not json), timezone,always ask "is it am or pm"? if just given numbers (like 5-6). otherwise ask for the missing value. Before creating any meeting check is there already a meet, if not then create otherwise reconfirm. You can also delete the meeting by id, you won't ask the id, you will get the meeting id name summary then delete it.
                     `
     const search = new TavilySearch({
         maxResults: 5,
@@ -53,8 +53,23 @@ export const agent = async (message: string, threadId: string, email: string) =>
             }),
         }
     );
+    const deleteCalenderEventTool = tool(
+        //@ts-ignore
+        async ({ summary, id }) => {
+            const meet = await deleteCalenderEvents(email, id)
+            return meet;
+        },
+        {
+            name: "deleteCalenderEventTool",
+            description: "Delete new meetings in calender",
+            schema: z.object({
+                summary: z.string().describe("Summary of the meeting"),
+                id: z.string().describe("Id of the meeting"),
+            }),
+        }
+    );
 
-    const tools = [search, getCalenderEventsTool, createCalenderEventTool];
+    const tools = [search, getCalenderEventsTool, createCalenderEventTool, deleteCalenderEventTool];
     const toolNode = new ToolNode(tools);
 
     const model = new ChatGroq({
