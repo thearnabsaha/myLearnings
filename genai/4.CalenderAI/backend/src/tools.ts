@@ -95,3 +95,37 @@ export const deleteCalenderEvents = async (email: string, eventid: string) => {
         console.error("❌ Error deleting event:", err);
     }
 }
+export const updateCalenderEvents = async (email: string, eventid: string, start: any, end: any, attendees: any, summary: string, description: string, timezone: string) => {
+    const auth = await getAuth(email)
+    const calendar = google.calendar({ version: "v3", auth });
+    try {
+        const calendarId = email;
+        const eventId = eventid;
+        // First get the existing event
+        const event = await calendar.events.get({
+            calendarId,
+            eventId,
+        });
+        // Modify fields
+        event.data.summary = summary;
+        event.data.description = description;
+        event.data.start = {
+            dateTime: start,
+            timeZone: timezone,
+        };
+        event.data.end = {
+            dateTime: end,
+            timeZone: timezone,
+        };
+        event.data.attendees = attendees
+        // Update event
+        const updatedEvent = await calendar.events.update({
+            calendarId,
+            eventId,
+            requestBody: event.data,
+        });
+        console.log("✅ Event deleted successfully!");
+    } catch (err) {
+        console.error("❌ Error deleting event:", err);
+    }
+}
