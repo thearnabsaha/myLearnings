@@ -8,11 +8,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import { agent } from './agent';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { email } from 'zod';
 import { createCalenderEvents, getCalenderEvents } from './tools';
-import { google } from 'googleapis';
-const prisma = new PrismaClient();
 const morganFormat = ':method :url :status :response-time ms';
 
 app.use(morgan(morganFormat));
