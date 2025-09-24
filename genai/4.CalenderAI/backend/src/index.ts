@@ -8,7 +8,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import { agent } from './agent';
-import { createCalenderEvents, getCalenderEvents } from './tools';
+import { getCalenderEvents } from './tools';
 const morganFormat = ':method :url :status :response-time ms';
 
 app.use(morgan(morganFormat));
@@ -32,9 +32,7 @@ app.get('/token', async (req, res) => {
 
     // const meet = await createCalenderEvents("thearnabsaha201@gmail.com")
     const meet = await getCalenderEvents("thearnabsaha201@gmail.com")
-
     res.send(meet);
-    // res.send("hi");
 });
 
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));
