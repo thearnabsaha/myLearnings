@@ -8,7 +8,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 // import { agent } from './agent';
-
+// import { getCalenderEvents } from './tools';
 const morganFormat = ':method :url :status :response-time ms';
 
 app.use(morgan(morganFormat));
@@ -24,8 +24,15 @@ app.use(cookieParser());
 app.post('/chat', async (req, res) => {
     const inputMessage = req.body.inputMessage as string
     const threadId = req.body.threadId as string
-    // const answer = await agent(inputMessage, threadId)
+    const email = req.body.email as string
+    // const answer = await agent(inputMessage, threadId, email)
     // res.send(answer);
+});
+app.get('/token', async (req, res) => {
+
+    // const meet = await createCalenderEvents("thearnabsaha201@gmail.com")
+    // const meet = await getCalenderEvents("thearnabsaha201@gmail.com")
+    // res.send(meet);
 });
 
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));
