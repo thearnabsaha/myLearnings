@@ -12,5 +12,4 @@ Extract whether the representative is routing the user to a marketing support te
 Respond with a JSON object containing a single key called "nextRepresentative" with one of the following values:
 
 If they want to route the user to the marketing support team, respond only with the word "MARKETING".
-If they want to route the user to the learning support team, respond only with the word "LEARNING".
-Otherwise, respond only with the word "RESPOND".`;
+If they want to route the user to the learning support team, respond only with the word "LEARNING".`

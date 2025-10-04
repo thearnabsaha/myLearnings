@@ -76,7 +76,7 @@ export const agent = async () => {
             {
                 role: "user",
                 // content: "how many chapters are there in genai course?",
-                content: "how many course are there?",
+                content: "is there any cupon code?",
             }
         ]
     }, { configurable: { thread_id: "1" } });
