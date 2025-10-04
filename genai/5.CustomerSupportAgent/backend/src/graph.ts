@@ -2,7 +2,7 @@ import { MemorySaver, MessagesAnnotation, StateGraph } from "@langchain/langgrap
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { ChatGroq } from "@langchain/groq";
 import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
-import { frontDeskSystemPrompt } from "./prompt";
+import { frontDeskSystemPrompt, routingSystemPrompt } from "./prompt";
 import { StateAnnotation } from "./state";
 
 export const agent = async () => {
@@ -33,17 +33,24 @@ export const agent = async () => {
         const response = await agentModel.invoke([
             { role: "system", content: frontDeskSystemPrompt },
             ...state.messages]);
+        const routedResponse = await agentModel.invoke([
+            { role: "system", content: routingSystemPrompt },
+            ...state.messages]);
         // console.log(response)
-        return { messages: [response] };
+        return { messages: [routedResponse] };
     }
 
     const MarketingSupport = async (state: typeof StateAnnotation.State) => {
         console.log("I am in marketing support")
         const response = await agentModel.invoke(state.messages);
         return { messages: [response] };
+        // const response = await agent.invoke(state);
+        // return { messages: [response.messages] };
     }
     const LearningSupport = async (state: typeof StateAnnotation.State) => {
         console.log("I am in learning support")
+        // const response = await agent.invoke(state);
+        // return { messages: [response.messages] };
         const response = await agentModel.invoke(state.messages);
         return { messages: [response] };
     }
@@ -68,7 +75,8 @@ export const agent = async () => {
         messages: [
             {
                 role: "user",
-                content: "how many chapters are there in genai course?",
+                // content: "how many chapters are there in genai course?",
+                content: "how many course are there?",
             }
         ]
     }, { configurable: { thread_id: "1" } });
