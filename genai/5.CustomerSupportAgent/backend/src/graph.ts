@@ -3,6 +3,7 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { ChatGroq } from "@langchain/groq";
 import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { frontDeskSystemPrompt } from "./prompt";
+import { StateAnnotation } from "./state";
 
 export const agent = async () => {
     // Define the tools for the agent to use
@@ -27,29 +28,26 @@ export const agent = async () => {
         return "LearningSupport";
     }
     // Define the function that calls the model
-    const frontDesk = async (state: typeof MessagesAnnotation.State) => {
+    const frontDesk = async (state: typeof StateAnnotation.State) => {
         console.log("I am in frontdesk")
-        // const response = await .invoke(
-        //     { messages: [new SystemMessage(frontDeskSystemPrompt), new HumanMessage("how many chapters are there in genai course?")], },
-        //     { configurable: { thread_id: 1 } },
-        // );
-        // console.log(response.messages[response.messages.length - 1].content);
-
-        const response = await agentModel.invoke(state.messages);
+        const response = await agentModel.invoke([
+            { role: "system", content: frontDeskSystemPrompt },
+            ...state.messages]);
+        // console.log(response)
         return { messages: [response] };
     }
 
-    const MarketingSupport = async (state: typeof MessagesAnnotation.State) => {
+    const MarketingSupport = async (state: typeof StateAnnotation.State) => {
         console.log("I am in marketing support")
         const response = await agentModel.invoke(state.messages);
         return { messages: [response] };
     }
-    const LearningSupport = async (state: typeof MessagesAnnotation.State) => {
+    const LearningSupport = async (state: typeof StateAnnotation.State) => {
         console.log("I am in learning support")
         const response = await agentModel.invoke(state.messages);
         return { messages: [response] };
     }
-    const workflow = new StateGraph(MessagesAnnotation)
+    const workflow = new StateGraph(StateAnnotation)
         .addNode("frontDesk", frontDesk)
         .addNode("MarketingSupport", MarketingSupport)
         .addNode("LearningSupport", LearningSupport)
@@ -59,10 +57,26 @@ export const agent = async () => {
         .addEdge("LearningSupport", "__end__")
 
     const app = workflow.compile();
-    // Use the agent
-    const finalState = await app.invoke(
-        // { messages: [new SystemMessage(frontDeskSystemPrompt), new HumanMessage("how many chapters are there in genai course?")], },
-        { configurable: { thread_id: 1 } },
-    );
-    console.log(finalState.messages[finalState.messages.length - 1].content);
+    // // Use the agent
+    // const finalState = await app.invoke(
+    //     { messages: [new SystemMessage(frontDeskSystemPrompt), new HumanMessage("how many chapters are there in genai course?")], },
+    //     { configurable: { thread_id: 1 } },
+    // );
+    // console.log(finalState.messages[finalState.messages.length - 1].content);
+
+    const stream = await app.stream({
+        messages: [
+            {
+                role: "user",
+                content: "how many chapters are there in genai course?",
+            }
+        ]
+    }, { configurable: { thread_id: "1" } });
+
+    for await (const value of stream) {
+        console.log("---STEP---");
+        console.log(value);
+        console.log("---END STEP---");
+    }
+
 }
