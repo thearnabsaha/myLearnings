@@ -40,7 +40,7 @@ export const agent = async () => {
         const routedResponse = await agentModel.invoke([
             { role: "system", content: routingSystemPrompt },
             ...state.messages], { response_format: { type: "json_object" } });
-        console.log(state)
+        // console.log(state)
         //@ts-ignore
         const jsonContent = JSON.parse(routedResponse.content)
         // console.log("a", response, jsonContent.nextRepresentative)
@@ -82,6 +82,10 @@ export const agent = async () => {
     const stream = await app.stream({
         messages: [
             {
+                role: "system",
+                content: frontDeskSystemPrompt
+            },
+            {
                 role: "user",
                 // content: "how many chapters are there in genai course?",
                 content: "how many course are there?",
@@ -90,10 +94,10 @@ export const agent = async () => {
         ]
     }, { configurable: { thread_id: "1" } });
 
-    // for await (const value of stream) {
-    //     console.log("---STEP---");
-    //     console.log(value);
-    //     console.log("---END STEP---");
-    // }
+    for await (const value of stream) {
+        console.log("---STEP---");
+        console.log(value);
+        console.log("---END STEP---");
+    }
 
 }
