@@ -11,7 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "@langchain/community": "^0.3.53",
-    "@langchain/core": "^0.3.76",
+    "@langchain/core": "^0.3.78",
+    "@langchain/groq": "^0.2.4",
     "@langchain/langgraph": "^0.4.9",
     "@langchain/tavily": "^0.1.5",
     "@langfuse/langchain": "^4.0.1",
