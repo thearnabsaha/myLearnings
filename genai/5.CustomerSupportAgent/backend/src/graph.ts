@@ -29,13 +29,13 @@ export const agent = async () => {
     // Define the function that calls the model
     const frontDesk = async (state: typeof MessagesAnnotation.State) => {
         console.log("I am in frontdesk")
-        const response = await agent.invoke(
-            { messages: [new SystemMessage(frontDeskSystemPrompt), new HumanMessage("how many chapters are there in genai course?")], },
-            { configurable: { thread_id: 1 } },
-        );
-        console.log(response.messages[response.messages.length - 1].content);
+        // const response = await .invoke(
+        //     { messages: [new SystemMessage(frontDeskSystemPrompt), new HumanMessage("how many chapters are there in genai course?")], },
+        //     { configurable: { thread_id: 1 } },
+        // );
+        // console.log(response.messages[response.messages.length - 1].content);
 
-        // const response = await agentModel.invoke(state.messages);
+        const response = await agentModel.invoke(state.messages);
         return { messages: [response] };
     }
 
@@ -61,7 +61,7 @@ export const agent = async () => {
     const app = workflow.compile();
     // Use the agent
     const finalState = await app.invoke(
-        { messages: [new SystemMessage(frontDeskSystemPrompt), new HumanMessage("how many chapters are there in genai course?")], },
+        // { messages: [new SystemMessage(frontDeskSystemPrompt), new HumanMessage("how many chapters are there in genai course?")], },
         { configurable: { thread_id: 1 } },
     );
     console.log(finalState.messages[finalState.messages.length - 1].content);
