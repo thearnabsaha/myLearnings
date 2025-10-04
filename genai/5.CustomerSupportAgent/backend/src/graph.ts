@@ -22,9 +22,13 @@ export const agent = async () => {
     function shouldContinue({ messages }: typeof MessagesAnnotation.State) {
         const lastMessage = messages[messages.length - 1] as AIMessage;
         const lastMessageContent = lastMessage.content as string;
+        console.log(messages)
         if (lastMessageContent.includes("Marketing")) {
             return "MarketingSupport";
         }
+        // if (lastMessageContent.includes("LEARNING")) {
+        //     return "LearningSupport";
+        // }
         return "LearningSupport";
     }
     // Define the function that calls the model
@@ -35,9 +39,11 @@ export const agent = async () => {
             ...state.messages]);
         const routedResponse = await agentModel.invoke([
             { role: "system", content: routingSystemPrompt },
-            ...state.messages]);
-        // console.log(response)
+            ...state.messages], { response_format: { type: "json_object" } });
+        // console.log("a", response)
+        // console.log("b", routedResponse)
         return { messages: [routedResponse] };
+        // return { messages: [response] };
     }
 
     const MarketingSupport = async (state: typeof StateAnnotation.State) => {
@@ -64,8 +70,9 @@ export const agent = async () => {
         .addEdge("LearningSupport", "__end__")
 
     const app = workflow.compile();
-    // // Use the agent
+    // Use the agent
     // const finalState = await app.invoke(
+    //     // { messages: [new SystemMessage(frontDeskSystemPrompt), new HumanMessage("how many course are there?")], },
     //     { messages: [new SystemMessage(frontDeskSystemPrompt), new HumanMessage("how many chapters are there in genai course?")], },
     //     { configurable: { thread_id: 1 } },
     // );
@@ -76,15 +83,16 @@ export const agent = async () => {
             {
                 role: "user",
                 // content: "how many chapters are there in genai course?",
-                content: "is there any cupon code?",
-            }
+                content: "how many course are there?",
+                // content: "is there any cupon code?",
+            },
         ]
     }, { configurable: { thread_id: "1" } });
 
-    for await (const value of stream) {
-        console.log("---STEP---");
-        console.log(value);
-        console.log("---END STEP---");
-    }
+    // for await (const value of stream) {
+    //     console.log("---STEP---");
+    //     console.log(value);
+    //     console.log("---END STEP---");
+    // }
 
 }
