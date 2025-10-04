@@ -26,7 +26,7 @@ export const agent = async () => {
     const app = workflow.compile();
     // Use the agent
     const finalState = await app.invoke(
-        { messages: [new SystemMessage(frontDeskSystemPrompt), new HumanMessage("what is the weather in sf")], },
+        { messages: [new SystemMessage(frontDeskSystemPrompt), new HumanMessage("how many chapters are there in genai course?")], },
         { configurable: { thread_id: 1 } },
     );
     console.log(finalState.messages[finalState.messages.length - 1].content);
