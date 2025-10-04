@@ -22,7 +22,7 @@ export const agent = async () => {
     function shouldContinue({ messages }: typeof MessagesAnnotation.State) {
         const lastMessage = messages[messages.length - 1] as AIMessage;
         const lastMessageContent = lastMessage.content as string;
-        console.log(messages)
+        // console.log(messages)
         if (lastMessageContent.includes("Marketing")) {
             return "MarketingSupport";
         }
@@ -40,10 +40,11 @@ export const agent = async () => {
         const routedResponse = await agentModel.invoke([
             { role: "system", content: routingSystemPrompt },
             ...state.messages], { response_format: { type: "json_object" } });
-        // console.log("a", response)
-        // console.log("b", routedResponse)
-        return { messages: [routedResponse] };
-        // return { messages: [response] };
+        console.log(state)
+        //@ts-ignore
+        const jsonContent = JSON.parse(routedResponse.content)
+        // console.log("a", response, jsonContent.nextRepresentative)
+        return { messages: [response], nextRepresentative: jsonContent.nextRepresentative };
     }
 
     const MarketingSupport = async (state: typeof StateAnnotation.State) => {
