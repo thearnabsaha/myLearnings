@@ -132,12 +132,7 @@ export const agent = async (inputMessage: string, threadId: string) => {
     // }
 
     const finalState = await app.invoke(
-        // { messages: [new HumanMessage("genai course is on which language")] },
-        // { messages: [new HumanMessage("how many chapters are there in genai course?")] },
-        // { messages: [new HumanMessage("how many course are there?")] },
         { messages: [new HumanMessage(inputMessage)] },
-        // { messages: [new HumanMessage("is there any cupon code?")] },
-        // { messages: [new HumanMessage("hi")] },
         { configurable: { thread_id: threadId } },
     );
     console.log(finalState.messages[finalState.messages.length - 1].content)
