@@ -22,10 +22,14 @@ const GetCoupons = () => {
 export const GetCouponsTool = tool(
     async () => {
         const coupons = GetCoupons()
-        return coupons;
+        const formatted = coupons
+            .map(c => `${c.coupon}: ${c.description}`)
+            .join("\n");
+
+        return `Here are the available coupons:\n${formatted}`;
     },
     {
-        name: "GetCoupons",
+        name: "GetCouponsTool",
         description: "Shares all the coupons",
     }
 );
@@ -44,14 +48,15 @@ const GetData = async (question: string) => {
 export const GetDataTool = tool(
     //@ts-ignore
     async ({ query }) => {
-        const meet = await GetData(query)
-        return meet;
+        // const meet = await GetData(query)
+        // return meet;
+        return "there are 5 chapters in genai course and 3 chapters in javascript course"
     },
     {
-        name: "updateCalenderEventTool",
-        description: "Update meetings in calender",
+        name: "GetDataTool",
+        description: "Shares Details From the Data",
         schema: z.object({
-            query: z.string().describe("Starting of the meeting"),
+            query: z.string().describe("question that has been asked"),
         }),
     }
 );

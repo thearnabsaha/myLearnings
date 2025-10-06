@@ -131,14 +131,16 @@ import { HumanMessage, AIMessage } from "@langchain/core/messages";
 import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { StateGraph, MessagesAnnotation } from "@langchain/langgraph";
 import { ChatGroq } from "@langchain/groq";
-import { GetCouponsTool } from "./tools";
+import { GetCouponsTool, GetDataTool } from "./tools";
 import { StateAnnotation } from "./state";
-import { frontDeskSystemPrompt, routingSystemPrompt } from "./prompt";
+import { frontDeskSystemPrompt, marketingSupportTeamPrompt, routingSystemPrompt } from "./prompt";
 
 export const agent = async () => {
     // Define the tools for the agent to use
     const tools = [GetCouponsTool];
+    const DataTools = [GetDataTool];
     const toolNode = new ToolNode(tools);
+    const DataToolsNode = new ToolNode(DataTools);
     // Create a model and give it access to the tools
     const model = new ChatGroq({
         model: "openai/gpt-oss-120b",
@@ -151,6 +153,16 @@ export const agent = async () => {
         // If the LLM makes a tool call, then we route to the "tools" node
         if (lastMessage.tool_calls?.length) {
             return "tools";
+        }
+        // Otherwise, we stop (reply to the user) using the special "__end__" node
+        return "__end__";
+    }
+    function shouldCallDataTools({ messages }: typeof StateAnnotation.State) {
+        const lastMessage = messages[messages.length - 1] as AIMessage;
+
+        // If the LLM makes a tool call, then we route to the "tools" node
+        if (lastMessage.tool_calls?.length) {
+            return "DataTools";
         }
         // Otherwise, we stop (reply to the user) using the special "__end__" node
         return "__end__";
@@ -185,12 +197,18 @@ export const agent = async () => {
     async function MarketingSupport(state: typeof MessagesAnnotation.State) {
         console.log("i am in marketing team")
         const modelWithTools = model.bindTools(tools);
-        const response = await modelWithTools.invoke(state.messages);
+        const response = await modelWithTools.invoke([
+            {
+                role: "system", content: marketingSupportTeamPrompt
+            }, ...state.messages
+        ]);
         return { messages: [response] };
+        // marketingSupportTeamPrompt
     }
     async function LearningSupport(state: typeof MessagesAnnotation.State) {
         console.log("i am in learning team")
-        const response = await model.invoke(state.messages);
+        const modelWithTools = model.bindTools(DataTools);
+        const response = await modelWithTools.invoke(state.messages);
         // We return a list, because this will get added to the existing list
         return { messages: [response] };
     }
@@ -198,9 +216,12 @@ export const agent = async () => {
     const workflow = new StateGraph(StateAnnotation)
         .addNode("frontDesk", frontDesk)
         .addNode("tools", toolNode)
+        .addNode("DataTools", DataToolsNode)
         .addNode("LearningSupport", LearningSupport)
         .addNode("MarketingSupport", MarketingSupport)
         .addEdge("__start__", "frontDesk") // __start__ is a special name for the entrypoint
+        .addEdge("tools", "MarketingSupport")
+        .addEdge("DataTools", "LearningSupport")
         .addConditionalEdges("frontDesk", shouldContinue, {
             MarketingSupport: "MarketingSupport",
             LearningSupport: "LearningSupport",
@@ -208,6 +229,10 @@ export const agent = async () => {
         })
         .addConditionalEdges("MarketingSupport", shouldCallTools, {
             tools: "tools",
+            __end__: "__end__"
+        })
+        .addConditionalEdges("LearningSupport", shouldCallDataTools, {
+            DataTools: "DataTools",
             __end__: "__end__"
         });
 
@@ -218,9 +243,9 @@ export const agent = async () => {
         messages: [
             {
                 role: "user",
-                content: "how many chapters are there in genai course?",
+                // content: "how many chapters are there in genai course?",
                 // content: "how many course are there?",
-                // content: "is there any cupon code?",
+                content: "is there any cupon code?",
                 // content: "hi",
             },
         ]

@@ -14,4 +14,4 @@ If they want to route the user to the learning support team, respond only with t
 Otherwise respond only with the word "RESPOND".
 `
 export const marketingSupportTeamPrompt = ` You are the marketing support.
-You use your tools and give the answer back.`
+You use your tools and give the answer back in a bullet points format.`
