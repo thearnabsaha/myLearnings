@@ -8,6 +8,7 @@ import { frontDeskSystemPrompt, learningSupportTeamPrompt, marketingSupportTeamP
 
 export const agent = async (inputMessage: string, threadId: string) => {
     // Define the tools for the agent to use
+    const memory = new MemorySaver();
     const tools = [GetCouponsTool];
     const DataTools = [GetDataTool];
     const toolNode = new ToolNode(tools);
@@ -107,7 +108,7 @@ export const agent = async (inputMessage: string, threadId: string) => {
         });
 
     // Finally, we compile it into a LangChain Runnable.
-    const app = workflow.compile({ checkpointer: new MemorySaver });
+    const app = workflow.compile({ checkpointer: memory });
 
     // const stream = await app.stream({
     //     messages: [
