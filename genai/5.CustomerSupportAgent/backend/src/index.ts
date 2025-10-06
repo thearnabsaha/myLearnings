@@ -8,6 +8,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import { agent } from './graph';
+import { GetData } from './tools';
 
 const morganFormat = ':method :url :status :response-time ms';
 

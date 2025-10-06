@@ -245,7 +245,8 @@ export const agent = async () => {
         messages: [
             {
                 role: "user",
-                content: "how many chapters are there in genai course?",
+                content: "genai course is on which language",
+                // content: "how many chapters are there in genai course?",
                 // content: "how many course are there?",
                 // content: "is there any cupon code?",
                 // content: "hi",

@@ -34,8 +34,8 @@ export const GetCouponsTool = tool(
     }
 );
 
-const GetData = async (question: string) => {
-    const doc = await pdfLoader("../Arnab_CV_1.pdf")
+export const GetData = async (question: string) => {
+    const doc = await pdfLoader("../a.pdf")
     const spilitDoc = await PdfSpiltter(doc)
     const dbData = await embedder(spilitDoc)
     const relevantChunks = await dbData.similaritySearch(question as string, 3);
@@ -43,14 +43,15 @@ const GetData = async (question: string) => {
     const userQuery = `Question: ${question}
         Relevant context: ${context}
         Answer:`;
+    // console.log(userQuery)
     return userQuery
 }
 export const GetDataTool = tool(
     //@ts-ignore
     async ({ query }) => {
-        // const meet = await GetData(query)
-        // return meet;
-        return "there are 5 chapters in genai course and 3 chapters in javascript course"
+        const data = await GetData(query)
+        return data;
+        // return "there are 5 chapters in genai course and 3 chapters in javascript course"
     },
     {
         name: "GetDataTool",
