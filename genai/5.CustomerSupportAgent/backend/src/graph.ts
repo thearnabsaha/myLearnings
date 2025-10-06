@@ -133,7 +133,7 @@ import { StateGraph, MessagesAnnotation } from "@langchain/langgraph";
 import { ChatGroq } from "@langchain/groq";
 import { GetCouponsTool, GetDataTool } from "./tools";
 import { StateAnnotation } from "./state";
-import { frontDeskSystemPrompt, marketingSupportTeamPrompt, routingSystemPrompt } from "./prompt";
+import { frontDeskSystemPrompt, learningSupportTeamPrompt, marketingSupportTeamPrompt, routingSystemPrompt } from "./prompt";
 
 export const agent = async () => {
     // Define the tools for the agent to use
@@ -203,13 +203,15 @@ export const agent = async () => {
             }, ...state.messages
         ]);
         return { messages: [response] };
-        // marketingSupportTeamPrompt
     }
     async function LearningSupport(state: typeof MessagesAnnotation.State) {
         console.log("i am in learning team")
         const modelWithTools = model.bindTools(DataTools);
-        const response = await modelWithTools.invoke(state.messages);
-        // We return a list, because this will get added to the existing list
+        const response = await modelWithTools.invoke([
+            {
+                role: "system", content: learningSupportTeamPrompt
+            }, ...state.messages
+        ]);
         return { messages: [response] };
     }
     // Define a new graph
@@ -219,7 +221,7 @@ export const agent = async () => {
         .addNode("DataTools", DataToolsNode)
         .addNode("LearningSupport", LearningSupport)
         .addNode("MarketingSupport", MarketingSupport)
-        .addEdge("__start__", "frontDesk") // __start__ is a special name for the entrypoint
+        .addEdge("__start__", "frontDesk")
         .addEdge("tools", "MarketingSupport")
         .addEdge("DataTools", "LearningSupport")
         .addConditionalEdges("frontDesk", shouldContinue, {
@@ -243,9 +245,9 @@ export const agent = async () => {
         messages: [
             {
                 role: "user",
-                // content: "how many chapters are there in genai course?",
+                content: "how many chapters are there in genai course?",
                 // content: "how many course are there?",
-                content: "is there any cupon code?",
+                // content: "is there any cupon code?",
                 // content: "hi",
             },
         ]

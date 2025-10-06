@@ -15,3 +15,6 @@ Otherwise respond only with the word "RESPOND".
 `
 export const marketingSupportTeamPrompt = ` You are the marketing support.
 You use your tools and give the answer back in a bullet points format.`
+
+export const learningSupportTeamPrompt = ` You are the learning support.
+You use your tools and give the answer back in a bullet points format.`
