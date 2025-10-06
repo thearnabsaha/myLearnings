@@ -22,14 +22,12 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
 
-// app.get('/', async (req, res) => {
-//     const answer = await agent()
-//     res.send(answer);
-// });
+app.get('/', async (req, res) => {
+    res.send("It's a Beautiful day");
+});
 app.post('/chat', async (req, res) => {
     const inputMessage = req.body.inputMessage as string
     const threadId = req.body.threadId as string
-    const email = req.body.email as string
     const answer = await agent(inputMessage, threadId)
     res.send(answer);
 });
