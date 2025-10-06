@@ -191,7 +191,6 @@ export const agent = async () => {
     async function LearningSupport(state: typeof MessagesAnnotation.State) {
         console.log("i am in learning team")
         const response = await model.invoke(state.messages);
-
         // We return a list, because this will get added to the existing list
         return { messages: [response] };
     }
