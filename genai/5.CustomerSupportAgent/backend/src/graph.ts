@@ -245,8 +245,8 @@ export const agent = async () => {
         messages: [
             {
                 role: "user",
-                content: "genai course is on which language",
-                // content: "how many chapters are there in genai course?",
+                // content: "genai course is on which language",
+                content: "how many chapters are there in genai course?",
                 // content: "how many course are there?",
                 // content: "is there any cupon code?",
                 // content: "hi",
@@ -256,6 +256,7 @@ export const agent = async () => {
 
     for await (const value of stream) {
         console.log("---STEP---");
+        //@ts-ignore
         console.log(value);
         console.log("---END STEP---");
     }

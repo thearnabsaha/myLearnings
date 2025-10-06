@@ -43,7 +43,6 @@ export const GetData = async (question: string) => {
     const userQuery = `Question: ${question}
         Relevant context: ${context}
         Answer:`;
-    // console.log(userQuery)
     return userQuery
 }
 export const GetDataTool = tool(
@@ -51,7 +50,6 @@ export const GetDataTool = tool(
     async ({ query }) => {
         const data = await GetData(query)
         return data;
-        // return "there are 5 chapters in genai course and 3 chapters in javascript course"
     },
     {
         name: "GetDataTool",
