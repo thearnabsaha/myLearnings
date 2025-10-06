@@ -241,23 +241,30 @@ export const agent = async () => {
     // Finally, we compile it into a LangChain Runnable.
     const app = workflow.compile();
 
-    const stream = await app.stream({
-        messages: [
-            {
-                role: "user",
-                // content: "genai course is on which language",
-                content: "how many chapters are there in genai course?",
-                // content: "how many course are there?",
-                // content: "is there any cupon code?",
-                // content: "hi",
-            },
-        ]
-    }, { configurable: { thread_id: "1" } });
+    // const stream = await app.stream({
+    //     messages: [
+    //         {
+    //             role: "user",
+    //             // content: "genai course is on which language",
+    //             content: "how many chapters are there in genai course?",
+    //             // content: "how many course are there?",
+    //             // content: "is there any cupon code?",
+    //             // content: "hi",
+    //         },
+    //     ]
+    // }, { configurable: { thread_id: "1" } });
 
-    for await (const value of stream) {
-        console.log("---STEP---");
-        //@ts-ignore
-        console.log(value);
-        console.log("---END STEP---");
-    }
+    // for await (const value of stream) {
+    //     console.log("---STEP---");
+    //     //@ts-ignore
+    //     console.log(value);
+    //     console.log("---END STEP---");
+    // }
+
+    const finalState = await app.invoke(
+        { messages: [new HumanMessage("how many chapters are there in genai course?")] },
+        { configurable: { thread_id: 1 } },
+    );
+    console.log(finalState.messages[finalState.messages.length - 1].content)
+    return finalState.messages[finalState.messages.length - 1].content
 }
