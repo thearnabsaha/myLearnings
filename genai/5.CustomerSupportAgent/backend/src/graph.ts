@@ -145,7 +145,7 @@ export const agent = async () => {
         temperature: 0,
     })
     // Define the function that determines whether to continue or not
-    function shouldTools({ messages }: typeof StateAnnotation.State) {
+    function shouldCallTools({ messages }: typeof StateAnnotation.State) {
         const lastMessage = messages[messages.length - 1] as AIMessage;
 
         // If the LLM makes a tool call, then we route to the "tools" node
@@ -155,12 +155,13 @@ export const agent = async () => {
         // Otherwise, we stop (reply to the user) using the special "__end__" node
         return "__end__";
     }
-    function shouldContinue({ messages }: typeof StateAnnotation.State) {
-        const lastMessage = messages[messages.length - 1] as AIMessage;
-
-        // If the LLM makes a tool call, then we route to the "tools" node
-        if (lastMessage.tool_calls?.length) {
-            return "tools";
+    function shouldContinue(state: typeof StateAnnotation.State) {
+        // console.log()
+        if (state.nextRepresentative == "MARKETING") {
+            return "MarketingSupport"
+        }
+        if (state.nextRepresentative == "LEARNING") {
+            return "LearningSupport"
         }
         // Otherwise, we stop (reply to the user) using the special "__end__" node
         return "__end__";
@@ -182,11 +183,13 @@ export const agent = async () => {
         return { messages: [response], nextRepresentative: nextRepresentative.nextRepresentative };
     }
     async function MarketingSupport(state: typeof MessagesAnnotation.State) {
-        const response = await model.invoke(state.messages);
-
+        console.log("i am in marketing team")
+        const modelWithTools = model.bindTools(tools);
+        const response = await modelWithTools.invoke(state.messages);
         return { messages: [response] };
     }
     async function LearningSupport(state: typeof MessagesAnnotation.State) {
+        console.log("i am in learning team")
         const response = await model.invoke(state.messages);
 
         // We return a list, because this will get added to the existing list
@@ -199,8 +202,15 @@ export const agent = async () => {
         .addNode("LearningSupport", LearningSupport)
         .addNode("MarketingSupport", MarketingSupport)
         .addEdge("__start__", "frontDesk") // __start__ is a special name for the entrypoint
-        .addEdge("tools", "frontDesk")
-        .addConditionalEdges("frontDesk", shouldContinue);
+        .addConditionalEdges("frontDesk", shouldContinue, {
+            MarketingSupport: "MarketingSupport",
+            LearningSupport: "LearningSupport",
+            __end__: "__end__"
+        })
+        .addConditionalEdges("MarketingSupport", shouldCallTools, {
+            tools: "tools",
+            __end__: "__end__"
+        });
 
     // Finally, we compile it into a LangChain Runnable.
     const app = workflow.compile();
