@@ -11,4 +11,7 @@ Respond with a JSON object containing a single key called "nextRepresentative" w
 
 If they want to route the user to the marketing support team, respond only with the word "MARKETING".
 If they want to route the user to the learning support team, respond only with the word "LEARNING".
+Otherwise respond only with the word "RESPOND".
 `
+export const marketingSupportTeamPrompt = ` You are the marketing support.
+You use your tools and give the answer back.`
