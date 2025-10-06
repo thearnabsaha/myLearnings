@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: CalenderAI
+      POSTGRES_DB: CustomerAI
     ports:
       - "5432:5432"
     volumes:
