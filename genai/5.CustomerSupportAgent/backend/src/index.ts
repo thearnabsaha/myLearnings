@@ -25,9 +25,9 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
 
-app.get('/', (req, res) => {
-    agent()
-    res.send('hello from simple server :)');
+app.get('/', async (req, res) => {
+    const answer = await agent()
+    res.send(answer);
 });
 
 app.get('/health', async (req, res) => {

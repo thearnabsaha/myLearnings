@@ -52,7 +52,6 @@ export const agent = async () => {
 
     // Define the function that calls the model
     async function frontDesk(state: typeof StateAnnotation.State) {
-        console.log("I am in frontDesk")
         const response = await model.invoke([
             {
                 role: "system", content: frontDeskSystemPrompt
@@ -66,7 +65,6 @@ export const agent = async () => {
         return { messages: [response], nextRepresentative: nextRepresentative.nextRepresentative };
     }
     async function MarketingSupport(state: typeof MessagesAnnotation.State) {
-        console.log("i am in marketing team")
         const modelWithTools = model.bindTools(tools);
         const response = await modelWithTools.invoke([
             {
@@ -76,7 +74,6 @@ export const agent = async () => {
         return { messages: [response] };
     }
     async function LearningSupport(state: typeof MessagesAnnotation.State) {
-        console.log("i am in learning team")
         const modelWithTools = model.bindTools(DataTools);
         const response = await modelWithTools.invoke([
             {
@@ -133,7 +130,11 @@ export const agent = async () => {
     // }
 
     const finalState = await app.invoke(
-        { messages: [new HumanMessage("how many chapters are there in genai course?")] },
+        // { messages: [new HumanMessage("genai course is on which language")] },
+        // { messages: [new HumanMessage("how many chapters are there in genai course?")] },
+        // { messages: [new HumanMessage("how many course are there?")] },
+        { messages: [new HumanMessage("is there any cupon code?")] },
+        // { messages: [new HumanMessage("hi")] },
         { configurable: { thread_id: 1 } },
     );
     console.log(finalState.messages[finalState.messages.length - 1].content)
