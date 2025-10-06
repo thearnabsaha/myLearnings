@@ -6,7 +6,7 @@ import { GetCouponsTool, GetDataTool } from "./tools";
 import { StateAnnotation } from "./state";
 import { frontDeskSystemPrompt, learningSupportTeamPrompt, marketingSupportTeamPrompt, routingSystemPrompt } from "./prompt";
 
-export const agent = async () => {
+export const agent = async (inputMessage: string, threadId: string) => {
     // Define the tools for the agent to use
     const tools = [GetCouponsTool];
     const DataTools = [GetDataTool];
@@ -133,9 +133,10 @@ export const agent = async () => {
         // { messages: [new HumanMessage("genai course is on which language")] },
         // { messages: [new HumanMessage("how many chapters are there in genai course?")] },
         // { messages: [new HumanMessage("how many course are there?")] },
-        { messages: [new HumanMessage("is there any cupon code?")] },
+        { messages: [new HumanMessage(inputMessage)] },
+        // { messages: [new HumanMessage("is there any cupon code?")] },
         // { messages: [new HumanMessage("hi")] },
-        { configurable: { thread_id: 1 } },
+        { configurable: { thread_id: threadId } },
     );
     console.log(finalState.messages[finalState.messages.length - 1].content)
     return finalState.messages[finalState.messages.length - 1].content

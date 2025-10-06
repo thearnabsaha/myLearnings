@@ -14,21 +14,25 @@ const morganFormat = ':method :url :status :response-time ms';
 app.use(morgan(morganFormat));
 app.use(helmet());
 
-app.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    credentials: true,
-}));
+app.use(cors());
+
 
 app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
 
-app.get('/', async (req, res) => {
-    const answer = await agent()
+// app.get('/', async (req, res) => {
+//     const answer = await agent()
+//     res.send(answer);
+// });
+app.post('/chat', async (req, res) => {
+    const inputMessage = req.body.inputMessage as string
+    const threadId = req.body.threadId as string
+    const email = req.body.email as string
+    const answer = await agent(inputMessage, threadId)
     res.send(answer);
 });
-
 app.get('/health', async (req, res) => {
     const start = Date.now();
     const healthcheck = {
