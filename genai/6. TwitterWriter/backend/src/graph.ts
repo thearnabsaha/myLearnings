@@ -12,7 +12,7 @@ export const agent = async () => {
 
     function shouldContinue(state: typeof StateAnnotation.State) {
         console.log("I am in continue")
-        if (Number(state.iteration) > 1) {
+        if (Number(state.iteration) > 5) {
             return "__end__";
         }
         return "reviewer";
@@ -25,7 +25,7 @@ export const agent = async () => {
                 role: "system", content: TwitterWriterPrompt
             }, ...state.messages
         ]);
-        return { messages: [response], iteration: Number(state.iteration) == 1 ? state.iteration : 1 };
+        return { messages: [response], iteration: Number(state.iteration) >= 1 ? state.iteration : 1 };
     }
     async function reviewer(state: typeof StateAnnotation.State) {
         console.log("I am in reviewer")
@@ -60,7 +60,6 @@ export const agent = async () => {
     }, { configurable: { thread_id: "1" } });
     for await (const value of stream) {
         console.log("---STEP---");
-        //@ts-ignore
         console.log(value);
         console.log("---END STEP---");
     }

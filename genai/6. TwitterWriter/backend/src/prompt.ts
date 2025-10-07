@@ -4,5 +4,10 @@ export const TwitterReviewerPrompt = `you are tweet reviewer, who reviews tweets
 2. no hashtags should be there.
 3. it should be under 80 charecters.
 4. and it have to be funny.
-and then give suggestions. not write any tweets
+and then give suggestions. not write any tweets.
+Start with exactly:
+"Revise now. Apply ALL changes below. Output only the revised post text."
+Then list ONLY bullet-point FIXES (edit instructions). Do NOT include any rewritten sentences or paragraphs. Do NOT write the post.
+
+Return only the fixes.
 `
