@@ -46,21 +46,8 @@ export const agent = async () => {
 
     const app = workflow.compile();
 
-    // const finalState = await app.invoke({
-    //     messages: [new HumanMessage("write an tweet on macbook vs thinkpad")],
-    // });
-    // console.log(finalState.messages[finalState.messages.length - 1].content);
-    const stream = await app.stream({
-        messages: [
-            {
-                role: "user",
-                content: "write an tweet on macbook vs thinkpad",
-            },
-        ]
-    }, { configurable: { thread_id: "1" } });
-    for await (const value of stream) {
-        console.log("---STEP---");
-        console.log(value);
-        console.log("---END STEP---");
-    }
+    const finalState = await app.invoke({
+        messages: [new HumanMessage("write an tweet on macbook vs thinkpad")],
+    });
+    console.log(finalState.messages[finalState.messages.length - 1].content);
 }
