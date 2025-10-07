@@ -23,15 +23,15 @@ app.use(express.static('public'));
 app.use(cookieParser());
 
 app.get('/', async (req, res) => {
-    agent()
+    // agent()
     res.send("It's a Beautiful day");
 });
-// app.post('/chat', async (req, res) => {
-//     const inputMessage = req.body.inputMessage as string
-//     const threadId = req.body.threadId as string
-//     const answer = await agent(inputMessage, threadId)
-//     res.send(answer);
-// });
+app.post('/chat', async (req, res) => {
+    const inputMessage = req.body.inputMessage as string
+    const threadId = req.body.threadId as string
+    const answer = await agent(inputMessage, threadId)
+    res.send(answer);
+});
 app.get('/health', async (req, res) => {
     const start = Date.now();
     const healthcheck = {

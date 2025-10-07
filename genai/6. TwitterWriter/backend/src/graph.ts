@@ -4,7 +4,7 @@ import { ChatGroq } from "@langchain/groq";
 import { TwitterReviewerPrompt, TwitterWriterPrompt } from "./prompt";
 import { StateAnnotation } from "./state";
 
-export const agent = async () => {
+export const agent = async (inputMessage: string, threadId: string) => {
     const model = new ChatGroq({
         model: "openai/gpt-oss-120b",
         temperature: 0,
@@ -43,8 +43,10 @@ export const agent = async () => {
 
     const app = workflow.compile();
 
-    const finalState = await app.invoke({
-        messages: [new HumanMessage("write an tweet on macbook vs thinkpad")],
-    });
-    console.log(finalState.messages[finalState.messages.length - 1].content);
+    const finalState = await app.invoke(
+        { messages: [new HumanMessage(inputMessage)] },
+        { configurable: { thread_id: threadId } },
+    );
+    console.log(finalState.messages[finalState.messages.length - 1].content)
+    return finalState.messages[finalState.messages.length - 1].content
 }
