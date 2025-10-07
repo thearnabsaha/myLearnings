@@ -1,61 +1,64 @@
-import { HumanMessage, AIMessage } from "@langchain/core/messages";
-import { ToolNode } from "@langchain/langgraph/prebuilt";
-import { StateGraph, MessagesAnnotation } from "@langchain/langgraph";
+import { HumanMessage } from "@langchain/core/messages";
+import { StateGraph } from "@langchain/langgraph";
 import { ChatGroq } from "@langchain/groq";
+import { TwitterReviewerPrompt, TwitterWriterPrompt } from "./prompt";
+import { StateAnnotation } from "./state";
 
 export const agent = async () => {
-    // Define the tools for the agent to use
-    // const tools = [new TavilySearchResults({ maxResults: 3 })];
-    // const toolNode = new ToolNode(tools);
-    // Create a model and give it access to the tools
     const model = new ChatGroq({
         model: "openai/gpt-oss-120b",
         temperature: 0,
     })
 
-    // Define the function that determines whether to continue or not
-    function shouldContinue({ messages }: typeof MessagesAnnotation.State) {
-
-        // Otherwise, we stop (reply to the user) using the special "__end__" node
+    function shouldContinue({ messages }: typeof StateAnnotation.State) {
+        console.log("I am in continue")
         return "__end__";
     }
 
-    // Define the function that calls the model
-    async function writer(state: typeof MessagesAnnotation.State) {
-        const response = await model.invoke(state.messages);
-
-        // We return a list, because this will get added to the existing list
+    async function writer(state: typeof StateAnnotation.State) {
+        console.log("I am in writer")
+        const response = await model.invoke([
+            {
+                role: "system", content: TwitterReviewerPrompt
+            }, ...state.messages
+        ]);
+        return { messages: [response], iteration: 1 };
+    }
+    async function reviewer(state: typeof StateAnnotation.State) {
+        console.log("I am in reviewer")
+        const response = await model.invoke([
+            {
+                role: "system", content: TwitterWriterPrompt
+            }, ...state.messages
+        ]);
         return { messages: [response] };
     }
-    // Define the function that calls the model
-    async function reviewer(state: typeof MessagesAnnotation.State) {
-        const response = await model.invoke(state.messages);
 
-        // We return a list, because this will get added to the existing list
-        return { messages: [response] };
-    }
-
-    // Define a new graph
-    const workflow = new StateGraph(MessagesAnnotation)
+    const workflow = new StateGraph(StateAnnotation)
         .addNode("writer", writer)
         .addNode("reviewer", reviewer)
         .addEdge("__start__", "writer")
         .addEdge("reviewer", "writer")
         .addConditionalEdges("writer", shouldContinue);
 
-    // Finally, we compile it into a LangChain Runnable.
     const app = workflow.compile();
 
-    // Use the agent
-    const finalState = await app.invoke({
-        messages: [new HumanMessage("what is the weather in sf")],
-    });
-    console.log(finalState.messages[finalState.messages.length - 1].content);
-
-    const nextState = await app.invoke({
-        // Including the messages from the previous run gives the LLM context.
-        // This way it knows we're asking about the weather in NY
-        messages: [...finalState.messages, new HumanMessage("what about ny")],
-    });
-    console.log(nextState.messages[nextState.messages.length - 1].content);
+    // const finalState = await app.invoke({
+    //     messages: [new HumanMessage("write an tweet on macbook vs thinkpad")],
+    // });
+    // console.log(finalState.messages[finalState.messages.length - 1].content);
+    const stream = await app.stream({
+        messages: [
+            {
+                role: "user",
+                content: "write an tweet on macbook vs thinkpad",
+            },
+        ]
+    }, { configurable: { thread_id: "1" } });
+    for await (const value of stream) {
+        console.log("---STEP---");
+        //@ts-ignore
+        console.log(value);
+        console.log("---END STEP---");
+    }
 }
