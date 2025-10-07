@@ -10,9 +10,12 @@ export const agent = async () => {
         temperature: 0,
     })
 
-    function shouldContinue({ messages }: typeof StateAnnotation.State) {
+    function shouldContinue(state: typeof StateAnnotation.State) {
         console.log("I am in continue")
-        return "__end__";
+        if (Number(state.iteration) > 5) {
+            return "__end__";
+        }
+        return "reviewer";
     }
 
     async function writer(state: typeof StateAnnotation.State) {
@@ -31,7 +34,7 @@ export const agent = async () => {
                 role: "system", content: TwitterWriterPrompt
             }, ...state.messages
         ]);
-        return { messages: [response] };
+        return { messages: [response], iteration: state.iteration + 1 };
     }
 
     const workflow = new StateGraph(StateAnnotation)
