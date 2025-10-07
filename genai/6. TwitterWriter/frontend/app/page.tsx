@@ -62,7 +62,7 @@ const page = () => {
       <div className='flex items-center justify-between pt-2 fixed w-screen left-0 px-10 bg-background'>
         <div className='flex items-center'>
           <MessageCircleDashed />
-          <h1 className='text-2xl'>Calender AI</h1>
+          <h1 className='text-2xl'>TwitterWriter AI</h1>
         </div>
         <div className=" flex justify-center items-center">
           {
