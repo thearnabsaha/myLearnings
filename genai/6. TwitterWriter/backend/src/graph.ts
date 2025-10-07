@@ -12,7 +12,7 @@ export const agent = async () => {
 
     function shouldContinue(state: typeof StateAnnotation.State) {
         console.log("I am in continue")
-        if (Number(state.iteration) > 5) {
+        if (Number(state.iteration) > 1) {
             return "__end__";
         }
         return "reviewer";
@@ -22,16 +22,16 @@ export const agent = async () => {
         console.log("I am in writer")
         const response = await model.invoke([
             {
-                role: "system", content: TwitterReviewerPrompt
+                role: "system", content: TwitterWriterPrompt
             }, ...state.messages
         ]);
-        return { messages: [response], iteration: 1 };
+        return { messages: [response], iteration: Number(state.iteration) == 1 ? state.iteration : 1 };
     }
     async function reviewer(state: typeof StateAnnotation.State) {
         console.log("I am in reviewer")
         const response = await model.invoke([
             {
-                role: "system", content: TwitterWriterPrompt
+                role: "system", content: TwitterReviewerPrompt
             }, ...state.messages
         ]);
         return { messages: [response], iteration: state.iteration + 1 };
