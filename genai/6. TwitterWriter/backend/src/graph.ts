@@ -12,7 +12,7 @@ export const agent = async () => {
 
     function shouldContinue(state: typeof StateAnnotation.State) {
         console.log("I am in continue")
-        if (Number(state.iteration) > 5) {
+        if (Number(state.iteration) > 3) {
             return "__end__";
         }
         return "reviewer";
@@ -34,7 +34,7 @@ export const agent = async () => {
                 role: "system", content: TwitterReviewerPrompt
             }, ...state.messages
         ]);
-        return { messages: [response], iteration: state.iteration + 1 };
+        return { messages: [new HumanMessage(response.content as string)], iteration: state.iteration + 1 };
     }
 
     const workflow = new StateGraph(StateAnnotation)
