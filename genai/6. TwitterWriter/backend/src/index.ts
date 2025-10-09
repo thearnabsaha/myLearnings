@@ -10,7 +10,6 @@ import helmet from 'helmet';
 import { agent } from './graph';
 
 const morganFormat = ':method :url :status :response-time ms';
-
 app.use(morgan(morganFormat));
 app.use(helmet());
 app.use(cors());
