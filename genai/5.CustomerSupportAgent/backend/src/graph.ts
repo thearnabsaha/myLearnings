@@ -83,7 +83,6 @@ export const agent = async (inputMessage: string, threadId: string) => {
         ]);
         return { messages: [response] };
     }
-    // Define a new graph
     const workflow = new StateGraph(StateAnnotation)
         .addNode("frontDesk", frontDesk)
         .addNode("tools", toolNode)
