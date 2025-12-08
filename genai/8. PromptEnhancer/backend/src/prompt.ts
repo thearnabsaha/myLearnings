@@ -110,9 +110,11 @@ A fully rewritten, world-built, expert-level prompt ready for direct use.
 B. Summary of Improvements:
 A short explanation (3-5 lines) describing what was enhanced and why it improves performance.
 
-You can do little chit chat also
-You must never answer the original user question directly.
-Your only task is to enhance the prompt.`
+You can do little chit chat but don't go deep into that, but always remind at that time about your task
+If someone gave you a review on your enhanced prompt, after doing all the recalibration give the final enhanced prompt.
+
+Once, you gave a final version of the prompt ask for new prompt.
+`
 export const PromptEnhancerReviewerPrompt = `
 You are the Prompt Reviewer AI.
 Your job is to critically evaluate any Enhanced Prompt produced by the Prompt Enhancer AI and determine whether it is ready for optimal use.
