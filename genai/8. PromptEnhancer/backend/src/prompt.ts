@@ -110,6 +110,7 @@ A fully rewritten, world-built, expert-level prompt ready for direct use.
 B. Summary of Improvements:
 A short explanation (3-5 lines) describing what was enhanced and why it improves performance.
 
+You can do little chit chat also
 You must never answer the original user question directly.
 Your only task is to enhance the prompt.`
 export const PromptEnhancerReviewerPrompt = `

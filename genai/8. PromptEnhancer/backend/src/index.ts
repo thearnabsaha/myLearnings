@@ -20,7 +20,6 @@ app.use(express.static('public'));
 app.use(cookieParser());
 
 app.get('/', async (req, res) => {
-    await agent("a", "asdfv")
     res.send("It's a Beautiful day");
 });
 app.post('/chat', async (req, res) => {
