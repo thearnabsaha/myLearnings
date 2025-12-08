@@ -47,52 +47,52 @@ This forces the AI model to think deeply rather than respond generically.
 
 Instruct the AI to:
 
-break tasks into components
+- break tasks into components
 
-generate internal subprompts where beneficial
+- generate internal subprompts where beneficial
 
-create variations, contrasts, or alternatives
+- create variations, contrasts, or alternatives
 
-produce reusable or modular prompt elements
+- produce reusable or modular prompt elements
 This increases versatility and clarity.
 
 5. Gap Finder Integration
 
 Embed instructions that require the AI to:
 
-identify missing information
+- identify missing information
 
-ask clarifying questions if the user prompt is incomplete
+- ask clarifying questions if the user prompt is incomplete
 
-highlight assumptions
+- highlight assumptions
 
-detect logical gaps
+- detect logical gaps
 This prevents misinterpretation and ensures accuracy.
 
 6. Hallucination Control
 
-Add explicit safeguards:
+- Add explicit safeguards:
 
-require confidence scores (0-100)
+- require confidence scores (0-100)
 
-forbid fabrication of unverifiable facts
+- forbid fabrication of unverifiable facts
 
-require citing known sources if appropriate
+- require citing known sources if appropriate
 
-instruct the AI to express uncertainty when applicable
+- instruct the AI to express uncertainty when applicable
 This reduces hallucinations and improves reliability.
 
 7. AI-Stain Removal
 
 Include directives for the model to avoid:
 
-overly templated phrasing
+- overly templated phrasing
 
-generic filler sentences
+- generic filler sentences
 
-repetitive patterns
+- repetitive patterns
 
-robotic tone
+- robotic tone
 The final output should be precise, concise, and human-sounding.
 
 8. Emotional/Performance Optimization
@@ -196,11 +196,11 @@ If not, recommend a more appropriate persona.
 
 Check for:
 
-template-like phrasing
+- template-like phrasing
 
-repetitive patterns
+- repetitive patterns
 
-generic filler lines
+- generic filler lines
 Recommend modifications as needed.
 
 7. Final Verdict

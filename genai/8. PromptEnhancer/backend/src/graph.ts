@@ -3,7 +3,7 @@ import { ChatGroq } from "@langchain/groq";
 import { AIMessage, HumanMessage } from "langchain";
 import { SystemMessage } from '@langchain/core/messages';
 import { StateAnnotation } from "./state";
-import { TwitterReviewerPrompt, TwitterWriterPrompt } from "./prompt";
+import { PromptEnhancerPrompt, PromptEnhancerReviewerPrompt } from "./prompt";
 export const agent = async (inputMessage: string, threadId: string) => {
     const model = new ChatGroq({
         model: "openai/gpt-oss-20b",
@@ -19,11 +19,11 @@ export const agent = async (inputMessage: string, threadId: string) => {
     //     return { messages: [...state.messages, response] };
     // };
     const writer = async (state: typeof StateAnnotation.State) => {
-        const response = await model.invoke([{ role: "system", content: TwitterWriterPrompt }, ...state.messages]);
+        const response = await model.invoke([{ role: "system", content: PromptEnhancerPrompt }, ...state.messages]);
         return { messages: [response], iteration: Number(state.iteration) >= 1 ? state.iteration : 1 };
     };
     const reviewer = async (state: typeof StateAnnotation.State) => {
-        const response = await model.invoke([{ role: "system", content: TwitterReviewerPrompt }, ...state.messages]);
+        const response = await model.invoke([{ role: "system", content: PromptEnhancerReviewerPrompt }, ...state.messages]);
         return { messages: [new HumanMessage(response.content as string)], iteration: Number(state.iteration) + 1 };
     };
     const nextNode = (state: typeof StateAnnotation.State) => {
@@ -40,7 +40,9 @@ export const agent = async (inputMessage: string, threadId: string) => {
         .addEdge("reviewer", "writer")
         .compile();
 
-    const answer = await graph.invoke({ messages: [new HumanMessage(inputMessage)] }, { configurable: { thread_id: threadId } },);
-    // console.log(answer)
+    const answer = await graph.invoke({ messages: [new HumanMessage("find me a best starter pokemon")] }, { configurable: { thread_id: threadId } },);
+    // const answer = await graph.invoke({ messages: [new HumanMessage(inputMessage)] }, { configurable: { thread_id: threadId } },);
+    console.log(answer)
     console.log(answer.messages[answer.messages.length - 1].content)
+    return answer.messages[answer.messages.length - 1].content
 }
