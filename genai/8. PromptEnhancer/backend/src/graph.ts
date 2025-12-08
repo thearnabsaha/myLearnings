@@ -1,52 +1,46 @@
-import { HumanMessage } from "@langchain/core/messages";
-import { StateGraph } from "@langchain/langgraph";
+import { StateGraph, START, END } from "@langchain/langgraph";
 import { ChatGroq } from "@langchain/groq";
-import { TwitterReviewerPrompt, TwitterWriterPrompt } from "./prompt";
+import { AIMessage, HumanMessage } from "langchain";
+import { SystemMessage } from '@langchain/core/messages';
 import { StateAnnotation } from "./state";
-
+import { TwitterReviewerPrompt, TwitterWriterPrompt } from "./prompt";
 export const agent = async (inputMessage: string, threadId: string) => {
     const model = new ChatGroq({
-        model: "openai/gpt-oss-120b",
-        temperature: 0,
-    })
+        model: "openai/gpt-oss-20b",
+        temperature: 0
+    });
+    // const LLM = async (state: typeof MessagesAnnotation.State) => {
+    //     const response = await model.invoke(state.messages);
+    //     return { messages: [...state.messages, response] };
+    // };
 
-    function shouldContinue(state: typeof StateAnnotation.State) {
-        if (Number(state.iteration) > 3) {
-            return "__end__";
-        }
-        return "reviewer";
-    }
-
-    async function writer(state: typeof StateAnnotation.State) {
-        const response = await model.invoke([
-            {
-                role: "system", content: TwitterWriterPrompt
-            }, ...state.messages
-        ]);
+    // const writer = async (state: typeof MessagesAnnotation.State) => {
+    //     const response = await model.invoke([{ role: "system", content: TwitterWriterPrompt }, ...state.messages]);
+    //     return { messages: [...state.messages, response] };
+    // };
+    const writer = async (state: typeof StateAnnotation.State) => {
+        const response = await model.invoke([{ role: "system", content: TwitterWriterPrompt }, ...state.messages]);
         return { messages: [response], iteration: Number(state.iteration) >= 1 ? state.iteration : 1 };
+    };
+    const reviewer = async (state: typeof StateAnnotation.State) => {
+        const response = await model.invoke([{ role: "system", content: TwitterReviewerPrompt }, ...state.messages]);
+        return { messages: [new HumanMessage(response.content as string)], iteration: Number(state.iteration) + 1 };
+    };
+    const nextNode = (state: typeof StateAnnotation.State) => {
+        if (Number(state.iteration) < 3) {
+            return "reviewer"
+        }
+        return END
     }
-    async function reviewer(state: typeof StateAnnotation.State) {
-        const response = await model.invoke([
-            {
-                role: "system", content: TwitterReviewerPrompt
-            }, ...state.messages
-        ]);
-        return { messages: [new HumanMessage(response.content as string)], iteration: state.iteration + 1 };
-    }
-
-    const workflow = new StateGraph(StateAnnotation)
+    const graph = new StateGraph(StateAnnotation)
         .addNode("writer", writer)
         .addNode("reviewer", reviewer)
-        .addEdge("__start__", "writer")
+        .addEdge(START, "writer")
+        .addConditionalEdges('writer', nextNode)
         .addEdge("reviewer", "writer")
-        .addConditionalEdges("writer", shouldContinue);
+        .compile();
 
-    const app = workflow.compile();
-
-    const finalState = await app.invoke(
-        { messages: [new HumanMessage(inputMessage)] },
-        { configurable: { thread_id: threadId } },
-    );
-    console.log(finalState.messages[finalState.messages.length - 1].content)
-    return finalState.messages[finalState.messages.length - 1].content
+    const answer = await graph.invoke({ messages: [new HumanMessage(inputMessage)] }, { configurable: { thread_id: threadId } },);
+    // console.log(answer)
+    console.log(answer.messages[answer.messages.length - 1].content)
 }
