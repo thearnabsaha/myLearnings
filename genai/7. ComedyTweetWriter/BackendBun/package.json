@@ -2,6 +2,9 @@
   "name": "backendbun",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/cookie-parser": "^1.4.10",
@@ -13,6 +16,9 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@langchain/core": "^1.1.4",
+    "@langchain/groq": "^1.0.2",
+    "@langchain/langgraph": "^1.0.4",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",

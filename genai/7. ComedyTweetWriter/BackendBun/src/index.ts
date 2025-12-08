@@ -7,9 +7,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
-
-// npm install express cors cookie-parser dotenv helmet morgan
-// npm install -D @types/express @types/cors @types/cookie-parser @types/morgan
+import { callLLM } from './graph';
 
 const morganFormat = ':method :url :status :response-time ms';
 
@@ -31,6 +29,7 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
 app.get('/', (req, res) => {
+    callLLM()
     res.send('hello from simple server :)');
 });
 
