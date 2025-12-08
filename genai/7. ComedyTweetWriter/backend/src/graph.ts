@@ -4,7 +4,7 @@ import { AIMessage, HumanMessage } from "langchain";
 import { SystemMessage } from '@langchain/core/messages';
 import { StateAnnotation } from "./state";
 import { TwitterReviewerPrompt, TwitterWriterPrompt } from "./prompt";
-export const callLLM = async () => {
+export const agent = async (inputMessage: string, threadId: string) => {
     const model = new ChatGroq({
         model: "openai/gpt-oss-20b",
         temperature: 0
@@ -40,7 +40,7 @@ export const callLLM = async () => {
         .addEdge("reviewer", "writer")
         .compile();
 
-    const answer = await graph.invoke({ messages: [new HumanMessage("write a tweet about bunjs")] });
+    const answer = await graph.invoke({ messages: [new HumanMessage(inputMessage)] }, { configurable: { thread_id: threadId } },);
     // console.log(answer)
     console.log(answer.messages[answer.messages.length - 1].content)
 }
