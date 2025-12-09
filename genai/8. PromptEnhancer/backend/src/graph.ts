@@ -11,7 +11,6 @@ const wrtiterModel = new ChatGroq({
 const reviewerModel = new ChatGroq({
     model: "openai/gpt-oss-20b",
     temperature: 0,
-    maxTokens: 256
 });
 
 const writer = async (state: typeof StateAnnotation.State) => {
