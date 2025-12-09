@@ -4,21 +4,17 @@ import { HumanMessage } from "langchain";
 import { StateAnnotation } from "./state";
 import { PromptEnhancerPrompt, PromptEnhancerReviewerPrompt } from "./prompt";
 
-const wrtiterModel = new ChatGroq({
+const model = new ChatGroq({
     model: "openai/gpt-oss-20b",
-    temperature: 0,
-});
-const reviewerModel = new ChatGroq({
-    model: "openai/gpt-oss-20b",
-    temperature: 0,
+    temperature: 0
 });
 
 const writer = async (state: typeof StateAnnotation.State) => {
-    const response = await wrtiterModel.invoke([{ role: "system", content: PromptEnhancerPrompt }, ...state.messages]);
+    const response = await model.invoke([{ role: "system", content: PromptEnhancerPrompt }, ...state.messages]);
     return { messages: [response], iteration: Number(state.iteration) >= 1 ? state.iteration : 1 };
 };
 const reviewer = async (state: typeof StateAnnotation.State) => {
-    const response = await reviewerModel.invoke([{ role: "system", content: PromptEnhancerReviewerPrompt }, ...state.messages]);
+    const response = await model.invoke([{ role: "system", content: PromptEnhancerReviewerPrompt }, ...state.messages]);
     return { messages: [new HumanMessage(response.content as string)], iteration: Number(state.iteration) + 1 };
 };
 const nextNode = (state: typeof StateAnnotation.State) => {
