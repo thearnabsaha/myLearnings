@@ -11,6 +11,7 @@ const model = new ChatGroq({
 
 const writer = async (state: typeof StateAnnotation.State) => {
     const response = await model.invoke([{ role: "system", content: PromptEnhancerPrompt }, ...state.messages]);
+    // console.log(state.messages)
     return { messages: [response], iteration: Number(state.iteration) >= 1 ? state.iteration : 1 };
 };
 const reviewer = async (state: typeof StateAnnotation.State) => {
@@ -34,7 +35,7 @@ const graph = new StateGraph(StateAnnotation)
 
 export const agent = async (inputMessage: string, threadId: string) => {
     const answer = await graph.invoke({ messages: [new HumanMessage(inputMessage)] }, { configurable: { thread_id: threadId } },);
-    console.log(answer)
-    console.log(answer.messages[answer.messages.length - 1].content)
+    // console.log(answer)
+    // console.log(answer.messages[answer.messages.length - 1].content)
     return answer.messages[answer.messages.length - 1].content
 }
