@@ -1,41 +1,80 @@
-import { StateGraph, START, END } from "@langchain/langgraph";
+import { tool } from "@langchain/core/tools";
 import { ChatGroq } from "@langchain/groq";
-import { HumanMessage } from "langchain";
+import * as z from "zod";
+import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { StateAnnotation } from "./state";
-import { PromptEnhancerPrompt, PromptEnhancerReviewerPrompt } from "./prompt";
+import { isAIMessage, ToolMessage } from "@langchain/core/messages";
+import { END, START, StateGraph } from "@langchain/langgraph";
+import { TavilySearch } from "@langchain/tavily";
 
 const model = new ChatGroq({
-    model: "openai/gpt-oss-120b",
+    model: "openai/gpt-oss-20b",
     temperature: 0
 });
 
-// const writer = async (state: typeof StateAnnotation.State) => {
-//     const response = await model.invoke([{ role: "system", content: PromptEnhancerPrompt }, ...state.messages]);
-//     // console.log(state.messages)
-//     return { messages: [response], iteration: Number(state.iteration) >= 1 ? state.iteration : 1 };
-// };
-// const reviewer = async (state: typeof StateAnnotation.State) => {
-//     const response = await model.invoke([{ role: "system", content: PromptEnhancerReviewerPrompt }, ...state.messages]);
-//     return { messages: [new HumanMessage(response.content as string)], iteration: Number(state.iteration) + 1 };
-// };
-// const nextNode = (state: typeof StateAnnotation.State) => {
-//     if (Number(state.iteration) < 2) {
-//         return "reviewer"
-//     }
-//     return END
-// }
+// Define tools
+const SearchTool = new TavilySearch({
+    maxResults: 3,
+    topic: "general",
+});
 
+const toolsByName = {
+    [SearchTool.name]: SearchTool,
+};
+const tools = Object.values(toolsByName);
+const modelWithTools = model.bindTools(tools);
+
+async function llmCall(state: typeof StateAnnotation.State) {
+    return {
+        messages: await modelWithTools.invoke([
+            new SystemMessage(
+                "You are a helpful assistant who answers all the questions."
+            ),
+            ...state.messages,
+        ]),
+    };
+}
+async function toolNode(state: typeof StateAnnotation.State) {
+    const lastMessage = state.messages.at(-1);
+
+    if (lastMessage == null || !isAIMessage(lastMessage)) {
+        return { messages: [] };
+    }
+
+    const result: ToolMessage[] = [];
+    for (const toolCall of lastMessage.tool_calls ?? []) {
+        const tool = toolsByName[toolCall.name];
+        const observation = await tool.invoke(toolCall);
+        result.push(observation);
+    }
+
+    return { messages: result };
+}
+async function shouldContinue(state: typeof StateAnnotation.State) {
+    const lastMessage = state.messages.at(-1);
+    if (lastMessage == null || !isAIMessage(lastMessage)) return END;
+
+    // If the LLM makes a tool call, then perform an action
+    if (lastMessage.tool_calls?.length) {
+        return "toolNode";
+    }
+    // Otherwise, we stop (reply to the user)
+    return END;
+}
 const graph = new StateGraph(StateAnnotation)
-    // .addNode("writer", writer)
-    // .addNode("reviewer", reviewer)
-    // .addEdge(START, "writer")
-    // .addConditionalEdges('writer', nextNode)
-    // .addEdge("reviewer", "writer")
+    .addNode("llmCall", llmCall)
+    .addNode("toolNode", toolNode)
+    .addEdge(START, "llmCall")
+    .addConditionalEdges("llmCall", shouldContinue, ["toolNode", END])
+    .addEdge("toolNode", "llmCall")
     .compile();
 
+// Invoke
 export const agent = async (inputMessage: string, threadId: string) => {
-    const answer = await graph.invoke({ messages: [new HumanMessage(inputMessage)] }, { configurable: { thread_id: threadId } },);
-    // console.log(answer)
-    // console.log(answer.messages[answer.messages.length - 1].content)
-    return answer.messages[answer.messages.length - 1].content
+    const result = await graph.invoke({
+        messages: [new HumanMessage("what is the weather of kolkata")],
+    });
+    console.log(result)
+    console.log(result.messages[result.messages.length - 1].content)
+    return result.messages[result.messages.length - 1].content
 }
