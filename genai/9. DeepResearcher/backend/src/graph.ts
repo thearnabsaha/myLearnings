@@ -1,14 +1,15 @@
 import { tool } from "@langchain/core/tools";
 import { ChatGroq } from "@langchain/groq";
 import * as z from "zod";
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { StateAnnotation } from "./state";
 import { isAIMessage, ToolMessage } from "@langchain/core/messages";
 import { END, START, StateGraph } from "@langchain/langgraph";
 import { TavilySearch } from "@langchain/tavily";
+import { ResponderPrompt, ReviewerPrompt } from "./prompt";
 
 const model = new ChatGroq({
-    model: "openai/gpt-oss-20b",
+    model: "openai/gpt-oss-120b",
     temperature: 0
 });
 
@@ -24,14 +25,32 @@ const toolsByName = {
 const tools = Object.values(toolsByName);
 const modelWithTools = model.bindTools(tools);
 
-async function llmCall(state: typeof StateAnnotation.State) {
+async function Responder(state: typeof StateAnnotation.State) {
+    const response = await modelWithTools.invoke([
+        new SystemMessage(
+            ResponderPrompt
+        ),
+        ...state.messages,
+        // new SystemMessage(
+        //     "Reflect on the user's original question and the actions taken thus far."
+        // ),
+    ])
+
     return {
-        messages: await modelWithTools.invoke([
-            new SystemMessage(
-                "You are a helpful assistant who answers all the questions."
-            ),
-            ...state.messages,
-        ]),
+        messages: [new AIMessage(JSON.stringify(response))],
+        iteration: 0,
+    };
+}
+async function Revisor(state: typeof StateAnnotation.State) {
+    const response = await modelWithTools.invoke([
+        new SystemMessage(
+            ReviewerPrompt
+        ),
+        ...state.messages,
+    ])
+    return {
+        messages: [new AIMessage(JSON.stringify(response))],
+        iteration: Number(state.iteration) + 1,
     };
 }
 async function toolNode(state: typeof StateAnnotation.State) {
@@ -51,28 +70,26 @@ async function toolNode(state: typeof StateAnnotation.State) {
     return { messages: result };
 }
 async function shouldContinue(state: typeof StateAnnotation.State) {
-    const lastMessage = state.messages.at(-1);
-    if (lastMessage == null || !isAIMessage(lastMessage)) return END;
-
-    // If the LLM makes a tool call, then perform an action
-    if (lastMessage.tool_calls?.length) {
-        return "toolNode";
-    }
     // Otherwise, we stop (reply to the user)
+    if (Number(state.iteration) < 3) {
+        return "toolNode"
+    }
     return END;
 }
 const graph = new StateGraph(StateAnnotation)
-    .addNode("llmCall", llmCall)
+    .addNode("Responder", Responder)
     .addNode("toolNode", toolNode)
-    .addEdge(START, "llmCall")
-    .addConditionalEdges("llmCall", shouldContinue, ["toolNode", END])
-    .addEdge("toolNode", "llmCall")
+    .addNode("Revisor", Revisor)
+    .addEdge(START, "Responder")
+    .addEdge("Responder", "toolNode")
+    .addEdge("toolNode", "Revisor")
+    .addConditionalEdges("Revisor", shouldContinue, ["toolNode", END])
     .compile();
 
 // Invoke
 export const agent = async (inputMessage: string, threadId: string) => {
     const result = await graph.invoke({
-        messages: [new HumanMessage("what is the weather of kolkata")],
+        messages: [new HumanMessage(inputMessage)],
     });
     console.log(result)
     console.log(result.messages[result.messages.length - 1].content)

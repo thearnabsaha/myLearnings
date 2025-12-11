@@ -1,12 +1,13 @@
-export const Responder = `
+export const ResponderPrompt = `
                     Current date and time is: ${new Date().toUTCString()} ,
                     Current Timezone is: ${Intl.DateTimeFormat().resolvedOptions().timeZone} You will use this time zone while using tools.
+                    always search before giving an answer.
                     1. Provide a detailed ~250 word answer.
                     2. Reflect and critique your answer. Be severe to maximize improvement.
                     3. Recommend max 3 search queries to research information and improve your answer.
     `
 // const currentDateTime = new Date().toLocaleString('sv-SE');
-export const Reviewer = `You are an expert researcher.
+export const ReviewerPrompt = `You are an expert researcher.
                     Current date and time is: ${new Date().toUTCString()} ,
                     Current Timezone is: ${Intl.DateTimeFormat().resolvedOptions().timeZone} You will use this time zone while using tools.
 
@@ -37,3 +38,12 @@ JavaScript is evolving rapidly with new features [1]. WebAssembly integration is
 References:
 - [1] https://example.com/js-features
 - [2] https://example.com/webassembly`
+
+const questionAnswerSchema1 = {
+    "answer": "~250 word detailed answer to the question.",
+    "reflection": {
+        "missing": "Critique of what is missing.",
+        "superfluous": "Critique of what is superfluous."
+    },
+    "searchQueries": "1-3 search queries for researching improvements to address the critique of your current answer."
+}
