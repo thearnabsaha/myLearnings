@@ -37,7 +37,7 @@ async function Responder(state: typeof StateAnnotation.State) {
     ])
 
     return {
-        messages: [new AIMessage(JSON.stringify(response))],
+        messages: [new AIMessage(response)],
         iteration: 0,
     };
 }
@@ -49,7 +49,7 @@ async function Revisor(state: typeof StateAnnotation.State) {
         ...state.messages,
     ])
     return {
-        messages: [new AIMessage(JSON.stringify(response))],
+        messages: [new AIMessage(response)],
         iteration: Number(state.iteration) + 1,
     };
 }
