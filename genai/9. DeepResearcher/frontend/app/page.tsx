@@ -225,6 +225,79 @@ const Page = () => {
                           </ol>
                         );
                       },
+                      a({ children, href, ...props }) {
+                        return (
+                          <a
+                            href={href}
+                            className="text-blue-600 hover:text-blue-800 underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            {...props}
+                          >
+                            {children}
+                          </a>
+                        );
+                      },
+                      // Table
+                      table({ children, ...props }) {
+                        return (
+                          <div className="overflow-x-auto my-4">
+                            <table
+                              className="min-w-full border-collapse border border-gray-300"
+                              {...props}
+                            >
+                              {children}
+                            </table>
+                          </div>
+                        );
+                      },
+
+                      // Table header
+                      thead({ children, ...props }) {
+                        return (
+                          <thead className="border-gray-300" {...props}>
+                            {children}
+                          </thead>
+                        );
+                      },
+
+                      // Table body
+                      tbody({ children, ...props }) {
+                        return <tbody {...props}>{children}</tbody>;
+                      },
+
+                      // Table row
+                      tr({ children, ...props }) {
+                        return (
+                          <tr className="border-b border-gray-300" {...props}>
+                            {children}
+                          </tr>
+                        );
+                      },
+
+                      // Table header cell
+                      th({ children, ...props }) {
+                        return (
+                          <th
+                            className="px-4 py-2 text-left font-semibold border border-gray-300"
+                            {...props}
+                          >
+                            {children}
+                          </th>
+                        );
+                      },
+
+                      // Table data cell
+                      td({ children, ...props }) {
+                        return (
+                          <td
+                            className="px-4 py-2 border border-gray-300"
+                            {...props}
+                          >
+                            {children}
+                          </td>
+                        );
+                      },
                     }}
                   >
                     {e.answer}
