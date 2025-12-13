@@ -12,7 +12,7 @@ import axios from "axios";
 import { BACKEND_URL } from "@/lib/config";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-
+import toast, { Toaster } from "react-hot-toast";
 const formSchema = z.object({
   message: z
     .string()
@@ -76,11 +76,14 @@ const Page = () => {
       })
       .catch(function (error) {
         console.log(error);
+        console.log(error.stack);
+        toast.error(error.response.statusText);
       });
     form.reset();
   }
   return (
     <div className="mx-auto w-[90vw] lg:w-[50vw]">
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="flex items-center justify-between pt-2 fixed w-screen left-0 px-10 bg-background">
         <div className="flex items-center">
           <MessageCircleDashed />
