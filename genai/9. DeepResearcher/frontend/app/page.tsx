@@ -76,7 +76,7 @@ const Page = () => {
       })
       .catch(function (error) {
         console.log(error);
-        console.log(error.stack);
+        console.log(error.response.data);
         toast.error(error.response.statusText);
       });
     form.reset();
@@ -98,15 +98,15 @@ const Page = () => {
           return (
             <div key={e.id} className="flex flex-col flex-wrap ">
               <div ref={messagesEndRef} />
-              <p className="font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-96 self-end whitespace-pre-wrap break-all">
+              <p className="font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-96 self-end whitespace-pre-wrap break-words">
                 {e.input}
               </p>
               {e.answer == "Loading..." ? (
-                <p className="font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-all animate-pulse">
+                <p className="font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-words animate-pulse">
                   {e.answer}
                 </p>
               ) : (
-                // <p className="font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-all">
+                // <p className="font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-words">
                 //   {e.answer}
                 // </p>
                 <div className="prose prose-slate max-w-none my-5 self-start font-light">
