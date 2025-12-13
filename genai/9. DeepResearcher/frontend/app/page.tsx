@@ -84,7 +84,7 @@ const Page = () => {
       <div className="flex items-center justify-between pt-2 fixed w-screen left-0 px-10 bg-background">
         <div className="flex items-center">
           <MessageCircleDashed />
-          <h1 className="text-2xl ml-2">Prompt Enhancer</h1>
+          <h1 className="text-2xl ml-2">Deep Researcher</h1>
         </div>
         <div className=" flex justify-center items-center">
           <ModeToggle />
@@ -229,7 +229,7 @@ const Page = () => {
                         return (
                           <a
                             href={href}
-                            className="text-blue-600 hover:text-blue-800 underline"
+                            className=" hover:text-blue-400 underline"
                             target="_blank"
                             rel="noopener noreferrer"
                             {...props}
