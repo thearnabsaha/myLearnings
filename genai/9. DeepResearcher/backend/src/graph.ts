@@ -7,16 +7,16 @@ import { isAIMessage, ToolMessage } from "@langchain/core/messages";
 import { END, START, StateGraph } from "@langchain/langgraph";
 import { TavilySearch } from "@langchain/tavily";
 import { ResponderPrompt, ReviewerPrompt } from "./prompt";
+import { questionAnswerSchema } from "./schema";
 
 const model = new ChatGroq({
     model: "openai/gpt-oss-120b",
     temperature: 0
 });
-
+const structuredModel = model.withStructuredOutput(questionAnswerSchema);
 // Define tools
 const SearchTool = new TavilySearch({
     maxResults: 3,
-    topic: "general",
 });
 
 const toolsByName = {

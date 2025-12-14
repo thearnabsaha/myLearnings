@@ -1,6 +1,7 @@
 export const ResponderPrompt = `
                     Current date and time is: ${new Date().toUTCString()} ,
                     Current Timezone is: ${Intl.DateTimeFormat().resolvedOptions().timeZone} You will use this time zone while using tools.
+                    You always search in internet and then provide answer. very deep research.
                     always search before giving an answer.
                     1. Provide a detailed ~250 word answer.
                     2. Reflect and critique your answer. Be severe to maximize improvement.
