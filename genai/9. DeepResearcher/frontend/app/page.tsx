@@ -13,6 +13,8 @@ import { BACKEND_URL } from "@/lib/config";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import toast, { Toaster } from "react-hot-toast";
+import { ModelsDropDown } from "@/components/ModelsDropDown";
+
 const formSchema = z.object({
   message: z
     .string()
@@ -32,6 +34,7 @@ const Page = () => {
   const [threadId, setthreadId] = useState("");
   const [toggle, setToggle] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState("openai/gpt-oss-20b");
 
   useEffect(() => {
     setthreadId(
@@ -62,6 +65,7 @@ const Page = () => {
     axios
       .post(`${BACKEND_URL}/chat`, {
         inputMessage: values.message as string,
+        model: value as string,
         threadId,
       })
       .then(function (response) {
@@ -87,10 +91,11 @@ const Page = () => {
       <div className="flex items-center justify-between pt-2 fixed w-screen left-0 px-10 bg-background">
         <div className="flex items-center">
           <MessageCircleDashed />
-          <h1 className="text-2xl ml-2">Deep Researcher</h1>
+          <h1 className="text-2xl ml-2">Prompt Enhancer</h1>
         </div>
-        <div className=" flex justify-center items-center">
+        <div className=" flex justify-center items-center gap-5">
           <ModeToggle />
+          <ModelsDropDown value={value} setValue={setValue} />
         </div>
       </div>
       <div className="flex flex-col flex-wrap mb-100 pt-10">
@@ -98,11 +103,11 @@ const Page = () => {
           return (
             <div key={e.id} className="flex flex-col flex-wrap ">
               <div ref={messagesEndRef} />
-              <p className="font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-96 self-end whitespace-pre-wrap break-words">
+              <p className="font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-96 self-end whitespace-pre-wrap wrap-break-word">
                 {e.input}
               </p>
               {e.answer == "Loading..." ? (
-                <p className="font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-words animate-pulse">
+                <p className="font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap wrap-break-word animate-pulse">
                   {e.answer}
                 </p>
               ) : (

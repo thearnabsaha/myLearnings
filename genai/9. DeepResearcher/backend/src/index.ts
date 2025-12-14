@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
-import { agent } from './graph';
+import { agent, changeModel } from './graph.js';
 
 const morganFormat = ':method :url :status :response-time ms';
 app.use(morgan(morganFormat));
@@ -25,9 +25,17 @@ app.get('/', async (req, res) => {
 app.post('/chat', async (req, res) => {
     const inputMessage = req.body.inputMessage as string
     const threadId = req.body.threadId as string
+    const model = req.body.model as string
+    await changeModel(model)
     const answer = await agent(inputMessage, threadId)
     res.send(answer);
 });
+// app.post('/changeModel', async (req, res) => {
+//     const inputMessage = req.body.inputMessage as string
+//     // const threadId = req.body.threadId as string
+//     // const answer = await agent(inputMessage, threadId)
+//     // res.send(answer);
+// });
 app.get('/health', async (req, res) => {
     const start = Date.now();
     const healthcheck = {
@@ -38,5 +46,9 @@ app.get('/health', async (req, res) => {
     };
     res.status(200).json(healthcheck);
 });
-
-app.listen(port, () => console.log('> Server is up and running on port: ' + port));
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => console.log('> Server is up and running on port: ' + port));
+}
+// app.listen(port, () => console.log('> Server is up and running on port: ' + port));
+export default app;

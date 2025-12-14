@@ -9,10 +9,22 @@ import { TavilySearch } from "@langchain/tavily";
 import { ResponderPrompt, ReviewerPrompt } from "./prompt";
 import { questionAnswerSchema } from "./schema";
 
-const model = new ChatGroq({
-    model: "openai/gpt-oss-120b",
-    temperature: 0
-});
+// const model = new ChatGroq({
+//     model: "openai/gpt-oss-120b",
+//     temperature: 0
+// });
+let model: any;
+export const changeModel = (SelecedModel: string) => {
+    model = new ChatGroq({
+        // model: "meta-llama/llama-4-scout-17b-16e-instruct",
+        // model: "openai/gpt-oss-safeguard-20b",
+        // model: "openai/gpt-oss-20b",
+        // model: "openai/gpt-oss-120b",
+        model: SelecedModel,
+        temperature: 0
+    });
+    return model;
+}
 const structuredModel = model.withStructuredOutput(questionAnswerSchema);
 // Define tools
 const SearchTool = new TavilySearch({
