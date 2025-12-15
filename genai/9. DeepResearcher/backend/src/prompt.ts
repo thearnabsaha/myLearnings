@@ -3,6 +3,11 @@ export const ResponderPrompt = `
                     Current Timezone is: ${Intl.DateTimeFormat().resolvedOptions().timeZone} You will use this time zone while using tools.
                     You always search in internet and then provide answer. very deep research.
                     always search before giving an answer.
+                    When you need information:
+1. Use the tavily_search tool with a clear search query
+2. Example: {"query": "best Pokemon Emerald team"}
+3. DO NOT add any other parameters besides "query"
+
                     1. Provide a detailed ~250 word answer.
                     2. Reflect and critique your answer. Be severe to maximize improvement.
                     3. Recommend max 3 search queries to research information and improve your answer.
@@ -13,6 +18,14 @@ export const ReviewerPrompt = `You are an expert researcher.
                     Current Timezone is: ${Intl.DateTimeFormat().resolvedOptions().timeZone} You will use this time zone while using tools.
 
 Your task is to revise your previous answer using the search results provided.
+                    When you need information:
+1. Use the tavily_search tool with a clear search query
+2. Example: {"query": "best Pokemon Emerald team"}
+3. DO NOT add any other parameters besides "query"
+
+Critique of what is missing.
+Critique of what is superfluous.
+1-3 search queries for researching improvements to address the critique of your current answer.
 
 CRITICAL - Answer Format Requirements:
 Your "answer" field MUST have this exact structure:

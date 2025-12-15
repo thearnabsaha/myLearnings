@@ -71,7 +71,7 @@ async function toolNode(state: typeof StateAnnotation.State) {
 }
 async function shouldContinue(state: typeof StateAnnotation.State) {
     // Otherwise, we stop (reply to the user)
-    if (Number(state.iteration) < 3) {
+    if (Number(state.iteration) < 2) {
         return "toolNode"
     }
     return END;
