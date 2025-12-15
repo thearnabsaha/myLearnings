@@ -31,9 +31,6 @@ async function Responder(state: typeof StateAnnotation.State) {
             ResponderPrompt
         ),
         ...state.messages,
-        // new SystemMessage(
-        //     "Reflect on the user's original question and the actions taken thus far."
-        // ),
     ])
 
     return {
@@ -54,9 +51,9 @@ async function Revisor(state: typeof StateAnnotation.State) {
     };
 }
 async function FinalResponder(state: typeof StateAnnotation.State) {
-    const response = await modelWithTools.invoke([
+    const response = await model.invoke([
         new SystemMessage(
-            FinalResponderPrompt
+            FinalResponderPrompt + "\n\nIMPORTANT: Do NOT call any tools. Provide your final answer only not any tool call"
         ),
         ...state.messages,
     ])
