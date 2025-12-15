@@ -6,7 +6,7 @@ import { StateAnnotation } from "./state";
 import { isAIMessage, ToolMessage } from "@langchain/core/messages";
 import { END, START, StateGraph } from "@langchain/langgraph";
 import { TavilySearch } from "@langchain/tavily";
-import { ResponderPrompt, ReviewerPrompt } from "./prompt";
+import { FinalResponderPrompt, ResponderPrompt, ReviewerPrompt } from "./prompt";
 import { questionAnswerSchema } from "./schema";
 
 const model = new ChatGroq({
@@ -53,6 +53,18 @@ async function Revisor(state: typeof StateAnnotation.State) {
         iteration: Number(state.iteration) + 1,
     };
 }
+async function FinalResponder(state: typeof StateAnnotation.State) {
+    const response = await modelWithTools.invoke([
+        new SystemMessage(
+            FinalResponderPrompt
+        ),
+        ...state.messages,
+    ])
+    return {
+        messages: [new AIMessage(response)],
+        // iteration: Number(state.iteration) + 1,
+    };
+}
 async function toolNode(state: typeof StateAnnotation.State) {
     const lastMessage = state.messages.at(-1);
 
@@ -74,16 +86,18 @@ async function shouldContinue(state: typeof StateAnnotation.State) {
     if (Number(state.iteration) < 2) {
         return "toolNode"
     }
-    return END;
+    return "FinalResponder";
 }
 const graph = new StateGraph(StateAnnotation)
     .addNode("Responder", Responder)
     .addNode("toolNode", toolNode)
     .addNode("Revisor", Revisor)
+    .addNode("FinalResponder", FinalResponder)
     .addEdge(START, "Responder")
     .addEdge("Responder", "toolNode")
     .addEdge("toolNode", "Revisor")
-    .addConditionalEdges("Revisor", shouldContinue, ["toolNode", END])
+    .addConditionalEdges("Revisor", shouldContinue, ["toolNode", "FinalResponder"])
+    .addEdge("FinalResponder", END)
     .compile();
 
 // Invoke

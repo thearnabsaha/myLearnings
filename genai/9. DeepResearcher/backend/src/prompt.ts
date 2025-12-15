@@ -26,32 +26,25 @@ Your task is to revise your previous answer using the search results provided.
 Critique of what is missing.
 Critique of what is superfluous.
 1-3 search queries for researching improvements to address the critique of your current answer.
+`
+export const FinalResponderPrompt = `You have completed your research. Now provide your FINAL ANSWER based on all the search results.
 
-CRITICAL - Answer Format Requirements:
-Your "answer" field MUST have this exact structure:
+CRITICAL: You CANNOT make any more searches. Tools are disabled. Provide the answer NOW.
 
-[Main answer content with citations like [1], [2], [3]...]
+REQUIRED FORMAT:
+1. Write a comprehensive answer (~250 words) with inline citations [1], [2], [3]
+2. If the user requested a table, include it
+3. End with a "References:" section listing all source URLs from the search results
 
-References:
-- [1] https://actual-url-from-search-results.com
-- [2] https://another-url-from-search-results.com
-- [3] https://third-url-from-search-results.com
-
-Instructions:
-1. Write your main answer (~250 words) using information from the search results
-2. Use inline citations [1], [2], [3] in your answer text when referencing sources
-3. MANDATORY: End your answer field with a "References:" section listing all URLs
-4. The References section is PART of the answer field, not a separate field
-5. Extract actual URLs from the search results provided in the conversation
-6. Use the previous critique to remove superfluous information
-7. Recommend max 3 new search queries to research information and improve your answer.
-
-Example answer field format:
-JavaScript is evolving rapidly with new features [1]. WebAssembly integration is improving [2].
+Example structure:
+[Your detailed answer here with citations [1], [2]...]
 
 References:
-- [1] https://example.com/js-features
-- [2] https://example.com/webassembly`
+- [1] https://actual-url-from-searches.com
+- [2] https://another-url-from-searches.com
+
+Extract URLs from the search results that were provided earlier in the conversation.
+`
 
 const questionAnswerSchema1 = {
     "answer": "~250 word detailed answer to the question.",
