@@ -94,7 +94,6 @@ const graph = new StateGraph(StateAnnotation)
     .addConditionalEdges("Revisor", shouldContinue, ["toolNode", "FinalResponder"])
     .addEdge("FinalResponder", END)
     .compile();
-
 // Invoke
 export const agent = async (inputMessage: string, threadId: string) => {
     const result = await graph.invoke({
