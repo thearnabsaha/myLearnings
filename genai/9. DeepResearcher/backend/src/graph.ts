@@ -75,7 +75,6 @@ async function toolNode(state: typeof StateAnnotation.State) {
         const observation = await tool.invoke(toolCall);
         result.push(observation);
     }
-
     return { messages: result };
 }
 async function shouldContinue(state: typeof StateAnnotation.State) {
