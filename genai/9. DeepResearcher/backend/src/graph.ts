@@ -32,7 +32,6 @@ async function Responder(state: typeof StateAnnotation.State) {
         ),
         ...state.messages,
     ])
-
     return {
         messages: [new AIMessage(response)],
         iteration: 0,
