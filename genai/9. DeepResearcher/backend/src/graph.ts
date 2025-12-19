@@ -59,7 +59,6 @@ async function FinalResponder(state: typeof StateAnnotation.State) {
     ])
     return {
         messages: [new AIMessage(response)],
-        // iteration: Number(state.iteration) + 1,
     };
 }
 async function toolNode(state: typeof StateAnnotation.State) {
