@@ -37,6 +37,7 @@ async function Responder(state: typeof StateAnnotation.State) {
         iteration: 0,
     };
 }
+
 async function Revisor(state: typeof StateAnnotation.State) {
     const response = await modelWithTools.invoke([
         new SystemMessage(
