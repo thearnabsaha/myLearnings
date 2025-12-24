@@ -330,3 +330,66 @@ OFFICE–related words
 | bag | **die Tasche** | die | general bag |
 | plate | **der Teller** | der | eating plate |
 | bowl | **die Schüssel** | die | bowl for food |
+
+| No. | German           | English    |
+| --- | ---------------- | ---------- |
+| 1   | der Hund         | dog        |
+| 2   | die Katze        | cat        |
+| 3   | das Pferd        | horse      |
+| 4   | die Kuh          | cow        |
+| 5   | das Schwein      | pig        |
+| 6   | das Schaf        | sheep      |
+| 7   | die Ziege        | goat       |
+| 8   | der Elefant      | elephant   |
+| 9   | der Löwe         | lion       |
+| 10  | der Tiger        | tiger      |
+| 11  | der Hase         | rabbit     |
+| 12  | der Affe         | monkey     |
+| 13  | der Vogel        | bird       |
+| 14  | der Adler        | eagle      |
+| 15  | der Spatz        | sparrow    |
+| 16  | die Taube        | pigeon     |
+| 17  | der Papagei      | parrot     |
+| 18  | der Hahn         | rooster    |
+| 19  | das Huhn         | hen        |
+| 20  | die Ente         | duck       |
+| 21  | die Gans         | goose      |
+| 22  | die Eule         | owl        |
+| 23  | der Pfau         | peacock    |
+| 24  | der Rabe         | crow       |
+| 25  | der Apfel        | apple      |
+| 26  | die Banane       | banana     |
+| 27  | die Orange       | orange     |
+| 28  | die Mango        | mango      |
+| 29  | die Traube       | grape      |
+| 30  | die Erdbeere     | strawberry |
+| 31  | der Pfirsich     | peach      |
+| 32  | die Kirsche      | cherry     |
+| 33  | die Birne        | pear       |
+| 34  | die Ananas       | pineapple  |
+| 35  | die Zitrone      | lemon      |
+| 36  | die Wassermelone | watermelon |
+| 37  | das Brot         | bread      |
+| 38  | der Reis         | rice       |
+| 39  | die Suppe        | soup       |
+| 40  | der Käse         | cheese     |
+| 41  | die Milch        | milk       |
+| 42  | das Ei           | egg        |
+| 43  | das Fleisch      | meat       |
+| 44  | das Gemüse       | vegetables |
+| 45  | der Salat        | salad      |
+| 46  | der Kuchen       | cake       |
+| 47  | der Zucker       | sugar      |
+| 48  | das Wasser       | water      |
+| 49  | der Fisch        | fish       |
+| 50  | der Lachs        | salmon     |
+| 51  | der Thunfisch    | tuna       |
+| 52  | der Karpfen      | carp       |
+| 53  | die Forelle      | trout      |
+| 54  | der Hai          | shark      |
+| 55  | die Garnele      | shrimp     |
+| 56  | die Krabbe       | crab       |
+| 57  | der Oktopus      | octopus    |
+| 58  | der Wal          | whale      |
+| 59  | der Delfin       | dolphin    |
+| 60  | das Meer         | sea        |
