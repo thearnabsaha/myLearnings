@@ -68,6 +68,7 @@ Professions
 | swimmer | **der Schwimmer** | der | sports |
 
 Work-Related Nouns
+
 | 1 | die Arbeit | work |
 | 2 | der Beruf | profession |
 | 3 | der Job | job |
