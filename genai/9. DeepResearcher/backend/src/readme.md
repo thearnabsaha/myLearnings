@@ -397,3 +397,38 @@ fisch related words
 | 58 | der Wal | whale |
 | 59 | der Delfin | dolphin |
 | 60 | das Meer | sea |
+body parts
+| No. | German (with article) | English |
+| --- | ------------------------ | ----------------- |
+| 1 | der Kopf | head |
+| 2 | die Haare | hair |
+| 3 | die Augen | eyes |
+| 4 | die Wimpern | eyelashes |
+| 5 | die Ohren | ears |
+| 6 | die Nase | nose |
+| 7 | der Mund | mouth |
+| 8 | die Zunge | tongue |
+| 9 | der Hals | throat / neck |
+| 10 | der Nacken | back of the neck |
+| 11 | die Wangen | cheeks |
+| 12 | die Brust | chest / breast |
+| 13 | der Bauch | belly |
+| 14 | der Magen | stomach |
+| 15 | der Rücken | back |
+| 16 | die Schultern | shoulders |
+| 17 | die Hüften | hips |
+| 18 | der Arsch | ass _(vulgar)_ |
+| 19 | das Bein | leg |
+| 20 | der Oberschenkel | thigh |
+| 21 | das Knie | knee |
+| 22 | der Knöchel | ankle |
+| 23 | die Ferse | heel |
+| 24 | die Zehen | toes |
+| 25 | der Fuß | foot |
+| 26 | die Hand | hand |
+| 27 | der Finger | finger |
+| 28 | die Nägel | nails |
+| 29 | die Haut | skin |
+| 30 | die Venen | veins |
+| 31 | der Penis | penis |
+| 32 | die Scheide / die Vagina | pussy _(medical)_ |
