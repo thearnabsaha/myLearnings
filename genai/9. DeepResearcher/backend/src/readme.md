@@ -346,6 +346,7 @@ Animals related
 | 10 | der Tiger | tiger |
 | 11 | der Hase | rabbit |
 | 12 | der Affe | monkey |
+
 bird related words
 | 13 | der Vogel | bird |
 | 14 | der Adler | eagle |
@@ -359,6 +360,7 @@ bird related words
 | 22 | die Eule | owl |
 | 23 | der Pfau | peacock |
 | 24 | der Rabe | crow |
+
 fruit related words
 | 25 | der Apfel | apple |
 | 26 | die Banane | banana |
@@ -372,6 +374,7 @@ fruit related words
 | 34 | die Ananas | pineapple |
 | 35 | die Zitrone | lemon |
 | 36 | die Wassermelone | watermelon |
+
 food realated words
 | 37 | das Brot | bread |
 | 38 | der Reis | rice |
