@@ -349,6 +349,7 @@ Animals related
 | 12 | der Affe | monkey |
 
 bird related words
+
 | 13 | der Vogel | bird |
 | 14 | der Adler | eagle |
 | 15 | der Spatz | sparrow |
@@ -363,6 +364,7 @@ bird related words
 | 24 | der Rabe | crow |
 
 fruit related words
+
 | 25 | der Apfel | apple |
 | 26 | die Banane | banana |
 | 27 | die Orange | orange |
