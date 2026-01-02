@@ -281,6 +281,7 @@ CITY–related words
 | 80 | das Gebäude | building |
 
 OFFICE–related words
+
 | 81 | das Büro | office |
 | 82 | der Arbeitsplatz | workplace |
 | 83 | der Schreibtisch | desk |
@@ -376,6 +377,7 @@ fruit related words
 | 36 | die Wassermelone | watermelon |
 
 food realated words
+
 | 37 | das Brot | bread |
 | 38 | der Reis | rice |
 | 39 | die Suppe | soup |
