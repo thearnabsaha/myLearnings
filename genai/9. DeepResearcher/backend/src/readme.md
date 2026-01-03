@@ -197,6 +197,7 @@ Time & Date Related Words
 | every time | **jedes Mal** | very common |
 
 HOUSE–related words
+
 | 1 | das Haus | house |
 | 2 | die Wohnung | apartment |
 | 3 | das Zimmer | room |
