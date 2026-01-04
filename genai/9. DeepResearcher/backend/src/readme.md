@@ -239,6 +239,7 @@ HOUSE–related words
 | 40 | der Strom | electricity |
 
 CITY–related words
+
 | 41 | die Stadt | city |
 | 42 | das Dorf | village |
 | 43 | die Straße | street |
