@@ -10,7 +10,7 @@ import { FinalResponderPrompt, ResponderPrompt, ReviewerPrompt } from "./prompt"
 import { questionAnswerSchema, type QuestionAnswer } from "./schema";
 
 const model = new ChatGroq({
-    model: "openai/gpt-oss-20b",
+    model: "llama-3.3-70b-versatile",
     temperature: 0,
 });
 const structuredModel = model.withStructuredOutput(questionAnswerSchema);
