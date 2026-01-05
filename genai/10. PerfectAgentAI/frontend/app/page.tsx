@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { ModeToggle } from "@/components/ModeToggle";
-import { ArrowUp, MessageCircleDashed } from "lucide-react";
+import { ArrowUp, Check, Copy, MessageCircleDashed } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,7 @@ const page = () => {
   const [threadId, setthreadId] = useState("");
   const { data: session } = useSession();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [toggle, setToggle] = useState(false);
 
   useEffect(() => {
     setthreadId(
@@ -148,6 +149,14 @@ const page = () => {
                           }
                           return "";
                         };
+                        const copyHandler = () => {
+                          const textcontent = getTextContent(children);
+                          setToggle(true);
+                          navigator.clipboard.writeText(textcontent);
+                          setTimeout(() => {
+                            setToggle(false);
+                          }, 800);
+                        };
                         return (
                           <div className="relative group">
                             <code
@@ -156,7 +165,20 @@ const page = () => {
                             >
                               {children}
                             </code>
-                            <div className=" flex flex-col"></div>
+                            <div
+                              onClick={copyHandler}
+                              className=" flex flex-col"
+                            >
+                              {toggle ? (
+                                <Button className="text-white bg-[#424242] mt-2 self-end cursor-pointer">
+                                  <Check />
+                                </Button>
+                              ) : (
+                                <Button className="mt-2 self-end cursor-pointer text-white bg-[#424242]">
+                                  <Copy />
+                                </Button>
+                              )}
+                            </div>
                           </div>
                         );
                       },

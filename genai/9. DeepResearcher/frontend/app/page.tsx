@@ -83,7 +83,6 @@ const Page = () => {
   }
   return (
     <div className="mx-auto w-[90vw] lg:w-[50vw]">
-      <Toaster position="top-right" reverseOrder={false} />
       <div className="flex items-center justify-between pt-2 fixed w-screen left-0 px-10 bg-background">
         <div className="flex items-center">
           <MessageCircleDashed />
