@@ -8,32 +8,15 @@ const Searchtool = new TavilySearch({
     maxResults: 3,
 });
 // const customTool = tool(function,Schema);
-const add = tool(({ a, b }) => a + b, {
-    name: "add",
-    description: "Add two numbers",
-    schema: z.object({
-        a: z.number().describe("First number"),
-        b: z.number().describe("Second number"),
-    }),
-});
+// const add = tool(({ a, b }) => a + b, {
+//     name: "add",
+//     description: "Add two numbers",
+//     schema: z.object({
+//         a: z.number().describe("First number"),
+//         b: z.number().describe("Second number"),
+//     }),
+// });
 
-const multiply = tool(({ a, b }) => a * b, {
-    name: "multiply",
-    description: "Multiply two numbers",
-    schema: z.object({
-        a: z.number().describe("First number"),
-        b: z.number().describe("Second number"),
-    }),
-});
-
-const divide = tool(({ a, b }) => a / b, {
-    name: "divide",
-    description: "Divide two numbers",
-    schema: z.object({
-        a: z.number().describe("First number"),
-        b: z.number().describe("Second number"),
-    }),
-});
 
 // Augment the LLM with tools
 export const toolsByName = {

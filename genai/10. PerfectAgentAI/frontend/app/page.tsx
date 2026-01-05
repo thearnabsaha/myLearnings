@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { ModeToggle } from "@/components/ModeToggle";
 import { ArrowUp, MessageCircleDashed } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
@@ -13,6 +13,8 @@ import axios from "axios";
 import { BACKEND_URL } from "@/lib/config";
 import ReactMarkdown from "react-markdown";
 import { signIn, signOut, useSession } from "next-auth/react";
+import remarkGfm from "remark-gfm";
+
 const formSchema = z.object({
   message: z
     .string()
@@ -31,6 +33,8 @@ const page = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [threadId, setthreadId] = useState("");
   const { data: session } = useSession();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     setthreadId(
       (Date.now().toString(36) +
@@ -112,15 +116,194 @@ const page = () => {
         {messages.map((e) => {
           return (
             <div key={e.id} className="flex flex-col flex-wrap ">
-              <p className="font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-96 self-end whitespace-pre-wrap">
+              <div ref={messagesEndRef} />
+              <p className="font-light py-1.5 px-3 rounded-xl bg-accent my-5 max-w-96 self-end whitespace-pre-wrap break-words">
                 {e.input}
               </p>
               {e.answer == "Loading..." ? (
-                <p className="font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-all animate-pulse">
+                <p className="font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-words animate-pulse">
                   {e.answer}
                 </p>
               ) : (
-                <ReactMarkdown>{e.answer}</ReactMarkdown>
+                // <p className="font-light py-1.5 px-3 rounded-xl my-5 self-start whitespace-pre-wrap break-words">
+                //   {e.answer}
+                // </p>
+                <div className="prose prose-slate max-w-none my-5 self-start font-light">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      blockquote({ children, ...props }) {
+                        const getTextContent = (
+                          node: React.ReactNode,
+                        ): string => {
+                          if (typeof node === "string") return node;
+                          if (typeof node === "number") return String(node);
+                          if (Array.isArray(node))
+                            return node.map(getTextContent).join("");
+                          if (React.isValidElement(node)) {
+                            return getTextContent(
+                              (node.props as { children?: React.ReactNode })
+                                .children,
+                            );
+                          }
+                          return "";
+                        };
+                        return (
+                          <div className="relative group">
+                            <code
+                              className="block bg-black text-white p-4 rounded-lg overflow-x-auto font-mono text-sm w-full"
+                              {...props}
+                            >
+                              {children}
+                            </code>
+                            <div className=" flex flex-col"></div>
+                          </div>
+                        );
+                      },
+                      code({
+                        className,
+                        children,
+                        ...props
+                      }: {
+                        className?: string;
+                        children?: React.ReactNode;
+                      }) {
+                        const match = /language-(\w+)/.exec(className || "");
+                        const inline = !match; // If no language class, it's inline code
+
+                        return inline ? (
+                          <code
+                            className="bg-[#424242] px-1.5 py-0.5 rounded text-sm font-mono text-white"
+                            {...props}
+                          >
+                            {children}
+                          </code>
+                        ) : (
+                          <code
+                            className="block bg-[#222] text-white p-4 rounded-lg overflow-x-auto font-mono text-sm my-4 w-full"
+                            {...props}
+                          >
+                            {children}
+                          </code>
+                        );
+                      },
+                      strong({ children, ...props }) {
+                        return (
+                          <strong className=" font-semibold" {...props}>
+                            {children}
+                          </strong>
+                        );
+                      },
+                      p({ children, ...props }) {
+                        return (
+                          <div className="my-5" {...props}>
+                            {children}
+                          </div>
+                        );
+                      },
+                      ul({ children, ...props }) {
+                        return (
+                          <ul className="list-disc pl-6 space-y-2" {...props}>
+                            {children}
+                          </ul>
+                        );
+                      },
+                      hr({ children, ...props }) {
+                        return (
+                          <hr
+                            className="my-4 border-t border-[#424242]"
+                            {...props}
+                          />
+                        );
+                      },
+                      ol({ children, ...props }) {
+                        return (
+                          <ol
+                            className="list-decimal pl-6 space-y-2"
+                            {...props}
+                          >
+                            {children}
+                          </ol>
+                        );
+                      },
+                      a({ children, href, ...props }) {
+                        return (
+                          <a
+                            href={href}
+                            className=" hover:text-blue-400 underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            {...props}
+                          >
+                            {children}
+                          </a>
+                        );
+                      },
+                      // Table
+                      table({ children, ...props }) {
+                        return (
+                          <div className="overflow-x-auto my-4">
+                            <table
+                              className="min-w-full border-collapse border border-gray-300"
+                              {...props}
+                            >
+                              {children}
+                            </table>
+                          </div>
+                        );
+                      },
+
+                      // Table header
+                      thead({ children, ...props }) {
+                        return (
+                          <thead className="border-gray-300" {...props}>
+                            {children}
+                          </thead>
+                        );
+                      },
+
+                      // Table body
+                      tbody({ children, ...props }) {
+                        return <tbody {...props}>{children}</tbody>;
+                      },
+
+                      // Table row
+                      tr({ children, ...props }) {
+                        return (
+                          <tr className="border-b border-gray-300" {...props}>
+                            {children}
+                          </tr>
+                        );
+                      },
+
+                      // Table header cell
+                      th({ children, ...props }) {
+                        return (
+                          <th
+                            className="px-4 py-2 text-left font-semibold border border-gray-300"
+                            {...props}
+                          >
+                            {children}
+                          </th>
+                        );
+                      },
+
+                      // Table data cell
+                      td({ children, ...props }) {
+                        return (
+                          <td
+                            className="px-4 py-2 border border-gray-300"
+                            {...props}
+                          >
+                            {children}
+                          </td>
+                        );
+                      },
+                    }}
+                  >
+                    {e.answer}
+                  </ReactMarkdown>
+                </div>
               )}
             </div>
           );

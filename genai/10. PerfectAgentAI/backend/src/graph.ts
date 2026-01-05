@@ -14,7 +14,7 @@ export async function responder(state: MessagesStateType) {
     return {
         messages: [await modelWithTools.invoke([
             new SystemMessage(
-                "You are a helpful assistant tasked with performing arithmetic on a set of inputs."
+                "You are a helpful assistant which answers all the questions, you search if required"
             ),
             ...state.messages,
         ])],
@@ -55,8 +55,8 @@ const graph = new StateGraph(MessagesState)
     .addNode("responder", responder)
     .addNode("toolNode", toolNode)
     .addEdge(START, "responder")
-    .addConditionalEdges("responder", shouldContinue, ["toolNode", END])
     .addEdge("toolNode", "responder")
+    .addConditionalEdges("responder", shouldContinue, ["toolNode", END])
     .compile();
 
 // Invoke
