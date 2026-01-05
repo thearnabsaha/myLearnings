@@ -7,94 +7,113 @@ import { isAIMessage, ToolMessage } from "@langchain/core/messages";
 import { END, START, StateGraph } from "@langchain/langgraph";
 import { TavilySearch } from "@langchain/tavily";
 import { FinalResponderPrompt, ResponderPrompt, ReviewerPrompt } from "./prompt";
-import { questionAnswerSchema } from "./schema";
+import { questionAnswerSchema, type QuestionAnswer } from "./schema";
 
 const model = new ChatGroq({
     model: "openai/gpt-oss-120b",
     temperature: 0
 });
-// const structuredModel = model.withStructuredOutput(questionAnswerSchema);
+const structuredModel = model.withStructuredOutput(questionAnswerSchema);
+
 // Define tools
 const SearchTool = new TavilySearch({
     maxResults: 3,
+    searchDepth: "advanced",
 });
 
-const toolsByName = {
-    [SearchTool.name]: SearchTool,
-};
-const tools = Object.values(toolsByName);
-const modelWithTools = model.bindTools(tools);
+// const toolsByName = {
+//     [SearchTool.name]: SearchTool,
+// };
+// const tools = Object.values(toolsByName);
+// const modelWithTools = model.bindTools(tools);
 
 async function Responder(state: typeof StateAnnotation.State) {
-    const response = await modelWithTools.invoke([
+    const response = await structuredModel.invoke([
         new SystemMessage(
             ResponderPrompt
         ),
         ...state.messages,
+        new SystemMessage(
+            "Reflect on the user's original question and the actions taken thus far. Respond using structured output."
+        ),
     ])
 
     return {
-        messages: [new AIMessage(response)],
+        messages: [new AIMessage(JSON.stringify(response))],
         iteration: 0,
     };
 }
-async function Revisor(state: typeof StateAnnotation.State) {
-    const response = await modelWithTools.invoke([
-        new SystemMessage(
-            ReviewerPrompt
-        ),
-        ...state.messages,
-    ])
-    return {
-        messages: [new AIMessage(response)],
-        iteration: Number(state.iteration) + 1,
-    };
-}
-async function FinalResponder(state: typeof StateAnnotation.State) {
-    const response = await modelWithTools.invoke([
-        new SystemMessage(
-            FinalResponderPrompt
-        ),
-        ...state.messages,
-    ])
-    return {
-        messages: [new AIMessage(response)],
-        // iteration: Number(state.iteration) + 1,
-    };
-}
+// async function Revisor(state: typeof StateAnnotation.State) {
+//     const response = await modelWithTools.invoke([
+//         new SystemMessage(
+//             ReviewerPrompt
+//         ),
+//         ...state.messages,
+//     ])
+//     return {
+//         messages: [new AIMessage(response)],
+//         iteration: Number(state.iteration) + 1,
+//     };
+// }
+// async function FinalResponder(state: typeof StateAnnotation.State) {
+//     const response = await modelWithTools.invoke([
+//         new SystemMessage(
+//             FinalResponderPrompt
+//         ),
+//         ...state.messages,
+//     ])
+//     return {
+//         messages: [new AIMessage(response)],
+//         // iteration: Number(state.iteration) + 1,
+//     };
+// }
 async function toolNode(state: typeof StateAnnotation.State) {
-    const lastMessage = state.messages.at(-1);
+    const lastMessage = state.messages[state.messages.length - 1] as AIMessage;
+    const parsed = JSON.parse(lastMessage.content as string) as QuestionAnswer;
 
-    if (lastMessage == null || !isAIMessage(lastMessage)) {
-        return { messages: [] };
+    const searchResult = await SearchTool.batch(parsed.searchQueries.map((query) => ({ query })));
+
+    const cleanedResults = [];
+
+    for (let i = 0; i < parsed.searchQueries.length; i++) {
+        const query = parsed.searchQueries[i];
+        const searchOutput = searchResult[i];
+
+        // Access the results array directly from the search output
+        const results = searchOutput?.results || [];
+
+        // Extract only essential fields from each result
+        for (const result of results) {
+            cleanedResults.push({
+                query: query,
+                content: result.content || '',
+                url: result.url || '',
+            });
+        }
     }
 
-    const result: ToolMessage[] = [];
-    for (const toolCall of lastMessage.tool_calls ?? []) {
-        const tool = toolsByName[toolCall.name];
-        const observation = await tool.invoke(toolCall);
-        result.push(observation);
-    }
-
-    return { messages: result };
+    return {
+        messages: [new HumanMessage(JSON.stringify({ searchResults: cleanedResults }))],
+    };
 }
-async function shouldContinue(state: typeof StateAnnotation.State) {
-    // Otherwise, we stop (reply to the user)
-    if (Number(state.iteration) < 1) {
-        return "toolNode"
-    }
-    return "FinalResponder";
-}
+// async function shouldContinue(state: typeof StateAnnotation.State) {
+//     // Otherwise, we stop (reply to the user)
+//     if (Number(state.iteration) < 1) {
+//         return "toolNode"
+//     }
+//     return "FinalResponder";
+// }
 const graph = new StateGraph(StateAnnotation)
     .addNode("Responder", Responder)
     .addNode("toolNode", toolNode)
-    .addNode("Revisor", Revisor)
-    .addNode("FinalResponder", FinalResponder)
+    // .addNode("Revisor", Revisor)
+    // .addNode("FinalResponder", FinalResponder)
     .addEdge(START, "Responder")
     .addEdge("Responder", "toolNode")
-    .addEdge("toolNode", "Revisor")
-    .addConditionalEdges("Revisor", shouldContinue, ["toolNode", "FinalResponder"])
-    .addEdge("FinalResponder", END)
+    // .addEdge("toolNode", "Revisor")
+    // .addConditionalEdges("Revisor", shouldContinue, ["toolNode", "FinalResponder"])
+    // .addEdge("FinalResponder", END)
+    .addEdge("toolNode", END)
     .compile();
 
 // Invoke
