@@ -10,8 +10,8 @@ import { FinalResponderPrompt, ResponderPrompt, ReviewerPrompt } from "./prompt"
 import { questionAnswerSchema, type QuestionAnswer } from "./schema";
 
 const model = new ChatGroq({
-    model: "openai/gpt-oss-120b",
-    temperature: 0
+    model: "openai/gpt-oss-20b",
+    temperature: 0,
 });
 const structuredModel = model.withStructuredOutput(questionAnswerSchema);
 
@@ -58,18 +58,18 @@ async function Revisor(state: typeof StateAnnotation.State) {
         iteration: Number(state.iteration) + 1,
     };
 }
-// async function FinalResponder(state: typeof StateAnnotation.State) {
-//     const response = await modelWithTools.invoke([
-//         new SystemMessage(
-//             FinalResponderPrompt
-//         ),
-//         ...state.messages,
-//     ])
-//     return {
-//         messages: [new AIMessage(response)],
-//         // iteration: Number(state.iteration) + 1,
-//     };
-// }
+async function FinalResponder(state: typeof StateAnnotation.State) {
+    const response = await model.invoke([
+        new SystemMessage(
+            FinalResponderPrompt
+        ),
+        ...state.messages,
+    ])
+    return {
+        messages: [new AIMessage(response)],
+        // iteration: Number(state.iteration) + 1,
+    };
+}
 async function toolNode(state: typeof StateAnnotation.State) {
     const lastMessage = state.messages[state.messages.length - 1] as AIMessage;
     const parsed = JSON.parse(lastMessage.content as string) as QuestionAnswer;
@@ -104,19 +104,16 @@ async function shouldContinue(state: typeof StateAnnotation.State) {
     if (Number(state.iteration) < 2) {
         return "toolNode"
     }
-    return "FinalResponder";
+    return END;
 }
 const graph = new StateGraph(StateAnnotation)
     .addNode("Responder", Responder)
     .addNode("toolNode", toolNode)
     .addNode("Revisor", Revisor)
-    // .addNode("FinalResponder", FinalResponder)
     .addEdge(START, "Responder")
     .addEdge("Responder", "toolNode")
     .addEdge("toolNode", "Revisor")
     .addConditionalEdges("Revisor", shouldContinue, ["toolNode", END])
-    // .addEdge("FinalResponder", END)
-    // .addEdge("toolNode", END)
     .compile();
 
 // Invoke
