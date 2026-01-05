@@ -37,9 +37,9 @@ const divide = tool(({ a, b }) => a / b, {
 
 // Augment the LLM with tools
 export const toolsByName = {
-    [add.name]: add,
-    [multiply.name]: multiply,
-    [divide.name]: divide,
+    // [add.name]: add,
+    // [multiply.name]: multiply,
+    // [divide.name]: divide,
     [Searchtool.name]: Searchtool,
 };
 export const tools = Object.values(toolsByName);
