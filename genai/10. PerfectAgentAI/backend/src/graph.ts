@@ -1,14 +1,15 @@
 import { tool } from "@langchain/core/tools";
 import * as z from "zod";
 import { ChatGroq } from "@langchain/groq";
-import { END, START, StateGraph } from "@langchain/langgraph";
+import { END, MemorySaver, START, StateGraph } from "@langchain/langgraph";
 import { MessagesState, type MessagesStateType } from "./state";
 import { AIMessage, ToolMessage, SystemMessage, HumanMessage } from "@langchain/core/messages";
 import { tools, toolsByName } from "./tools";
 const model = new ChatGroq({
     model: "openai/gpt-oss-safeguard-20b",
     // model: "openai/gpt-oss-20b",
-    temperature: 0
+    temperature: 0,
+    // streaming: true
 });
 export const modelWithTools = model.bindTools(tools);
 export async function responder(state: MessagesStateType) {
@@ -52,20 +53,49 @@ export async function shouldContinue(state: MessagesStateType) {
     // Otherwise, we stop (reply to the user)
     return END;
 }
+const checkpointer = new MemorySaver();
 const graph = new StateGraph(MessagesState)
     .addNode("responder", responder)
     .addNode("toolNode", toolNode)
     .addEdge(START, "responder")
     .addEdge("toolNode", "responder")
     .addConditionalEdges("responder", shouldContinue, ["toolNode", END])
-    .compile();
+    .compile({ checkpointer });
 
 // Invoke
 export const agent = async (inputMessage: string, threadId: string) => {
     const result = await graph.invoke({
         messages: [new HumanMessage(inputMessage)],
-    });
-    console.log(result)
-    console.log(result.messages[result.messages.length - 1].content)
+    }, { configurable: { thread_id: threadId } });
+    // console.log(result)
+    // console.log(result.messages[result.messages.length - 1].content)
     return result.messages[result.messages.length - 1].content
 }
+
+// export const agentStream = async (
+//     inputMessage: string,
+//     threadId: string,
+//     onChunk: (chunk: string) => void
+// ) => {
+//     const stream = await graph.stream(
+//         {
+//             messages: [new HumanMessage(inputMessage)],
+//         },
+//         {
+//             configurable: { thread_id: threadId },
+//             streamMode: "messages", // 🔑 REQUIRED
+//         }
+//     );
+
+//     for await (const event of stream) {
+//         //@ts-ignore
+//         if (!event.messages) continue;
+
+//         //@ts-ignore
+//         const last = event.messages[event.messages.length - 1];
+
+//         if (last instanceof AIMessage && typeof last.content === "string") {
+//             onChunk(last.content);
+//         }
+//     }
+// };
