@@ -4,49 +4,13 @@ import { ChatGroq } from "@langchain/groq";
 import { END, START, StateGraph } from "@langchain/langgraph";
 import { MessagesState, type MessagesStateType } from "./state";
 import { AIMessage, ToolMessage, SystemMessage, HumanMessage } from "@langchain/core/messages";
+import { tools, toolsByName } from "./tools";
 const model = new ChatGroq({
     model: "openai/gpt-oss-20b",
     temperature: 0
 });
-
-// Define tools
-const add = tool(({ a, b }) => a + b, {
-    name: "add",
-    description: "Add two numbers",
-    schema: z.object({
-        a: z.number().describe("First number"),
-        b: z.number().describe("Second number"),
-    }),
-});
-
-const multiply = tool(({ a, b }) => a * b, {
-    name: "multiply",
-    description: "Multiply two numbers",
-    schema: z.object({
-        a: z.number().describe("First number"),
-        b: z.number().describe("Second number"),
-    }),
-});
-
-const divide = tool(({ a, b }) => a / b, {
-    name: "divide",
-    description: "Divide two numbers",
-    schema: z.object({
-        a: z.number().describe("First number"),
-        b: z.number().describe("Second number"),
-    }),
-});
-
-// Augment the LLM with tools
-const toolsByName = {
-    [add.name]: add,
-    [multiply.name]: multiply,
-    [divide.name]: divide,
-};
-const tools = Object.values(toolsByName);
-const modelWithTools = model.bindTools(tools);
-
-async function responder(state: MessagesStateType) {
+export const modelWithTools = model.bindTools(tools);
+export async function responder(state: MessagesStateType) {
     return {
         messages: [await modelWithTools.invoke([
             new SystemMessage(
@@ -57,7 +21,7 @@ async function responder(state: MessagesStateType) {
         llmCalls: 1,
     };
 }
-async function toolNode(state: MessagesStateType) {
+export async function toolNode(state: MessagesStateType) {
     const lastMessage = state.messages.at(-1);
 
     if (lastMessage == null || !AIMessage.isInstance(lastMessage)) {
@@ -73,7 +37,7 @@ async function toolNode(state: MessagesStateType) {
 
     return { messages: result };
 }
-async function shouldContinue(state: MessagesStateType) {
+export async function shouldContinue(state: MessagesStateType) {
     const lastMessage = state.messages.at(-1);
 
     // Check if it's an AIMessage before accessing tool_calls
@@ -85,7 +49,6 @@ async function shouldContinue(state: MessagesStateType) {
     if (lastMessage.tool_calls?.length) {
         return "toolNode";
     }
-
     // Otherwise, we stop (reply to the user)
     return END;
 }
