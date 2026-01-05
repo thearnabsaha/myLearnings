@@ -43,18 +43,21 @@ async function Responder(state: typeof StateAnnotation.State) {
         iteration: 0,
     };
 }
-// async function Revisor(state: typeof StateAnnotation.State) {
-//     const response = await modelWithTools.invoke([
-//         new SystemMessage(
-//             ReviewerPrompt
-//         ),
-//         ...state.messages,
-//     ])
-//     return {
-//         messages: [new AIMessage(response)],
-//         iteration: Number(state.iteration) + 1,
-//     };
-// }
+async function Revisor(state: typeof StateAnnotation.State) {
+    const response = await structuredModel.invoke([
+        new SystemMessage(
+            ReviewerPrompt
+        ),
+        ...state.messages,
+        new SystemMessage(
+            "Reflect on the user's original question and the actions taken thus far. Respond using structured output."
+        ),
+    ])
+    return {
+        messages: [new AIMessage(JSON.stringify(response))],
+        iteration: Number(state.iteration) + 1,
+    };
+}
 // async function FinalResponder(state: typeof StateAnnotation.State) {
 //     const response = await modelWithTools.invoke([
 //         new SystemMessage(
@@ -96,24 +99,24 @@ async function toolNode(state: typeof StateAnnotation.State) {
         messages: [new HumanMessage(JSON.stringify({ searchResults: cleanedResults }))],
     };
 }
-// async function shouldContinue(state: typeof StateAnnotation.State) {
-//     // Otherwise, we stop (reply to the user)
-//     if (Number(state.iteration) < 1) {
-//         return "toolNode"
-//     }
-//     return "FinalResponder";
-// }
+async function shouldContinue(state: typeof StateAnnotation.State) {
+    // Otherwise, we stop (reply to the user)
+    if (Number(state.iteration) < 2) {
+        return "toolNode"
+    }
+    return "FinalResponder";
+}
 const graph = new StateGraph(StateAnnotation)
     .addNode("Responder", Responder)
     .addNode("toolNode", toolNode)
-    // .addNode("Revisor", Revisor)
+    .addNode("Revisor", Revisor)
     // .addNode("FinalResponder", FinalResponder)
     .addEdge(START, "Responder")
     .addEdge("Responder", "toolNode")
-    // .addEdge("toolNode", "Revisor")
-    // .addConditionalEdges("Revisor", shouldContinue, ["toolNode", "FinalResponder"])
+    .addEdge("toolNode", "Revisor")
+    .addConditionalEdges("Revisor", shouldContinue, ["toolNode", END])
     // .addEdge("FinalResponder", END)
-    .addEdge("toolNode", END)
+    // .addEdge("toolNode", END)
     .compile();
 
 // Invoke
