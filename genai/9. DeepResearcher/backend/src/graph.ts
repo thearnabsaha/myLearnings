@@ -32,6 +32,7 @@ async function Responder(state: typeof StateAnnotation.State) {
         ),
         ...state.messages,
     ])
+
     return {
         messages: [new AIMessage(response)],
         iteration: 0,
@@ -50,14 +51,15 @@ async function Revisor(state: typeof StateAnnotation.State) {
     };
 }
 async function FinalResponder(state: typeof StateAnnotation.State) {
-    const response = await model.invoke([
+    const response = await modelWithTools.invoke([
         new SystemMessage(
-            FinalResponderPrompt + "\n\nIMPORTANT: Do NOT call any tools. Provide your final answer only not any tool call"
+            FinalResponderPrompt
         ),
         ...state.messages,
     ])
     return {
         messages: [new AIMessage(response)],
+        // iteration: Number(state.iteration) + 1,
     };
 }
 async function toolNode(state: typeof StateAnnotation.State) {
@@ -73,9 +75,11 @@ async function toolNode(state: typeof StateAnnotation.State) {
         const observation = await tool.invoke(toolCall);
         result.push(observation);
     }
+
     return { messages: result };
 }
 async function shouldContinue(state: typeof StateAnnotation.State) {
+    // Otherwise, we stop (reply to the user)
     if (Number(state.iteration) < 2) {
         return "toolNode"
     }
@@ -92,6 +96,7 @@ const graph = new StateGraph(StateAnnotation)
     .addConditionalEdges("Revisor", shouldContinue, ["toolNode", "FinalResponder"])
     .addEdge("FinalResponder", END)
     .compile();
+
 // Invoke
 export const agent = async (inputMessage: string, threadId: string) => {
     const result = await graph.invoke({
