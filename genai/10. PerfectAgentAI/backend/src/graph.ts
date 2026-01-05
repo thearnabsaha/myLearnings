@@ -67,8 +67,8 @@ export const agent = async (inputMessage: string, threadId: string) => {
     const result = await graph.invoke({
         messages: [new HumanMessage(inputMessage)],
     }, { configurable: { thread_id: threadId } });
-    // console.log(result)
-    // console.log(result.messages[result.messages.length - 1].content)
+    console.log(result)
+    console.log(result.messages[result.messages.length - 1].content)
     return result.messages[result.messages.length - 1].content
 }
 
