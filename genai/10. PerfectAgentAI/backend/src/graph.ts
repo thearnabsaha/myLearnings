@@ -18,7 +18,6 @@ export async function responder(state: MessagesStateType) {
             ),
             ...state.messages,
         ])],
-        llmCalls: 1,
     };
 }
 export async function toolNode(state: MessagesStateType) {
