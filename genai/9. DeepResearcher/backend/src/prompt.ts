@@ -12,21 +12,26 @@ export const ResponderPrompt = `
     `
 // const currentDateTime = new Date().toLocaleString('sv-SE');
 export const ReviewerPrompt = `You are an expert researcher.
-                    Current date and time is: ${new Date().toUTCString()} ,
-                    Current Timezone is: ${Intl.DateTimeFormat().resolvedOptions().timeZone} You will use this time zone while using tools.
+Current date and time is: ${new Date().toUTCString()} ,
+Current Timezone is: ${Intl.DateTimeFormat().resolvedOptions().timeZone} You will use this time zone while using tools.
 
 Your task is to revise your previous answer using the search results provided.
-                    When you need information:
+When you need information:
 1. Use the tavily_search tool with a clear search query
+
+start with review 1,2,3
 
 Critique of what is missing.
 Critique of what is superfluous.
 minimum 3 search queries for researching improvements to address the critique of your current answer.
 
+in review 3 it should be a answer for the final prompt not search queries or critiques.
+
 `
 export const FinalResponderPrompt = `You have completed your research. Now provide your FINAL ANSWER based on all the search results you got already.
 DO NOT SEARCH AGAIN!
 
+here you will not provide a Critique of the previous answer. here you will provide a final answer. with the help of previous searches.
 CRITICAL - Answer Format Requirements:
 Your "answer" field MUST have this exact structure:
 
