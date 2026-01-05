@@ -6,7 +6,8 @@ import { MessagesState, type MessagesStateType } from "./state";
 import { AIMessage, ToolMessage, SystemMessage, HumanMessage } from "@langchain/core/messages";
 import { tools, toolsByName } from "./tools";
 const model = new ChatGroq({
-    model: "openai/gpt-oss-20b",
+    model: "openai/gpt-oss-safeguard-20b",
+    // model: "openai/gpt-oss-20b",
     temperature: 0
 });
 export const modelWithTools = model.bindTools(tools);

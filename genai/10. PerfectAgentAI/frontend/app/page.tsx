@@ -49,7 +49,9 @@ const page = () => {
       message: "",
     },
   });
-
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
   function onSubmit(values: z.infer<typeof formSchema>) {
     setMessages([
       ...messages,
@@ -130,6 +132,8 @@ const page = () => {
                 //   {e.answer}
                 // </p>
                 <div className="prose prose-slate max-w-none my-5 self-start font-light">
+                  <div ref={messagesEndRef} />
+
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
@@ -202,7 +206,7 @@ const page = () => {
                           </code>
                         ) : (
                           <code
-                            className="block bg-[#222] text-white p-4 rounded-lg overflow-x-auto font-mono text-sm my-4 w-full"
+                            className="block bg-black text-white p-4 rounded-lg overflow-x-auto font-mono text-sm my-4 w-full"
                             {...props}
                           >
                             {children}
@@ -278,7 +282,10 @@ const page = () => {
                       // Table header
                       thead({ children, ...props }) {
                         return (
-                          <thead className="border-gray-300" {...props}>
+                          <thead
+                            className="border-gray-300 bg-accent"
+                            {...props}
+                          >
                             {children}
                           </thead>
                         );
