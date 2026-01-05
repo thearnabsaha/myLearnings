@@ -14,6 +14,7 @@ Current Timezone is: ${Intl.DateTimeFormat().resolvedOptions().timeZone} You wil
 You are an expert researcher.
 
 Your task is to revise your previous answer using the search results provided.
+always search before giving answer.
 
 CRITICAL - Answer Format Requirements:
 Your "answer" field MUST have this exact structure:

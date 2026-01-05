@@ -67,7 +67,6 @@ async function FinalResponder(state: typeof StateAnnotation.State) {
     ])
     return {
         messages: [new AIMessage(response)],
-        // iteration: Number(state.iteration) + 1,
     };
 }
 async function toolNode(state: typeof StateAnnotation.State) {
@@ -104,16 +103,19 @@ async function shouldContinue(state: typeof StateAnnotation.State) {
     if (Number(state.iteration) < 2) {
         return "toolNode"
     }
-    return END;
+    return "FinalResponder";
+    // return END;
 }
 const graph = new StateGraph(StateAnnotation)
     .addNode("Responder", Responder)
     .addNode("toolNode", toolNode)
     .addNode("Revisor", Revisor)
+    .addNode("FinalResponder", FinalResponder)
     .addEdge(START, "Responder")
     .addEdge("Responder", "toolNode")
     .addEdge("toolNode", "Revisor")
-    .addConditionalEdges("Revisor", shouldContinue, ["toolNode", END])
+    .addConditionalEdges("Revisor", shouldContinue, ["toolNode", "FinalResponder"])
+    .addEdge("FinalResponder", END)
     .compile();
 
 // Invoke
