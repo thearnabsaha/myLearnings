@@ -9,7 +9,6 @@ const model = new ChatGroq({
     model: "openai/gpt-oss-safeguard-20b",
     // model: "openai/gpt-oss-20b",
     temperature: 0,
-    // streaming: true
 });
 export const modelWithTools = model.bindTools(tools);
 export async function responder(state: MessagesStateType) {
@@ -71,8 +70,6 @@ export const agent = async (inputMessage: string, threadId: string) => {
     console.log(result.messages[result.messages.length - 1].content)
     return result.messages[result.messages.length - 1].content
 }
-
-// export const agentStream = async (
 //     inputMessage: string,
 //     threadId: string,
 //     onChunk: (chunk: string) => void
