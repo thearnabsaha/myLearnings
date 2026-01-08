@@ -10,6 +10,7 @@ const model = new ChatGroq({
     // model: "openai/gpt-oss-20b",
     temperature: 0,
 });
+
 export const modelWithTools = model.bindTools(tools);
 export async function responder(state: MessagesStateType) {
     return {
