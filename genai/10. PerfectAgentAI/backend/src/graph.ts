@@ -32,7 +32,6 @@ export async function toolNode(state: MessagesStateType) {
         const observation = await tool.invoke(toolCall);
         result.push(observation);
     }
-
     return { messages: result };
 }
 export async function shouldContinue(state: MessagesStateType) {
