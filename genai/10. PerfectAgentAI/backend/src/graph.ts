@@ -26,7 +26,6 @@ export async function toolNode(state: MessagesStateType) {
     if (lastMessage == null || !AIMessage.isInstance(lastMessage)) {
         return { messages: [] };
     }
-
     const result: ToolMessage[] = [];
     for (const toolCall of lastMessage.tool_calls ?? []) {
         const tool = toolsByName[toolCall.name];
