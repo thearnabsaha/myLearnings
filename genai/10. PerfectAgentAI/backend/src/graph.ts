@@ -23,7 +23,6 @@ export async function responder(state: MessagesStateType) {
 }
 export async function toolNode(state: MessagesStateType) {
     const lastMessage = state.messages.at(-1);
-
     if (lastMessage == null || !AIMessage.isInstance(lastMessage)) {
         return { messages: [] };
     }
