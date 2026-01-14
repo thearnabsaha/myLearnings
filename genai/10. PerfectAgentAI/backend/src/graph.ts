@@ -55,7 +55,6 @@ const graph = new StateGraph(MessagesState)
     .addEdge("toolNode", "responder")
     .addConditionalEdges("responder", shouldContinue, ["toolNode", END])
     .compile({ checkpointer });
-
 // Invoke
 export const agent = async (inputMessage: string, threadId: string) => {
     const result = await graph.invoke({
