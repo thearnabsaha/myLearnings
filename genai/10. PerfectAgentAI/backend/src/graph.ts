@@ -77,7 +77,6 @@ export const agent = async (inputMessage: string, threadId: string) => {
 //             streamMode: "messages", // 🔑 REQUIRED
 //         }
 //     );
-
 //     for await (const event of stream) {
 //         //@ts-ignore
 //         if (!event.messages) continue;
