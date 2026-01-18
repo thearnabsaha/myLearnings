@@ -3,7 +3,6 @@ import { tool } from "@langchain/core/tools";
 import z from "zod";
 
 // Define tools
-
 const Searchtool = new TavilySearch({
     maxResults: 3,
 });
