@@ -16,8 +16,6 @@ const Searchtool = new TavilySearch({
 //         b: z.number().describe("Second number"),
 //     }),
 // });
-
-
 // Augment the LLM with tools
 export const toolsByName = {
     // [add.name]: add,
