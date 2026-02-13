@@ -8,8 +8,6 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 
-// npm install express cors cookie-parser dotenv helmet morgan
-// npm install -D @types/express @types/cors @types/cookie-parser @types/morgan
 
 const morganFormat = ':method :url :status :response-time ms';
 
