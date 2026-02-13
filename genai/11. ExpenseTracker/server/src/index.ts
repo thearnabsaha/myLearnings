@@ -9,7 +9,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import { HumanMessage } from '@langchain/core/messages';
 import { agent } from './graph';
-
+import prisma from './lib/prisma';
 
 const morganFormat = ':method :url :status :response-time ms';
 
@@ -32,6 +32,30 @@ app.use(express.static('public'));
 app.use(cookieParser());
 app.get('/', async (req, res) => {
     agent()
+    res.send("hi")
+});
+app.post('/signup', async (req, res) => {
+    try {
+        const { email, name } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+
+        const user = await prisma.user.create({
+            data: {
+                email,
+                name
+            }
+        });
+
+        res.status(201).json(user);
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ error: 'Failed to create user' });
+    }
+});
+app.get('/login', async (req, res) => {
     res.send("hi")
 });
 
