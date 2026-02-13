@@ -14,6 +14,9 @@ importers:
       '@langchain/langgraph':
         specifier: ^1.1.4
         version: 1.1.4(@langchain/core@1.1.24)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.3.6)
+      '@langchain/tavily':
+        specifier: ^1.2.0
+        version: 1.2.0(@langchain/core@1.1.24)
       '@prisma/client':
         specifier: ^7.4.0
         version: 7.4.0(prisma@7.4.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
@@ -129,6 +132,12 @@ packages:
     peerDependenciesMeta:
       zod-to-json-schema:
         optional: true
+
+  '@langchain/tavily@1.2.0':
+    resolution: {integrity: sha512-aPLPgtw8+b/Rnr3H+X8H8z98T/Y7JuCE4B5eqRDHoEWgZvMDUFF7divqwQqCTMq2deQttlVrm5bN5JbKaAR7/w==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@langchain/core': ^1.0.0
 
   '@mrleebo/prisma-ast@0.13.1':
     resolution: {integrity: sha512-XyroGQXcHrZdvmrGJvsA9KNeOOgGMg1Vg9OlheUsBOSKznLMDl+YChxbkboRHvtFYJEMRYmlV3uoo/njCw05iw==}
@@ -999,6 +1008,11 @@ snapshots:
     transitivePeerDependencies:
       - react
       - react-dom
+
+  '@langchain/tavily@1.2.0(@langchain/core@1.1.24)':
+    dependencies:
+      '@langchain/core': 1.1.24
+      zod: 4.3.6
 
   '@mrleebo/prisma-ast@0.13.1':
     dependencies:

@@ -1,13 +1,15 @@
 import { AIMessage, SystemMessage, ToolMessage } from "@langchain/core/messages";
 import { model } from "./model";
-import { MessagesState } from "./state";
 import { GraphNode } from "@langchain/langgraph";
+import { MessagesState } from "./state";
+import { modelWithTools } from "./tools";
 
 export const llmCall = async (state: typeof MessagesState) => {
-    const response = await model.invoke([
+    const response = await modelWithTools.invoke([
         new SystemMessage(
-            "You are a helpful assistant tasked with performing arithmetic on a set of inputs."
+            "You are a helpful assistant"
         ),
+        //@ts-ignore
         ...state.messages,
     ]);
     return {
@@ -16,6 +18,7 @@ export const llmCall = async (state: typeof MessagesState) => {
     };
 };
 export const toolNode: GraphNode<typeof MessagesState> = async (state) => {
+    //@ts-ignore
     const lastMessage = state.messages.at(-1);
 
     if (lastMessage == null || !AIMessage.isInstance(lastMessage)) {
@@ -24,6 +27,7 @@ export const toolNode: GraphNode<typeof MessagesState> = async (state) => {
 
     const result: ToolMessage[] = [];
     for (const toolCall of lastMessage.tool_calls ?? []) {
+        //@ts-ignore
         const tool = toolsByName[toolCall.name];
         const observation = await tool.invoke(toolCall);
         result.push(observation);
@@ -31,7 +35,8 @@ export const toolNode: GraphNode<typeof MessagesState> = async (state) => {
 
     return { messages: result };
 };
-export const shouldContinue = (state: typeof MessagesState) => {
+export const shouldContinue = (state: typeof MessagesState.State) => {
+    //@ts-ignore
     const lastMessage = state.messages[state.messages.length - 1];
 
     // Check if it's an AIMessage before accessing tool_calls
