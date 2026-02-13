@@ -31,11 +31,8 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
 app.get('/', async (req, res) => {
-    const result = await agent.invoke({
-        messages: [new HumanMessage("what is a llm??")],
-    });
-    console.log(result.messages[result.messages.length - 1].content)
-    res.send(result.messages[result.messages.length - 1].content);
+    agent()
+    res.send("hi")
 });
 
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));

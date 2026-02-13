@@ -1,54 +1,52 @@
-import { AIMessage, SystemMessage, ToolMessage } from "@langchain/core/messages";
-import { model } from "./model";
-import { GraphNode } from "@langchain/langgraph";
-import { MessagesState } from "./state";
-import { modelWithTools } from "./tools";
+import { AIMessage, ToolMessage } from "@langchain/core/messages";
+import { GraphState } from "./state";
+import { modelWithTools, toolsByName } from "./tools";
+import { END } from "@langchain/langgraph";
 
-export const llmCall = async (state: typeof MessagesState) => {
-    const response = await modelWithTools.invoke([
-        new SystemMessage(
-            "You are a helpful assistant"
-        ),
-        //@ts-ignore
-        ...state.messages,
-    ]);
+export const llmCall = async (state: typeof GraphState.State) => {
+    const response = await modelWithTools.invoke(state.messages as any);
     return {
         messages: [response],
         llmCalls: 1,
     };
 };
-export const toolNode: GraphNode<typeof MessagesState> = async (state) => {
-    //@ts-ignore
-    const lastMessage = state.messages.at(-1);
 
-    if (lastMessage == null || !AIMessage.isInstance(lastMessage)) {
+export const toolNode = async (state: typeof GraphState.State) => {
+    const lastMessage = state.messages[state.messages.length - 1];
+
+    if (!lastMessage || !(lastMessage instanceof AIMessage)) {
         return { messages: [] };
     }
 
     const result: ToolMessage[] = [];
     for (const toolCall of lastMessage.tool_calls ?? []) {
-        //@ts-ignore
         const tool = toolsByName[toolCall.name];
+        if (!tool) continue;
+
         const observation = await tool.invoke(toolCall);
-        result.push(observation);
+
+        result.push(
+            new ToolMessage({
+                content: String(observation),
+                tool_call_id: toolCall.id!,
+                name: toolCall.name,
+            })
+        );
     }
 
     return { messages: result };
 };
-export const shouldContinue = (state: typeof MessagesState.State) => {
-    //@ts-ignore
+
+export const shouldContinue = (state: typeof GraphState.State): "toolNode" | typeof END => {
     const lastMessage = state.messages[state.messages.length - 1];
 
-    // Check if it's an AIMessage before accessing tool_calls
-    if (!lastMessage || !AIMessage.isInstance(lastMessage)) {
-        return "END";
+    if (!lastMessage || !(lastMessage instanceof AIMessage)) {
+        return END;
     }
 
-    // If the LLM makes a tool call, then perform an action
-    if (lastMessage.tool_calls?.length) {
+    if (lastMessage.tool_calls && lastMessage.tool_calls.length > 0) {
         return "toolNode";
     }
 
-    // Otherwise, we stop (reply to the user)
-    return "END";
+    return END;
 };

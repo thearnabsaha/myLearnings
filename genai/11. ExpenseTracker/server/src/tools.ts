@@ -1,20 +1,8 @@
 import { tool } from "@langchain/core/tools";
-import * as z from "zod";
+import z from "zod";
 import { model } from "./model";
-import { TavilySearch } from "@langchain/tavily";
 
-const searchTool = new TavilySearch({
-    maxResults: 5,
-    topic: "general",
-    // includeAnswer: false,
-    // includeRawContent: false,
-    // includeImages: false,
-    // includeImageDescriptions: false,
-    // searchDepth: "basic",
-    // timeRange: "day",
-    // includeDomains: [],
-    // excludeDomains: [],
-});
+// Define tools
 const add = tool(({ a, b }) => a + b, {
     name: "add",
     description: "Add two numbers",
@@ -23,9 +11,30 @@ const add = tool(({ a, b }) => a + b, {
         b: z.number().describe("Second number"),
     }),
 });
-const toolsByName = {
+
+const multiply = tool(({ a, b }) => a * b, {
+    name: "multiply",
+    description: "Multiply two numbers",
+    schema: z.object({
+        a: z.number().describe("First number"),
+        b: z.number().describe("Second number"),
+    }),
+});
+
+const divide = tool(({ a, b }) => a / b, {
+    name: "divide",
+    description: "Divide two numbers",
+    schema: z.object({
+        a: z.number().describe("First number"),
+        b: z.number().describe("Second number"),
+    }),
+});
+
+// Augment the LLM with tools
+export const toolsByName: Record<string, typeof add | typeof multiply | typeof divide> = {
     [add.name]: add,
-    [searchTool.name]: searchTool,
+    [multiply.name]: multiply,
+    [divide.name]: divide,
 };
 const tools = Object.values(toolsByName);
 export const modelWithTools = model.bindTools(tools);

@@ -1,19 +1,38 @@
-import { AIMessage, HumanMessage } from "@langchain/core/messages";
-import { StateGraph, START, END, GraphNode, ConditionalEdgeRouter } from "@langchain/langgraph";
-import { MessagesState } from "./state";
+import { tool } from "@langchain/core/tools";
+import { ChatGroq } from "@langchain/groq";
+import * as z from "zod";
+import {
+    StateGraph,
+    Annotation,
+    MessagesAnnotation,
+    START,
+    END,
+} from "@langchain/langgraph";
+import { BaseMessage, AIMessage, ToolMessage, HumanMessage } from "@langchain/core/messages";
+import { GraphState } from "./state";
 import { llmCall, shouldContinue, toolNode } from "./nodes";
 
 
-export const agent = new StateGraph(MessagesState)
+
+
+const graph = new StateGraph(GraphState)
     .addNode("llmCall", llmCall)
     .addNode("toolNode", toolNode)
     .addEdge(START, "llmCall")
-    .addConditionalEdges("llmCall", shouldContinue, ["toolNode", END])
+    .addConditionalEdges("llmCall", shouldContinue)
     .addEdge("toolNode", "llmCall")
     .compile();
 
+export const agent = async () => {
+    const result = await graph.invoke({
+        messages: [
+            new HumanMessage("Add 3 and 4.")
+        ],
+    });
 
+    for (const message of result.messages) {
+        console.log(`[${message._getType()}]: ${message.content}`);
+    }
 
-// for (const message of result.messages) {
-//     console.log(`[${message.type}]: ${message.text}`);
-// }
+    console.log(`\nTotal LLM calls: ${result.llmCalls}`);
+}
