@@ -37,7 +37,7 @@ export const toolNode = async (state: typeof GraphState.State) => {
     return { messages: result };
 };
 
-export const shouldContinue = (state: typeof GraphState.State): "toolNode" | typeof END => {
+export const shouldContinue1 = (state: typeof GraphState.State): "toolNode" | typeof END => {
     const lastMessage = state.messages[state.messages.length - 1];
 
     if (!lastMessage || !(lastMessage instanceof AIMessage)) {
@@ -50,3 +50,16 @@ export const shouldContinue = (state: typeof GraphState.State): "toolNode" | typ
 
     return END;
 };
+// export const shouldContinue2 = (state: typeof GraphState.State): "toolNode" | typeof END => {
+//     const lastMessage = state.messages[state.messages.length - 1];
+
+//     if (!lastMessage || !(lastMessage instanceof AIMessage)) {
+//         return END;
+//     }
+
+//     if (lastMessage.tool_calls && lastMessage.tool_calls.length > 0) {
+//         return "toolNode";
+//     }
+
+//     return END;
+// };

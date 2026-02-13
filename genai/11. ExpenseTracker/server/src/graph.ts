@@ -1,32 +1,24 @@
-import { tool } from "@langchain/core/tools";
-import { ChatGroq } from "@langchain/groq";
-import * as z from "zod";
 import {
     StateGraph,
-    Annotation,
-    MessagesAnnotation,
     START,
-    END,
 } from "@langchain/langgraph";
-import { BaseMessage, AIMessage, ToolMessage, HumanMessage } from "@langchain/core/messages";
+import { HumanMessage } from "@langchain/core/messages";
 import { GraphState } from "./state";
-import { llmCall, shouldContinue, toolNode } from "./nodes";
-
-
-
+import { llmCall, shouldContinue1, toolNode } from "./nodes";
 
 const graph = new StateGraph(GraphState)
     .addNode("llmCall", llmCall)
     .addNode("toolNode", toolNode)
     .addEdge(START, "llmCall")
-    .addConditionalEdges("llmCall", shouldContinue)
-    .addEdge("toolNode", "llmCall")
+    .addEdge("llmCall","toolNode")
+    .addConditionalEdges("llmCall", shouldContinue1)
+    // .addConditionalEdges("toolNode", shouldContinue2)
     .compile();
 
 export const agent = async () => {
     const result = await graph.invoke({
         messages: [
-            new HumanMessage("Add 3 and 4.")
+            new HumanMessage("weather")
         ],
     });
 
