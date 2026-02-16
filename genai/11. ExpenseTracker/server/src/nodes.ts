@@ -1,13 +1,18 @@
-import { AIMessage, ToolMessage } from "@langchain/core/messages";
+import { AIMessage, SystemMessage, ToolMessage } from "@langchain/core/messages";
 import { GraphState } from "./state";
 import { modelWithTools, toolsByName } from "./tools";
 import { END } from "@langchain/langgraph";
 
 export const llmCall = async (state: typeof GraphState.State) => {
-    const response = await modelWithTools.invoke(state.messages as any);
+    // const response = await modelWithTools.invoke(state.messages as any);
+    const response = await modelWithTools.invoke([
+        new SystemMessage(
+            "You are a expense tracker assistent. except doing expense tracking related thing, you don't do anything, you just politely decline and tell what you can do."
+        ),
+        ...state.messages,
+    ]);
     return {
         messages: [response],
-        llmCalls: 1,
     };
 };
 

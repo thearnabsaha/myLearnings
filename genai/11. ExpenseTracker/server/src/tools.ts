@@ -3,6 +3,19 @@ import z from "zod";
 import { model } from "./model";
 
 // Define tools
+const addExpense = tool(
+    ({ title, amount, date }) => {
+
+    }
+    , {
+        name: "addExpense",
+        description: "Add the given expense to the database.",
+        schema: z.object({
+            title: z.number().describe("First number"),
+            amount: z.number().describe("Second number"),
+            date: z.number().describe("Second number"),
+        }),
+    });
 const add = tool(({ a, b }) => a + b, {
     name: "add",
     description: "Add two numbers",
