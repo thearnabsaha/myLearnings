@@ -17,15 +17,13 @@ const addExpense = tool(
         }),
     });
 const getExpense = tool(
-    ({ title, amount, date }) => {
-        console.log("getExpense tool : ", title, amount, date)
+    ({ date }) => {
+        console.log("getExpense tool : ", date)
     }
     , {
         name: "getExpense",
         description: "Get all the expenses from the database.",
         schema: z.object({
-            title: z.string().describe("Title of the expense"),
-            amount: z.number().describe("Expense Amount"),
             date: z.string().describe("Expense Date in dd/mm/yyyy in IST"),
         }),
     });

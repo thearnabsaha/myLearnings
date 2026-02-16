@@ -9,6 +9,7 @@ export const llmCall = async (state: typeof GraphState.State) => {
         new SystemMessage(
             `You are a expense tracker assistent. except doing expense tracking related thing, you don't do anything, you just politely decline and tell what you can do.
             you use addExpense tool to log a expense on the database.
+            you use getExpense tool to get expenses from the database.
             
             
             
