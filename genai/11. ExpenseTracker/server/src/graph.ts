@@ -16,14 +16,15 @@ const graph = new StateGraph(GraphState)
     .addConditionalEdges("llmCall", shouldContinueFromModel)
     .addConditionalEdges("toolNode", shouldContinueFromToolNode)
     .compile({ checkpointer });
-export const agent = async () => {
+export const agent = async (inputMessage: string, threadId: string) => {
     const result = await graph.invoke({
         messages: [
-            new HumanMessage("bought macbook wroth 100000 rupess today")
+            new HumanMessage(inputMessage)
         ],
-    }, { configurable: { thread_id: "1" } });
+    }, { configurable: { thread_id: threadId } });
     console.log(result.messages[result.messages.length - 1].content)
     for (const message of result.messages) {
         console.log(`[${message._getType()}]: ${message.content}`);
     }
+    return result.messages[result.messages.length - 1].content;
 }
