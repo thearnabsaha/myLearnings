@@ -5,15 +5,28 @@ import { model } from "./model";
 // Define tools
 const addExpense = tool(
     ({ title, amount, date }) => {
-
+        console.log("addExpense tool : ", title, amount, date)
     }
     , {
         name: "addExpense",
         description: "Add the given expense to the database.",
         schema: z.object({
-            title: z.number().describe("First number"),
-            amount: z.number().describe("Second number"),
-            date: z.number().describe("Second number"),
+            title: z.string().describe("Title of the expense"),
+            amount: z.number().describe("Expense Amount"),
+            date: z.string().describe("Expense Date in dd/mm/yyyy in IST"),
+        }),
+    });
+const getExpense = tool(
+    ({ title, amount, date }) => {
+        console.log("getExpense tool : ", title, amount, date)
+    }
+    , {
+        name: "getExpense",
+        description: "Get all the expenses from the database.",
+        schema: z.object({
+            title: z.string().describe("Title of the expense"),
+            amount: z.number().describe("Expense Amount"),
+            date: z.string().describe("Expense Date in dd/mm/yyyy in IST"),
         }),
     });
 const add = tool(({ a, b }) => a + b, {
@@ -44,10 +57,11 @@ const divide = tool(({ a, b }) => a / b, {
 });
 
 // Augment the LLM with tools
-export const toolsByName: Record<string, typeof add | typeof multiply | typeof divide> = {
+export const toolsByName: Record<string, typeof add | typeof multiply | typeof getExpense | typeof addExpense> = {
+    [addExpense.name]: addExpense,
     [add.name]: add,
     [multiply.name]: multiply,
-    [divide.name]: divide,
+    [getExpense.name]: getExpense,
 };
 const tools = Object.values(toolsByName);
 export const modelWithTools = model.bindTools(tools);

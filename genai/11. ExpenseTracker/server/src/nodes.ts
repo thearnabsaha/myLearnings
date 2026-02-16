@@ -7,7 +7,12 @@ export const llmCall = async (state: typeof GraphState.State) => {
     // const response = await modelWithTools.invoke(state.messages as any);
     const response = await modelWithTools.invoke([
         new SystemMessage(
-            "You are a expense tracker assistent. except doing expense tracking related thing, you don't do anything, you just politely decline and tell what you can do."
+            `You are a expense tracker assistent. except doing expense tracking related thing, you don't do anything, you just politely decline and tell what you can do.
+            you use addExpense tool to log a expense on the database.
+            
+            
+            
+            `
         ),
         ...state.messages,
     ]);
@@ -27,7 +32,7 @@ export const toolNode = async (state: typeof GraphState.State) => {
     for (const toolCall of lastMessage.tool_calls ?? []) {
         const tool = toolsByName[toolCall.name];
         if (!tool) continue;
-
+        //@ts-ignore
         const observation = await tool.invoke(toolCall);
 
         result.push(
@@ -42,7 +47,7 @@ export const toolNode = async (state: typeof GraphState.State) => {
     return { messages: result };
 };
 
-export const shouldContinue1 = (state: typeof GraphState.State): "toolNode" | typeof END => {
+export const shouldContinueFromModel = (state: typeof GraphState.State): "toolNode" | typeof END => {
     const lastMessage = state.messages[state.messages.length - 1];
 
     if (!lastMessage || !(lastMessage instanceof AIMessage)) {
@@ -55,16 +60,16 @@ export const shouldContinue1 = (state: typeof GraphState.State): "toolNode" | ty
 
     return END;
 };
-// export const shouldContinue2 = (state: typeof GraphState.State): "toolNode" | typeof END => {
-//     const lastMessage = state.messages[state.messages.length - 1];
+export const shouldContinueFromToolNode = (state: typeof GraphState.State): "toolNode" | "llmCall" | typeof END => {
+    const lastMessage = state.messages[state.messages.length - 1];
 
-//     if (!lastMessage || !(lastMessage instanceof AIMessage)) {
-//         return END;
-//     }
+    // if (!lastMessage || !(lastMessage instanceof AIMessage)) {
+    //     return END;
+    // }
 
-//     if (lastMessage.tool_calls && lastMessage.tool_calls.length > 0) {
-//         return "toolNode";
-//     }
+    // if (lastMessage.tool_calls && lastMessage.tool_calls.length > 0) {
+    //     return "toolNode";
+    // }
 
-//     return END;
-// };
+    return "llmCall";
+};
