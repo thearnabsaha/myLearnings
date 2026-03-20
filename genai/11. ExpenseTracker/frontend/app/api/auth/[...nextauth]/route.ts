@@ -27,6 +27,7 @@ const handler = NextAuth({
             if (session.user) {
                 session.user.id = user.id
             }
+            // console.log(user.id) // i want to add this to localstorage
             return session
         },
         async jwt({ token, user, account, profile }) {

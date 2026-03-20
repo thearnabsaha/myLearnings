@@ -27,7 +27,7 @@ const model = new ChatGroq({
 // });
 
 const addExpense = tool(async ({ amount, description, category, date, userId }) => {
-    const expense = await prisma.expense.create({
+    await prisma.expense.create({
         data: {
             amount: amount,
             description: description,
@@ -38,7 +38,6 @@ const addExpense = tool(async ({ amount, description, category, date, userId }) 
             }
         }
     })
-    console.log(expense)
 }, {
     name: "addExpense",
     description: "add new expense to database",

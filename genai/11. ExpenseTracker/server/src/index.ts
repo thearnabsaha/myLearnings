@@ -34,7 +34,8 @@ app.get('/', (req, res) => {
 app.post('/chat', async (req, res) => {
     const inputMessage = req.body.inputMessage as string
     const threadId = req.body.threadId as string
-    const answer = await agent(inputMessage, threadId)
+    const userId = req.body.userId as string
+    const answer = await agent(inputMessage, threadId, userId)
     res.send(answer);
 });
 
