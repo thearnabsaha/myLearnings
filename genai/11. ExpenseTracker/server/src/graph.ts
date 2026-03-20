@@ -25,7 +25,6 @@ const toolNode: GraphNode<typeof MessagesState> = async (state) => {
     return { messages: result };
 };
 //@ts-ignore
-
 const shouldContinue: ConditionalEdgeRouter<typeof MessagesState, "toolNode"> = (state) => {
     //@ts-ignore
     const lastMessage = state.messages.at(-1);
@@ -53,12 +52,15 @@ const graph = new StateGraph(MessagesState)
     .compile();
 
 // Invoke
-export const agent = async (msg: string) => {
+export const agent = async (msg: string, threadId: string) => {
     const result = await graph.invoke({
         messages: [new HumanMessage(msg)],
     });
 
-    for (const message of result.messages) {
-        console.log(`[${message.type}]: ${message.text}`);
-    }
+    // for (const message of result.messages) {
+    //     console.log(`[${message.type}]: ${message.text}`);
+    // }
+    console.log(result)
+    // console.log(result.messages[result.messages.length - 1].content)
+    return result.messages[result.messages.length - 1].content
 }

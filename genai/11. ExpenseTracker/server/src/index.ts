@@ -17,10 +17,7 @@ const morganFormat = ':method :url :status :response-time ms';
 app.use(morgan(morganFormat));
 app.use(helmet());
 
-app.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    credentials: true,
-}));
+app.use(cors());
 
 // app.options('*', cors({
 //   origin: process.env.CORS_ORIGIN,
@@ -32,8 +29,13 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
 app.get('/', (req, res) => {
-    agent("what is the weather in kolkata");
     res.send('hello from simple server :)');
+});
+app.post('/chat', async (req, res) => {
+    const inputMessage = req.body.inputMessage as string
+    const threadId = req.body.threadId as string
+    const answer = await agent(inputMessage, threadId)
+    res.send(answer);
 });
 
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));
