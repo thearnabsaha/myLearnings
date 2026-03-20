@@ -43,7 +43,7 @@ const shouldContinue: ConditionalEdgeRouter<typeof MessagesState, "toolNode"> = 
     // Otherwise, we stop (reply to the user)
     return END;
 };
-const agent = new StateGraph(MessagesState)
+const graph = new StateGraph(MessagesState)
     .addNode("llmCall", llmCall)
     .addNode("toolNode", toolNode)
     .addEdge(START, "llmCall")
@@ -53,8 +53,8 @@ const agent = new StateGraph(MessagesState)
     .compile();
 
 // Invoke
-export const call = async (msg: string) => {
-    const result = await agent.invoke({
+export const agent = async (msg: string) => {
+    const result = await graph.invoke({
         messages: [new HumanMessage(msg)],
     });
 
