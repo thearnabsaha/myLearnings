@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import { call } from './graph';
 
 // npm install express cors cookie-parser dotenv helmet morgan
 // npm install -D @types/express @types/cors @types/cookie-parser @types/morgan
@@ -31,6 +32,7 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(express.static('public'));
 app.use(cookieParser());
 app.get('/', (req, res) => {
+    call("add 3 with 4");
     res.send('hello from simple server :)');
 });
 
