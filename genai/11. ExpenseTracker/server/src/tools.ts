@@ -2,7 +2,7 @@ import { tool } from "@langchain/core/tools";
 import * as z from "zod";
 import { ChatGroq } from "@langchain/groq"
 import { TavilySearch } from "@langchain/tavily";
-
+import { prisma } from './lib/prisma';
 const model = new ChatGroq({
     model: "openai/gpt-oss-120b",
     temperature: 0,
@@ -26,14 +26,30 @@ const model = new ChatGroq({
 //     }),
 // });
 
-// const divide = tool(({ a, b }) => a / b, {
-//     name: "divide",
-//     description: "Divide two numbers",
-//     schema: z.object({
-//         a: z.number().describe("First number"),
-//         b: z.number().describe("Second number"),
-//     }),
-// });
+const addExpense = tool(async ({ amount, description, category, date, userId }) => {
+    const expense = await prisma.expense.create({
+        data: {
+            amount: amount,
+            description: description,
+            category: category,
+            date: new Date(date),
+            user: {
+                connect: { id: userId }
+            }
+        }
+    })
+    console.log(expense)
+}, {
+    name: "addExpense",
+    description: "add new expense to database",
+    schema: z.object({
+        amount: z.number().describe("Expense Amount"),
+        description: z.string().describe("Expense Description"),
+        category: z.string().describe("Expense Catagory"),
+        date: z.string().describe("Expense Date"),
+        userId: z.string().describe("User ID"),
+    }),
+});
 const searchClient = new TavilySearch({
     maxResults: 5,
     topic: "general",
@@ -51,7 +67,7 @@ const searchTool = tool(async ({ query }) => {
 // Augment the LLM with tools
 export const toolsByName = {
     [searchTool.name]: searchTool,
-    // [add.name]: add,
+    [addExpense.name]: addExpense,
     // [multiply.name]: multiply,
     // [divide.name]: divide,
 };

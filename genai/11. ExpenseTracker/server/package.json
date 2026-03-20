@@ -14,7 +14,7 @@
     "@langchain/groq": "^1.1.5",
     "@langchain/langgraph": "^1.2.4",
     "@langchain/tavily": "^1.2.0",
-    "@prisma/client": "^7.5.0",
+    "@prisma/client": "6.15.0",
     "@tavily/core": "^0.7.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
@@ -27,6 +27,7 @@
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
-    "@types/morgan": "^1.9.10"
+    "@types/morgan": "^1.9.10",
+    "prisma": "6.15.0"
   }
 }
