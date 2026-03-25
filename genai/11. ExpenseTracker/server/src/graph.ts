@@ -54,9 +54,8 @@ const graph = new StateGraph(MessagesState)
 
 // Invoke
 export const agent = async (msg: string, threadId: string, userId: string) => {
-    console.log(threadId);
     const result = await graph.invoke({
-        messages: [new HumanMessage(msg + "(never show it in a response) my user userId : " + userId)],
+        messages: [new HumanMessage(msg + "my user userId : " + userId)],
     }, { configurable: { thread_id: threadId } });
 
     // for (const message of result.messages) {

@@ -49,6 +49,29 @@ const addExpense = tool(async ({ amount, description, category, date, userId }) 
         userId: z.string().describe("User ID"),
     }),
 });
+// export const a = async () => {
+//     const results = await prisma.expense.findMany({
+//         where: {
+//             userId: "cmmzesrtw00002m8uth4n32t2"
+//         }
+//     })
+//     console.log(results)
+// }
+const getExpense = tool(async ({ userId }) => {
+    const results = await prisma.expense.findMany({
+        where: {
+            userId: userId
+        }
+    })
+    // console.log(results)
+    return JSON.stringify(results)
+}, {
+    name: "getExpense",
+    description: "finds all expenses from database",
+    schema: z.object({
+        userId: z.string().describe("User ID"),
+    }),
+});
 const searchClient = new TavilySearch({
     maxResults: 5,
     topic: "general",
@@ -67,6 +90,7 @@ const searchTool = tool(async ({ query }) => {
 export const toolsByName = {
     [searchTool.name]: searchTool,
     [addExpense.name]: addExpense,
+    [getExpense.name]: getExpense,
     // [multiply.name]: multiply,
     // [divide.name]: divide,
 };
