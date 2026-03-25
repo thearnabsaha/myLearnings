@@ -3,7 +3,7 @@ import { AIMessage, ToolMessage } from "@langchain/core/messages";
 import { HumanMessage } from "@langchain/core/messages";
 import { MessagesState } from "./state";
 import { modelWithTools, toolsByName } from "./tools";
-import { ConditionalEdgeRouter, END, GraphNode, START, StateGraph } from "@langchain/langgraph";
+import { ConditionalEdgeRouter, END, GraphNode, MemorySaver, START, StateGraph } from "@langchain/langgraph";
 import { llmCall } from "./model";
 
 const toolNode: GraphNode<typeof MessagesState> = async (state) => {
@@ -42,6 +42,7 @@ const shouldContinue: ConditionalEdgeRouter<typeof MessagesState, "toolNode"> = 
     // Otherwise, we stop (reply to the user)
     return END;
 };
+const checkpointer = new MemorySaver();
 const graph = new StateGraph(MessagesState)
     .addNode("llmCall", llmCall)
     .addNode("toolNode", toolNode)
@@ -49,13 +50,14 @@ const graph = new StateGraph(MessagesState)
     //@ts-ignore
     .addConditionalEdges("llmCall", shouldContinue, ["toolNode", END])
     .addEdge("toolNode", "llmCall")
-    .compile();
+    .compile({ checkpointer });
 
 // Invoke
 export const agent = async (msg: string, threadId: string, userId: string) => {
+    console.log(threadId);
     const result = await graph.invoke({
         messages: [new HumanMessage(msg + "(never show it in a response) my user userId : " + userId)],
-    });
+    }, { configurable: { thread_id: threadId } });
 
     // for (const message of result.messages) {
     //     console.log(`[${message.type}]: ${message.text}`);
