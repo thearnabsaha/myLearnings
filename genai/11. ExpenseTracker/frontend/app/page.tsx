@@ -13,6 +13,8 @@ import axios from "axios";
 import { BACKEND_URL } from "@/lib/config";
 import ReactMarkdown from "react-markdown";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
+
 const formSchema = z.object({
   message: z
     .string()
@@ -46,37 +48,42 @@ const page = () => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    setMessages([
-      ...messages,
-      {
-        id: crypto.randomUUID(),
-        input: String(values.message),
-        answer: "Loading...",
-      },
+    if (!session) return;
+
+    const msgId = crypto.randomUUID();
+
+    // Add message with empty answer immediately
+    setMessages((prev) => [
+      ...prev,
+      { id: msgId, input: String(values.message), answer: "" },
     ]);
-    if (session) {
-      axios
-        .post(`${BACKEND_URL}/chat`, {
-          inputMessage: values.message as string,
-          threadId,
-          userId: session?.user.id as string,
-          email: session.user.email as string,
-        })
-        .then(function (response) {
-          setMessages([
-            ...messages,
-            {
-              id: crypto.randomUUID(),
-              input: String(values.message),
-              answer: String(response.data),
-            },
-          ]);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
+
     form.reset();
+
+    fetchEventSource(`${BACKEND_URL}/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        inputMessage: values.message,
+        threadId,
+        userId: session.user.id,
+        email: session.user.email,
+      }),
+      onmessage(event) {
+        if (event.data === "[DONE]") return;
+        const parsed = JSON.parse(event.data);
+        const token = parsed.message;
+        // Append each token to the correct message by id
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === msgId ? { ...m, answer: m.answer + token } : m,
+          ),
+        );
+      },
+      onerror(err) {
+        console.error("SSE error", err);
+      },
+    });
   }
   return (
     <div className="mx-auto w-[90vw] lg:w-[50vw]">

@@ -57,15 +57,11 @@ export const agent = async (msg: string, threadId: string, userId: string) => {
     const result = await graph.stream({
         messages: [new HumanMessage(msg + "my user userId : " + userId)],
     }, { configurable: { thread_id: threadId }, streamMode: "messages" });
-
     // console.log(result)
     return result;
 
     // for await (const chunk of result) {
     //     console.log(chunk[0].content)
-    //     // return chunk[0].content
-    //     // return chunk[0].content;
-    // }
     // }
     // console.log(result.messages[result.messages.length - 1].content)
     // return result.messages[result.messages.length - 1].content
