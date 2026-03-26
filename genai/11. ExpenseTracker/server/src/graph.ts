@@ -56,20 +56,16 @@ const graph = new StateGraph(MessagesState)
 export const agent = async (msg: string, threadId: string, userId: string) => {
     const result = await graph.stream({
         messages: [new HumanMessage(msg + "my user userId : " + userId)],
-    }, { configurable: { thread_id: threadId, streamMode: "updates" } });
+    }, { configurable: { thread_id: threadId }, streamMode: "messages" });
 
     // console.log(result)
-    // for await (const chunk of await graph.stream({ messages: [new HumanMessage(msg + "my user userId : " + userId)] }, { configurable: { thread_id: threadId, streamMode: "updates" } })) {
-    //     console.log(chunk);
+    return result;
+
+    // for await (const chunk of result) {
+    //     console.log(chunk[0].content)
+    //     // return chunk[0].content
+    //     // return chunk[0].content;
     // }
-    // for await (const chunk of await graph.stream({ messages: [new HumanMessage(msg + "my user userId : " + userId)] }, {
-    //     configurable: { thread_id: threadId },
-    //     streamMode: "updates",
-    // })) {
-    // console.log(chunk);
-    for await (const chunk of result) {
-        console.log("chunk", chunk)
-    }
     // }
     // console.log(result.messages[result.messages.length - 1].content)
     // return result.messages[result.messages.length - 1].content

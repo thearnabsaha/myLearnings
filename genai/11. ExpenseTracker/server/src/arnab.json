@@ -1,0 +1,984 @@
+
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " entry",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": ",",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " etc",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": ".).",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " |\n\n",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": "Just",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " reply",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " with",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " the",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " option",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " number",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " (",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": "or",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " describe",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " your",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " request",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": ")",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " and",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " I",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": "’ll",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " take",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " care",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " of",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " the",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": " rest",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": "!",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]
+chunk [
+  AIMessageChunk {
+    "id": "req_01kmn8fx2qex8tpavhjbyqhz0h",
+    "content": "",
+    "additional_kwargs": {},
+    "response_metadata": {
+      "usage": {
+        "input_tokens": 289,
+        "output_tokens": 359,
+        "total_tokens": 648
+      },
+      "timing": {
+        "completion_time": 0.755596913,
+        "prompt_time": 0.035518977,
+        "queue_time": 0.045469473,
+        "total_time": 0.79111589
+      },
+      "model_provider": "groq"
+    },
+    "tool_calls": [],
+    "tool_call_chunks": [],
+    "invalid_tool_calls": []
+  },
+  {
+    tags: [],
+    name: undefined,
+    thread_id: 'mn7k0s80mirzmi',
+    langgraph_step: 1,
+    langgraph_node: 'llmCall',
+    langgraph_triggers: [ 'branch:to:llmCall' ],
+    langgraph_path: [ '__pregel_pull', 'llmCall' ],
+    langgraph_checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    __pregel_task_id: '71451ff7-7003-5fdd-9761-3b4af8567faa',
+    checkpoint_ns: 'llmCall:71451ff7-7003-5fdd-9761-3b4af8567faa',
+    ls_provider: 'groq',
+    ls_model_name: 'openai/gpt-oss-120b',
+    ls_model_type: 'chat',
+    ls_temperature: 0,
+    ls_max_tokens: undefined,
+    ls_stop: undefined,
+    model: 'openai/gpt-oss-120b',
+    stop: [],
+    temperature: 0,
+    stream: false,
+    versions: { '@langchain/core': '1.1.34', '@langchain/groq': '1.1.5' }
+  }
+]

@@ -38,7 +38,23 @@ app.post('/chat', async (req, res) => {
     const threadId = req.body.threadId as string
     const userId = req.body.userId as string
     const answer = await agent(inputMessage, threadId, userId)
-    res.send(answer);
+
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
+    res.flushHeaders();
+    for await (const chunk of answer) {
+        const content = chunk[0]?.content;
+        if (content && typeof content === "string") {
+            res.write(`data: ${JSON.stringify({ message: content })}\n\n`);
+        }
+        req.on("close", () => {
+            res.end();
+        });
+    }
+
+    // res.send(answer);
 });
 
 app.listen(port, () => console.log('> Server is up and running on port: ' + port));
